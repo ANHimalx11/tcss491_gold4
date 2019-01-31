@@ -72,11 +72,11 @@ Background.prototype.draw = function () {
         for (j = 0; j < map[0].length; j++) {
             var temp = map[i][j];
             if (temp == '-') {
-                this.ctx.drawImage(AM.getAsset("./img/blue.png"), this.x, this.y);
+                this.ctx.drawImage(AM.getAsset("./img_asset/monsters/monstertest.png"), this.x, this.y);
                 this.x = this.x + 50;
             }
             if (temp == 'm') {
-                this.ctx.drawImage(AM.getAsset("./img/red.png"), this.x, this.y);
+                this.ctx.drawImage(AM.getAsset("./img_asset/monsters/monstertest2.png"), this.x, this.y);
                 this.x = this.x + 50;
             }
         }
@@ -88,8 +88,8 @@ Background.prototype.draw = function () {
 Background.prototype.update = function () {
 };
 
-AM.queueDownload("./img/blue.png");
-AM.queueDownload("./img/red.png");
+AM.queueDownload("./img_asset/monsters/monstertest.png");
+AM.queueDownload("./img_asset/monsters/monstertest2.png");
 
 AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
