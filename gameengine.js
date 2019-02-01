@@ -33,38 +33,6 @@ GameEngine.prototype.start = function () {
     })();
 }
 
-//capture the mouse
-GameEngine.prototype.startInput = function () {
-    console.log('starting input detection');
-    var getXandY = function (e) {
-        var x = e.clientX - that.ctx.canvas.getBoundingClientRect().left - 23.5;
-        var y = e.clientY - that.ctx.canvas.getBoundingClientRect().top - 23.5;
-
-        x = Math.floor(x / 39.55);
-        y = Math.floor(y / 39.55);
- 
-        if (x < 0 || x > 18 || y < 0 || y > 18) return null;
-
-        return { x: x, y: y };
-    }
-    var that = this;
-    this.ctx.canvas.addEventListener("click", function (e) {
-        that.click = getXandY(e);
-        console.log(getXandY);
-    }, false);
-
-    this.ctx.canvas.addEventListener("mousemove", function (e) {
-        that.mouse = getXandY(e);
-    }, false);
-
-    this.ctx.canvas.addEventListener("mousewheel", function (e) {
-        that.wheel = e;
-    }, false);
-
-    console.log('Input started');
-
-}
-
 GameEngine.prototype.addEntity = function (entity) {
     console.log('added entity');
     this.entities.push(entity);
