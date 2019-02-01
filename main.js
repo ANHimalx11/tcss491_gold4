@@ -5,30 +5,24 @@ var baseX = 0;
 var baseY = 0;
 var lastX, lastY;
 var distance = 24;
-var temp1 = 0, temp2  = 0;
-
-//Maps
-var mapList = {};
-
-
-var map =  [['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ],
-            ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', ],
-            ['s', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'p', ],
-            ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', ],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ],
-            ];
+var temp1 = 0, temp2 = 0;
+var map = [['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-',],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-',],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-',],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-',],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-',],
+['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', '-', '-', '-', '-', '-', 'b', 'b',],
+['s', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'b', '-', '-', '-', '-', '-', 'b', 'p',],
+['b', 'b', 'b', 'b', 'b', 'b', 'b', 'm', 'b', '-', '-', '-', '-', '-', 'b', 'm',],
+['-', '-', '-', '-', '-', '-', 'b', 'm', 'b', '-', '-', '-', '-', '-', 'b', 'm',],
+['-', '-', '-', '-', '-', '-', 'b', 'm', 'b', '-', '-', '-', '-', '-', 'b', 'm',],
+['-', '-', '-', '-', '-', '-', 'b', 'm', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'm',],
+['-', '-', '-', '-', '-', '-', 'b', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm',],
+['-', '-', '-', '-', '-', '-', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b',],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-',],
+];
 
 var level1spawn = ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'];
-
 var level2spawn = ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'];
 function Animation(spriteSheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale) {
     this.spriteSheet = spriteSheet;
@@ -55,11 +49,11 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y) {
     yindex = Math.floor(frame / this.sheetWidth);
 
     ctx.drawImage(this.spriteSheet,
-                 xindex * this.frameWidth, yindex * this.frameHeight,  // source from sheet
-                 this.frameWidth, this.frameHeight,
-                 x, y,
-                 this.frameWidth * this.scale,
-                 this.frameHeight * this.scale);
+        xindex * this.frameWidth, yindex * this.frameHeight,  // source from sheet
+        this.frameWidth, this.frameHeight,
+        x, y,
+        this.frameWidth * this.scale,
+        this.frameHeight * this.scale);
 }
 
 Animation.prototype.currentFrame = function () {
@@ -82,7 +76,7 @@ function Background(game, spritesheet) {
 Background.prototype.draw = function () {
     this.x = 0;
     this.y = 0;
-    
+
     var i, j;
     for (i = 0; i < map.length; i++) {
         for (j = 0; j < map[0].length; j++) {
@@ -107,7 +101,7 @@ Background.prototype.draw = function () {
                 baseY = this.y;
                 this.x = this.x + 50;
             }
-            if(temp == 'b') {
+            if (temp == 'b') {
                 this.ctx.drawImage(AM.getAsset("./img/blue.png"), this.x, this.y);
                 this.x = this.x + 50;
             }
@@ -124,6 +118,11 @@ function base(game, spritesheet) {
     this.animation = new Animation(spritesheet, 50, 50, 1, 0.15, 1, true, 1);
     this.ctx = game.ctx;
     this.health = 200;
+    this.name = "base";
+    this.x = baseX;
+    this.y = baseY;
+    this.radius = 25;
+    this.game = game;
     Entity.call(this, game, baseX, baseY);
 }
 
@@ -146,6 +145,8 @@ function spawner(game, spritesheet, gameEngine) {
     this.animation = new Animation(spritesheet, 50, 50, 1, 0.15, 1, true, 1);
     this.ctx = game.ctx;
     this.gameEngine = gameEngine;
+    this.name = "spawner";
+    this.game = game;
     Entity.call(this, game, spawnX - 50, spawnY - 50);
 }
 
@@ -159,20 +160,45 @@ spawner.prototype.update = function () {
 }
 
 spawner.prototype.draw = function () {
-    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    //this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     Entity.prototype.draw.call(this);
 }
 
 
 
+
+function distance(a, b) {
+    var difX = a.x - b.x;
+    var difY = a.y - b.y;
+    return Math.sqrt(difX * difX + difY * difY);
+};
+
 function Enemy1(game, spritesheet) {
     this.animation = new Animation(spritesheet, 100, 55, 6, 0.15, 6, true, 1.0);
-    this.speed = 100;
+    this.speed = 500;
     this.ctx = game.ctx;
+    this.game = game;
     this.damage = 10;
-    this.sizeX = 25;
-    this.sizeY = 25;
+    this.sizeX = 50;
+    this.sizeY = 50;
+    this.radius = 25;
     this.isDead = 0;
+    this.name = "enemy1";
+    this.visited = [['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',],
+    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',],
+    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',],
+    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',],
+    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',],
+    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',],
+    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',],
+    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',],
+    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',],
+    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',],
+    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',],
+    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',],
+    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',],
+    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',],
+    ];
     Entity.call(this, game, spawnX, spawnY);
 }
 
@@ -180,24 +206,68 @@ function Enemy1(game, spritesheet) {
 
 Enemy1.prototype = new Entity();
 Enemy1.prototype.constructor = Enemy1;
-
+Enemy1.prototype.collide = function (other) {
+    return distance(this, other) < this.radius + other.radius;
+};
 Enemy1.prototype.update = function () {
+    //var ent = this.game.entities
+    /*
     if(this.isDead != 1) {
         this.x += this.game.clockTick * this.speed;
-        if (baseX + 50 >= this.x + this.sizeX && this.x + this.sizeX >= baseX && baseY + 50 >= this.y + this.sizeY && this.y + this.sizeY >= baseY) {
-            this.x = spawnX;
-            this.isDead = 1;
-            
-        } 
-        //if the enemy is in the player's base die and decrease the base health
-            
-        Entity.prototype.update.call(this);
+        for(var i = 0; i < this.game.entities[i]; i++) {
+            alert("test");
+            var ent = this.game.entities[i];
+            if (ent.name == "base") {
+                if(this.collide(ent)) {
+                    alert("dead");
+                    this.isDead = 1;
+                }
+            }
+        }
     } else {
         //need to remove entity
         //this.animation.
-        this.x = -50;
-        this.y = -50;
+        
+        this.x = -100;
+        this.y = -100;
     }
+    */
+
+    if (this.isDead != 1) {
+        // if(this.x >= baseX - 50 && baseY - 50 >= this.y + this.sizeY && this.y + this.sizeY >= baseY) {
+
+        var currentXFrame = Math.floor(this.x / 50);
+        var currentYFrame = Math.floor(this.y / 50);
+        if (map[currentYFrame][currentXFrame] == 'p') {
+            //alert("dead");
+            this.isDead = 1;
+
+        }
+
+        if ((map[currentYFrame][currentXFrame + 1] == 'm' || map[currentYFrame][currentXFrame + 1] == 'p') && this.visited[currentYFrame][currentXFrame + 1] == '0') {
+            this.x += this.game.clockTick * this.speed;
+            lastX = currentXFrame + 1;
+            this.visited[currentYFrame][currentXFrame] = '1';
+        }
+
+        if ((map[currentYFrame - 1][currentXFrame] == 'm' || map[currentYFrame - 1][currentXFrame] == 'p') && this.visited[currentYFrame - 1][currentXFrame] == '0') {
+            this.y -= this.game.clockTick * this.speed;
+            this.visited[currentYFrame][currentXFrame] = '1';
+        }
+
+
+        if ((map[currentYFrame + 1][currentXFrame] == 'm' || map[currentYFrame + 1][currentXFrame] == 'p') && this.visited[currentYFrame + 1][currentXFrame] == '0') {
+            this.y += this.game.clockTick * this.speed;
+            this.visited[currentYFrame][currentXFrame] = '1';
+        }
+        //if the enemy is in the player's base die and decrease the base health
+        Entity.prototype.update.call(this);
+    } else {
+        //need to remove entity 
+        this.x = -100;
+        this.y = -100;
+    }
+
 }
 
 Enemy1.prototype.draw = function () {
@@ -209,25 +279,19 @@ function setSpawnPoint() {
     for (i = 0; i < map.length; i++) {
         for (j = 0; j < map[0].length; j++) {
             var temp = map[i][j];
-            if(temp == 's') {
-                spawnX = (j * 50);
+            if (temp == 's') {
+                spawnX = (j * 50) - 100;
                 spawnY = i * 50;
             }
-        }
-    }
-}
-
-function getBasePoint() {
-    for (i = 0; i < map.length; i++) {
-        for (j = 0; j < map[0].length; j++) {
-            var temp = map[i][j];
-            if(temp == 'p') {
+            if (temp == 'p') {
                 baseX = j * 50;
                 baseY = i * 50;
             }
         }
     }
 }
+
+
 
 AM.queueDownload("./img/black.png");
 AM.queueDownload("./img/white.png");
@@ -249,14 +313,13 @@ AM.downloadAll(function () {
 
     gameEngine.addEntity(new Background(gameEngine, "maptest.txt"));
     setSpawnPoint();
-    getBasePoint();
     gameEngine.addEntity(new base(gameEngine, AM.getAsset("./img/base.png")));
-    gameEngine.addEntity(new spawner(gameEngine, AM.getAsset("./img/base2.png")));
+    //gameEngine.addEntity(new spawner(gameEngine, AM.getAsset("./img/base2.png")));
     gameEngine.addEntity(new Enemy1(gameEngine, AM.getAsset("./img/Enemy1walk.png")));
 
     var j = 0;
     function Level1() {
-        if(j > level1spawn.length) {
+        if (j > level1spawn.length) {
             return;
         }
         if (level1spawn[j] == '1') {
@@ -267,16 +330,16 @@ AM.downloadAll(function () {
     }
     Level1();
     var k;
-    
+
     function pause() {
-       // alert("TEST");
+        // alert("TEST");
         //return;
         setTimeout(pause, 2000);
     }
     pause();
     k = 0;
     function Level2() {
-        if(k > level2spawn.length) {
+        if (k > level2spawn.length) {
             return;
         }
         if (level2spawn[k] == '1') {
@@ -287,6 +350,8 @@ AM.downloadAll(function () {
         setTimeout(Level2, 250);
     }
     Level2();
+
+
 
     console.log("All Done!");
 });

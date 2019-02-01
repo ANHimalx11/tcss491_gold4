@@ -1,0 +1,118 @@
+/*
+css code is organized by layer.
+*/
+
+@font-face {
+    font-family: 'bungeeinline';
+    src: url('Bungee-Inline-webfont.eot');
+    src: url('Bungee-Inline-webfont.eot?#iefix') format('embedded-opentype'),
+         url('Bungee-Inline-webfont.woff2') format('woff2'),
+         url('Bungee-Inline-webfont.woff') format('woff'),
+         url('Bungee-Inline-webfont.ttf') format('truetype'),
+         url('Bungee-Inline-webfont.svg#bungeeinline') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'bungeeshade';
+    src: url('Bungee-Shade-webfont.eot');
+    src: url('Bungee-Shade-webfont.eot?#iefix') format('embedded-opentype'),
+         url('Bungee-Shade-webfont.woff2') format('woff2'),
+         url('Bungee-Shade-webfont.woff') format('woff'),
+         url('Bungee-Shade-webfont.ttf') format('truetype'),
+         url('Bungee-Shade-webfont.svg#bungeeshade') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'bungee_regularregular';
+    src: url('Bungee-Regular-webfont.eot');
+    src: url('Bungee-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('Bungee-Regular-webfont.woff2') format('woff2'),
+         url('Bungee-Regular-webfont.woff') format('woff'),
+         url('Bungee-Regular-webfont.ttf') format('truetype'),
+         url('Bungee-Regular-webfont.svg#bungee_regularregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+/*use these keywords in the HTML file to make font look cool!*/
+h1{
+    font-family: 'bungeeshade';
+    color: #d6e1eb;
+    font-size: 35px;
+    text-align: center;
+}
+/*This one too*/
+h2 {
+    font-family: 'bungeeinline';
+    color: #d6e1eb;
+    font-size: 25px;
+    text-align: justify;
+}
+
+/*This one is the regular font.. but its still cool!*/
+p {
+    font-family: 'bungee_regularregular';
+    color: #d6e1eb;
+    font-size: 18px;
+    text-align: center;
+}
+
+/* Make it easier on the eyes.*/
+body{
+    background-color: gray;
+}
+
+#container{
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    position: relative;
+    justify-content: center; /* center horizontally */
+	align-items: center;
+    
+}
+
+#outer{ 
+    border-left: solid 250px rgba(76, 97, 219, 0.178); /* color of the left column  */ 
+    border-right: solid 250px rgba(76, 97, 219, 0.178); /* color of the right column  */ 
+    
+} 
+
+#inner{
+    margin:0; 
+    width:100%;
+}
+
+#left {
+    width:250px; 
+    float:left; 
+    position:relative; 
+    margin-left:-250px; 
+    margin-right:1px;
+}
+
+#right {
+    width:250px; 
+    float:right; 
+    position:relative; 
+    margin-right:-250px; 
+    margin-left:1px;
+}
+
+#content{ 
+    position: relative; 
+    margin: 0px;
+    display: flex;
+
+}
+
