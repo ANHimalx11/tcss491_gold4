@@ -6,7 +6,6 @@ css code is organized by layer.
     font-family: 'bungeeinline';
     src: url('Bungee-Inline-webfont.eot');
     src: url('Bungee-Inline-webfont.eot?#iefix') format('embedded-opentype'),
-         url('Bungee-Inline-webfont.woff2') format('woff2'),
          url('Bungee-Inline-webfont.woff') format('woff'),
          url('Bungee-Inline-webfont.ttf') format('truetype'),
          url('Bungee-Inline-webfont.svg#bungeeinline') format('svg');
@@ -17,7 +16,6 @@ css code is organized by layer.
     font-family: 'bungeeshade';
     src: url('Bungee-Shade-webfont.eot');
     src: url('Bungee-Shade-webfont.eot?#iefix') format('embedded-opentype'),
-         url('Bungee-Shade-webfont.woff2') format('woff2'),
          url('Bungee-Shade-webfont.woff') format('woff'),
          url('Bungee-Shade-webfont.ttf') format('truetype'),
          url('Bungee-Shade-webfont.svg#bungeeshade') format('svg');
@@ -30,7 +28,6 @@ css code is organized by layer.
     font-family: 'bungee_regularregular';
     src: url('Bungee-Regular-webfont.eot');
     src: url('Bungee-Regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('Bungee-Regular-webfont.woff2') format('woff2'),
          url('Bungee-Regular-webfont.woff') format('woff'),
          url('Bungee-Regular-webfont.ttf') format('truetype'),
          url('Bungee-Regular-webfont.svg#bungee_regularregular') format('svg');
