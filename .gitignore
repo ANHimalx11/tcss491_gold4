@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 .DS_Store
->>>>>>> anhDev
 *.iml
 .gradle
 /local.properties
@@ -9,13 +6,6 @@
 /.idea/libraries
 /.idea/modules.xml
 /.idea/workspace.xml
-<<<<<<< HEAD
-.DS_Store
 /build
 /captures
 .externalNativeBuild
-=======
-/build
-/captures
-.externalNativeBuild
->>>>>>> anhDev
