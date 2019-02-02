@@ -1,4 +1,5 @@
 var AM = new AssetManager();
+var towerList = [];
 var spawnX = 0;
 var spawnY = 0;
 var baseX = 0;
@@ -66,6 +67,10 @@ Animation.prototype.currentFrame = function () {
 
 Animation.prototype.isDone = function () {
     return (this.elapsedTime >= this.totalTime);
+}
+
+Animation.prototype.drawCircle = function() {
+    var getXAndY; //mouse
 }
 
 //End Animation methods///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,6 +194,7 @@ function Enemy1(game, spritesheet) {
     this.speed = 500;
     this.ctx = game.ctx;
     this.game = game;
+    this.health = 50;
     this.damage = 10;
     this.sizeX = 50;
     this.sizeY = 50;
@@ -315,7 +321,10 @@ AM.queueDownload("./img/runningcat.png");
 AM.queueDownload("./img/guy.jpg");
 AM.queueDownload("./img/base.png");
 AM.queueDownload("./img/base2.png");
-AM.queueDownload("./img/maps/level1.png")
+AM.queueDownload("./img/towers/arrow1.png");
+AM.queueDownload("./img/towers/cannon1.png");
+AM.queueDownload("./img/towers/magic1.png");
+
 
 
 AM.downloadAll(function () {
@@ -332,6 +341,11 @@ AM.downloadAll(function () {
     gameEngine.addEntity(new base(gameEngine, AM.getAsset("./img/base.png")));
     // gameEngine.addEntity(new spawner(gameEngine, AM.getAsset("./img/base2.png")));
     gameEngine.addEntity(new Enemy1(gameEngine, AM.getAsset("./img/Enemy1walk.png")));
+
+    gameEngine.addEntity(new tower(gameEngine, AM.getAsset("./img/towers/arrow1.png")));
+
+    gameEngine.addEntity(new tower(gameEngine, AM.getAsset("./img/towers/cannon1.png")));
+    gameEngine.addEntity(new tower(gameEngine, AM.getAsset("./img/towers/magic1.png")));
 
     var j = 0;
     function Level1() {
