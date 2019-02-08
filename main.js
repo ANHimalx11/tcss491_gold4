@@ -7,6 +7,7 @@ var lastX, lastY;
 var distance = 24;
 var level = 1;
 var isBuilding = 0;
+var towerType = 0;
 var spawnInterval = 1.0;
 var playerGold = 40;
 var playerHealth = 200;
@@ -379,7 +380,6 @@ Enemy2.prototype.update = function () {
 }
 
 Enemy2.prototype.draw = function () {
-    //this.prototype.rot
     this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     Entity.prototype.draw.call(this);
 }
@@ -492,14 +492,57 @@ boss1.prototype.draw = function () {
     Entity.prototype.draw.call(this);
 }
 
+
+
+function ArrowTower(game, spritesheet, Xcoor, Ycoor) {
+    this.animation = new Animation(spritesheet, 48, 120, 1, 0.05, 1, true, 1.0);
+    this.ctx = game.ctx;
+    this.game = game;
+    this.damage = 10;
+    this.sizeX = 48;
+    this.sizeY = 120;
+    this.radius = 24;
+    this.name = "ArrowTower";
+
+    Entity.call(this, game, Xcoor, Ycoor);
+}
+
+
+
+ArrowTower.prototype = new Entity();
+ArrowTower.prototype.constructor = ArrowTower;
+
+
+ArrowTower.prototype.collide = function(other) {
+    var difX = this.x - other.x;
+    var difY = this.y - other.y;
+    return Math.sqrt(difX * difX + difY * difY) < this.radius + other.radius;
+};
+
+ArrowTower.prototype.update = function () {
+    
+
+}
+
+ArrowTower.prototype.draw = function () {
+    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    Entity.prototype.draw.call(this);
+}
+
+
+
+
 function GameBoard(game) {
+    //this.gameEngine = game;
     Entity.call(this, game, 0, 0);
     this.grid = false;
     this.player = 1;
     this.board = [];
-    for (var i = 0; i < 28; i++) {
+    this.size = 25;
+    this.offset = -65;
+    for (var i = 0; i < map.length; i++) {
         this.board.push([]);
-        for (var j = 0; j < 32; j++) {
+        for (var j = 0; j < map[0].length; j++) {
             this.board[i].push(0);
         }
     }
@@ -509,39 +552,47 @@ GameBoard.prototype = new Entity();
 GameBoard.prototype.constructor = GameBoard;
 
 GameBoard.prototype.update = function () {
-    if (this.game.click) {
+    if (this.game.click && isBuilding != 0) {
         isBuilding = 0;
+        this.board[this.game.click.x][this.game.click.y] = towerType;
+        if(towerType == 1){
+            this.game.addEntity(new ArrowTower(this.game, AM.getAsset("./img/towers/arrow1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset));
+            playerGold = playerGold - arrowTowerPrice;
+        } else if(towerType == 2) {
+            this.game.addEntity(new ArrowTower(this.game, AM.getAsset("./img/towers/cannon1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset));
+            playerGold = playerGold - cannonTowerPrice;
+        } else if(towerType == 3) {
+            this.game.addEntity(new ArrowTower(this.game, AM.getAsset("./img/towers/magic1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset));
+            playerGold = playerGold - magicTowerPrice;
+        }
         
+        update();
     }
     Entity.prototype.update.call(this);
 }
 
 GameBoard.prototype.draw = function (ctx) {
     if(isBuilding == 1) {
-        //ctx.drawImage(AM.getAsset("./img/Map002.png"), this.x, this.y, 800, 700);
-
-        var size = 25;//board grid size
-        var offset = -65;
-        //if the player has enough gold and clicks the button for a tower then. . . 
-        for (var i = 0; i < 28; i++) {
-            for (var j = 0; j < 32; j++) {
-                //if the space is occupied then dont draw
-
-                
-                if (this.board[i][j] === 1) {
-                    ctx.drawImage(AM.getAsset("./img/black.png"), i * size + offset, j * size + offset, 25, 25);
-                }
-                if (this.board[i][j] === 2) {
-                    ctx.drawImage(AM.getAsset("./img/white.png"), i * size + offset, j * size + offset, 25, 25);
-                }
-            }
-        }
 
         // draw mouse shadow
-        if (this.game.mouse) {
+        if (this.game.mouse && towerType == 1) {
             ctx.save();
             ctx.globalAlpha = 0.5;
-            ctx.drawImage(AM.getAsset("./img/arrow1.png"), this.game.mouse.x * size, this.game.mouse.y * size + offset, 48, 120);
+            ctx.drawImage(AM.getAsset("./img/towers/arrow1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, 48, 120);
+            ctx.restore();
+        }
+
+        if (this.game.mouse && towerType == 2) {
+            ctx.save();
+            ctx.globalAlpha = 0.5;
+            ctx.drawImage(AM.getAsset("./img/towers/cannon1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, 48, 120);
+            ctx.restore();
+        }
+
+        if (this.game.mouse && towerType == 3) {
+            ctx.save();
+            ctx.globalAlpha = 0.5;
+            ctx.drawImage(AM.getAsset("./img/towers/magic1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, 48, 120);
             ctx.restore();
         }
     }
@@ -581,29 +632,42 @@ function update() {
         document.getElementById("ArrowTowerButton").disabled = false;
     }
 
+    if(playerGold < cannonTowerPrice) {
+        document.getElementById("CannonTowerButton").disabled = true;
+    }
+    if(playerGold >= cannonTowerPrice) {
+        document.getElementById("CannonTowerButton").disabled = false;
+    }
 
-}
+    if(playerGold < magicTowerPrice) {
+        document.getElementById("MagicTowerButton").disabled = true;
+    }
+    if(playerGold >= magicTowerPrice) {
+        document.getElementById("MagicTowerButton").disabled = false;
+    }
 
-function test() {
-    //alert("button works");
+
 }
 
 function createArrowTower() {
     isBuilding = 1;
-    //if(playerGold < tower price) {
-        //return;
-    //}
-
-    //have shadow follow mouse
-
-    //when the mouse clicks place the tower on the space if it is onoccupied
+    towerType = 1; //change value with each different tower
+}
+function createCannonTower() {
+    isBuilding = 1;
+    towerType = 2; //change value with each different tower
 }
 
-AM.queueDownload("./img/black.png");
-AM.queueDownload("./img/white.png");
-AM.queueDownload("./img/boss1.png");
+function createMagicTower() {
+    isBuilding = 1;
+    towerType = 3; //change value with each different tower
+}
+
+
 AM.queueDownload("./img/Map002.png");
-AM.queueDownload("./img/arrow1.png");
+AM.queueDownload("./img/towers/arrow1.png");
+AM.queueDownload("./img/towers/cannon1.png");
+AM.queueDownload("./img/towers/magic1.png");
 AM.queueDownload("./img/level1flying_132w_102h_0pd_8fr.png");
 AM.queueDownload("./img/crystal_stand_54w_84h_0pd_6fr.png");
 AM.downloadAll(function () {
@@ -616,11 +680,15 @@ AM.downloadAll(function () {
     gameEngine.init(ctx);
     gameEngine.start();
     setSpawnPoint();
-
-    update();
     document.getElementById("ArrowTowerButton").addEventListener("click", createArrowTower);
+    document.getElementById("CannonTowerButton").addEventListener("click", createCannonTower);
+    document.getElementById("MagicTowerButton").addEventListener("click", createMagicTower);
+    update();
     gameEngine.addEntity(new base(gameEngine, AM.getAsset("./img/crystal_stand_54w_84h_0pd_6fr.png")));
     gameEngine.addEntity(new spawner(gameEngine, AM.getAsset("./img/base2.png")));
 
+
+
+    
     console.log("All Done!");
 });
