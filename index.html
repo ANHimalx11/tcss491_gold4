@@ -5,9 +5,15 @@
     <meta charset="utf-8">
     <title>Game Project Shell</title>
     <link rel="stylesheet" href="style.css" type="text/css" charset="utf-8" />
+
+    <script type="text/javascript" src="./gameengine.js"></script>
+    <script type="text/javascript" src="./assetmanager.js"></script>
+    <script type="text/javascript" src="./main.js"></script>
+    <script type="text/javascript" src="./hero.js"></script>
 </head>
 
 <body>
+
     <div id="container">
         <!--This is to center everything-->
         <div id="outer">
@@ -28,17 +34,24 @@
                 <div id="right">
                     <div id="right-status">
                         <pf> Gold $
-                            <span id="Gold">35</span>
+                            <span id="Gold"></span>
                             <br> Health
-                            <span id="Health">10</span>
+                            <span id="Health"></span>
                         </pf>
                     </div>
                     <!--We can add buttons for the towers here-->
                     <div id="right ">
-                        <img class="arrow dropdown" src="./img/towers/arrow1.png">
+                        <!--<a data-name="Arrow"><img class="arrow dropdown" src="./img/towers/arrow1.png"></a>-->
                         <!--Not sure how to handle this one.-->
-                            <!-- <script> document.getElementById("arrow_dropdown").addEventListener("click", function();</script> -->
+                        <!-- <script> document.getElementById("arrow_dropdown").addEventListener("click", function();</script> -->
+                        <button id="ArrowTowerButton"></button>
+
+                        <script type="text/javascript">
+                            var buttons = document.getElementById("ArrowTowerButton");
+                            buttons.innerHTML = '<img src="./img/towers/arrow1.png" />';
+                        </script>
                         <p>Arrow ($15)</p>
+                        <!--have cost change dynamically later-->
 
                         <div class="arrow dropdown-content">
                             <!--insert scripts here for upgrades-->
@@ -51,7 +64,13 @@
                             </p>
                         </div>
 
-                        <img class="Cannon dropdown" src="./img/towers/cannon1.png">
+                        <!--<img class="Cannon dropdown" src="./img/towers/cannon1.png">-->
+                        <button id="CannonTowerButton"></button>
+
+                        <script type="text/javascript">
+                            var buttons = document.getElementById("CannonTowerButton");
+                            buttons.innerHTML = '<img src="./img/towers/cannon1.png" />';
+                        </script>
                         <p>Cannon ($25)</p>
 
                         <div class="cannon dropdown-content">
@@ -63,8 +82,14 @@
                             </p>
                         </div>
 
-                        
-                        <img class="Magic dropdown" src="./img/towers/magic1.png"style="align-self: auto;"  >
+
+                        <!--<img class="Magic dropdown" src="./img/towers/magic1.png" style="align-self: auto;">-->
+                        <button id="MagicTowerButton"></button>
+
+                        <script type="text/javascript">
+                            var buttons = document.getElementById("MagicTowerButton");
+                            buttons.innerHTML = '<img src="./img/towers/magic1.png" />';
+                        </script>
                         <p>Magic ($40)</p>
 
                         <div class="Magic dropdown-content">
@@ -79,33 +104,44 @@
 
                     </div>
                 </div>
-            
-            <!--End of right content-->
 
-            <div id="content">
-                <!--Put our game canvas display here-->
-                <canvas id="gameWorld" tabindex="1" width="800" height="700">
+                <!--End of right content-->
+
+                <div id="content">
+                    <!--Put our game canvas display here-->
+                    <canvas id="gameWorld" tabindex="1" width="800" height="700"style="z-index: 1; position: relative;background:white;"></canvas>
 
                     <!-- style="border: 1px solid brown; background: lightskyblue; position: relative;"> -->
                     <!-- <canvas style="z-index:1"></canvas> //want to make multiple canvases -->
-                </canvas>
-                <!-- transform: translate(-50%, -50%)"> -->
-                <!-- style="border: 1px solid brown; background: lightskyblue; position: relative;"> -->
-                <!-- <canvas style="z-index:1"></canvas> //want to make multiple canvases -->
 
+                    <!-- transform: translate(-50%, -50%)"> -->
+                    <!-- style="border: 1px solid brown; background: lightskyblue; position: relative;"> -->
+                    <!-- <canvas style="z-index:1"></canvas> //want to make multiple canvases -->
+
+                </div>
+                <!--End of content-->
             </div>
-            <!--End of content-->
+            <div id="control">
+                <div id="control-left">
+                    <img src="img/turret1.jpg" width="55" height="55">
+
+                </div>
+
+                <div id="control-right">
+
+                    <div id="control-right-2">
+                        <button type="button"><a href="">Reset</a><br></button>
+                    </div>
+
+                </div>
+            </div>
+            <!--End of inner-->
         </div>
-        <!--End of inner-->
+        <!--End of outer-->
     </div>
-    <!--End of outer-->
-    </div>
-    <!--End of container-->
+
+
 
 </body>
-<script type="text/javascript" src="./gameengine.js"></script>
-<script type="text/javascript" src="./assetmanager.js"></script>
-<script type="text/javascript" src="./main.js"></script>
-<script type="text/javascript" src="./tower.js"></script>
 
 </html>

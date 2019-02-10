@@ -1,4 +1,6 @@
 var AM = new AssetManager();
+
+
 var spawnX = 0;
 var spawnY = 0;
 var baseX = 0;
@@ -46,7 +48,9 @@ var map =  [['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-
 
 var level1spawn = ['1', '2', '1', '2', '1', '2', '1', '2', '1', '2', '1', '1', '2', '2'];
 var level2spawn = ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'];
-function Animation(spriteSheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale) {
+
+/////////////////////////////////////////ANIMATION CLASS
+function Animation(spriteSheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale, padWidth) {
     this.spriteSheet = spriteSheet;
     this.frameWidth = frameWidth;
     this.frameDuration = frameDuration;
@@ -57,6 +61,8 @@ function Animation(spriteSheet, frameWidth, frameHeight, sheetWidth, frameDurati
     this.elapsedTime = 0;
     this.loop = loop;
     this.scale = scale;
+    this.padWidth = padWidth;
+
 }
 
 Animation.prototype.drawFrame = function (tick, ctx, x, y) {
@@ -64,14 +70,17 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y) {
     if (this.isDone()) {
         if (this.loop) this.elapsedTime = 0;
     }
+    var xOffset = this.padWidth;
     var frame = this.currentFrame();
     var xindex = 0;
     var yindex = 0;
+    
     xindex = frame % this.sheetWidth;
     yindex = Math.floor(frame / this.sheetWidth);
+    var drawXpx = xindex * this.frameWidth + xOffset*xindex + xOffset;
 
     ctx.drawImage(this.spriteSheet,
-                 xindex * this.frameWidth, yindex * this.frameHeight,  // source from sheet
+                 drawXpx, yindex * this.frameHeight,  // source from sheet
                  this.frameWidth, this.frameHeight,
                  x, y,
                  this.frameWidth * this.scale,
@@ -86,10 +95,10 @@ Animation.prototype.isDone = function () {
     return (this.elapsedTime >= this.totalTime);
 }
 
-
-
+/////////////////////////////////////////END 
+//Animation(spriteSheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale, padWidth)
 function base(game, spritesheet) {
-    this.animation = new Animation(spritesheet, 54, 84, 8, 0.15, 6, true, 1);
+    this.animation = new Animation(spritesheet, 35, 84, 216, .08, 6, true, 1, 1);
     this.ctx = game.ctx;
     //this.health = 200;
     this.name = "base";
@@ -138,12 +147,12 @@ spawner.prototype.update = function () {
     var time = this.gameEngine.timer.gameTime;
     if (this.index < level1spawn.length) {
         if(level1spawn[this.index] == '1' && time >= spawnInterval * this.index) {
-            this.gameEngine.addEntity(new Enemy1(this.gameEngine, AM.getAsset("./img/level1flying_132w_102h_0pd_8fr.png")));
+            this.gameEngine.addEntity(new Enemy1(this.gameEngine, AM.getAsset("./img/level1flying_132w_102h_1pd_8fr.png")));
             this.index = this.index + 1;
         }
         
         if (level1spawn[this.index] == '2' && time >= spawnInterval * this.index) {
-            this.gameEngine.addEntity(new Enemy1(this.gameEngine, AM.getAsset("./img/level1flying_132w_102h_0pd_8fr.png")));
+            this.gameEngine.addEntity(new Enemy1(this.gameEngine, AM.getAsset("./img/level1flying_132w_102h_1pd_8fr.png")));
             this.index = this.index + 1;
         }
 		if(level1spawn[this.index] == "boss1" && time >= level1spawn.length * spawnInterval + 5) {//or if all enemies are dead spawn the boss
@@ -161,7 +170,7 @@ spawner.prototype.draw = function () {
 }
 
 function Enemy1(game, spritesheet) {
-    this.animation = new Animation(spritesheet, 132, 102, 8, 0.11, 8, true, 0.5);
+    this.animation = new Animation(spritesheet, 132, 102, 1064, 0.11, 8, true, .8,1);
     this.speed = 25;
     this.ctx = game.ctx;
     this.game = game;
@@ -495,7 +504,7 @@ boss1.prototype.draw = function () {
 
 
 function ArrowTower(game, spritesheet, Xcoor, Ycoor) {
-    this.animation = new Animation(spritesheet, 48, 120, 1, 0.05, 1, true, 1.0);
+    this.animation = new Animation(spritesheet, 48, 120, 48, 0.05, 1, true, 1.0, 0);
     this.ctx = game.ctx;
     this.game = game;
     this.damage = 10;
@@ -572,6 +581,7 @@ GameBoard.prototype.update = function () {
 }
 
 GameBoard.prototype.draw = function (ctx) {
+    ctx.drawImage(AM.getAsset("./img/maps/Map002.png"),this.x,this.y,800,700);
     if(isBuilding == 1) {
 
         // draw mouse shadow
@@ -596,6 +606,8 @@ GameBoard.prototype.draw = function (ctx) {
             ctx.restore();
         }
     }
+
+    Entity.prototype.draw.call(this);
 }
 
 
@@ -663,31 +675,32 @@ function createMagicTower() {
     towerType = 3; //change value with each different tower
 }
 
-
-AM.queueDownload("./img/Map002.png");
+AM.queueDownload("./img/maps/Map002.png");
 AM.queueDownload("./img/towers/arrow1.png");
 AM.queueDownload("./img/towers/cannon1.png");
 AM.queueDownload("./img/towers/magic1.png");
-AM.queueDownload("./img/level1flying_132w_102h_0pd_8fr.png");
-AM.queueDownload("./img/crystal_stand_54w_84h_0pd_6fr.png");
+AM.queueDownload("./img/level1flying_132w_102h_1pd_8fr.png");
+AM.queueDownload("./img/crystal_standing_35w_84h_1pd_6fr.png");
+AM.queueDownload("./img/hero/hero_battleidle_68w_93h_1pd_6fr.png");
 AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
     var ctx = canvas.getContext("2d");
-
     var gameEngine = new GameEngine();
     var gameboard = new GameBoard(gameEngine);
+    var hero = new Hero(gameEngine);
     gameEngine.addEntity(gameboard);
-    gameEngine.init(ctx);
+    gameEngine.addEntity(hero);
+   gameEngine.init(ctx);
+    
     gameEngine.start();
     setSpawnPoint();
     document.getElementById("ArrowTowerButton").addEventListener("click", createArrowTower);
     document.getElementById("CannonTowerButton").addEventListener("click", createCannonTower);
     document.getElementById("MagicTowerButton").addEventListener("click", createMagicTower);
     update();
-    gameEngine.addEntity(new base(gameEngine, AM.getAsset("./img/crystal_stand_54w_84h_0pd_6fr.png")));
+    gameEngine.addEntity(new base(gameEngine, AM.getAsset("./img/crystal_standing_35w_84h_1pd_6fr.png")));
     gameEngine.addEntity(new spawner(gameEngine, AM.getAsset("./img/base2.png")));
-
-
+    
 
     
     console.log("All Done!");
