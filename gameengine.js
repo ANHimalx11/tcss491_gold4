@@ -38,6 +38,7 @@ function GameEngine() {
     this.surfaceWidth = null;
     this.surfaceHeight = null;
     this.timer = new Timer();
+    this.canMoveHero = true;
 }
 
 GameEngine.prototype.init = function (ctx) {

@@ -95,6 +95,29 @@ Animation.prototype.isDone = function () {
     return (this.elapsedTime >= this.totalTime);
 }
 
+//mostly for hero to move around.
+Animation.prototype.move = function(tick, ctx, currentX, currentY, mouseX, mouseY, speed) {
+    var board2Canvas = 25;
+    var convertedMouseX = mouseX * board2Canvas;
+    var convertedMouseY = mouseY * board2Canvas;
+    var dx = convertedMouseX - currentX;
+    var dy = convertedMouseY - currentY;
+
+    var distance = Math.sqrt(dx*dx + dy*dy);
+
+    this.drawFrame(tick, ctx, currentX, currentY);
+    this.x += this.game.clockTick * this.speed;
+    this.x -= this.game.clockTick * this.speed;
+    this.y -= this.game.clockTick * this.speed;
+    this.y += this.game.clockTick * this.speed;
+    // while (currentX <= convertedMouseX && currentY <= convertedMouseY) {
+    // currentX = currentX + (currentX/dx);
+    // currentY = currentY + (currentY/dy)
+    
+   
+
+}
+
 /////////////////////////////////////////END 
 //Animation(spriteSheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale, padWidth)
 function base(game, spritesheet) {
@@ -540,11 +563,11 @@ ArrowTower.prototype.draw = function () {
 
 
 
-
 function GameBoard(game) {
-    //this.gameEngine = game;
+    
     Entity.call(this, game, 0, 0);
     this.grid = false;
+
     this.player = 1;
     this.board = [];
     this.size = 25;
@@ -563,6 +586,7 @@ GameBoard.prototype.constructor = GameBoard;
 GameBoard.prototype.update = function () {
     if (this.game.click && isBuilding != 0) {
         isBuilding = 0;
+        canMoveHero = true;
         this.board[this.game.click.x][this.game.click.y] = towerType;
         if(towerType == 1){
             this.game.addEntity(new ArrowTower(this.game, AM.getAsset("./img/towers/arrow1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset));
@@ -573,15 +597,19 @@ GameBoard.prototype.update = function () {
         } else if(towerType == 3) {
             this.game.addEntity(new ArrowTower(this.game, AM.getAsset("./img/towers/magic1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset));
             playerGold = playerGold - magicTowerPrice;
+            
         }
-        
         update();
     }
     Entity.prototype.update.call(this);
 }
 
 GameBoard.prototype.draw = function (ctx) {
+
+    //make the game board draw the background yo.
     ctx.drawImage(AM.getAsset("./img/maps/Map002.png"),this.x,this.y,800,700);
+
+
     if(isBuilding == 1) {
 
         // draw mouse shadow
@@ -606,6 +634,7 @@ GameBoard.prototype.draw = function (ctx) {
             ctx.restore();
         }
     }
+
 
     Entity.prototype.draw.call(this);
 }
@@ -664,15 +693,18 @@ function update() {
 function createArrowTower() {
     isBuilding = 1;
     towerType = 1; //change value with each different tower
+    canMoveHero = false;
 }
 function createCannonTower() {
     isBuilding = 1;
     towerType = 2; //change value with each different tower
+    canMoveHero = false;
 }
 
 function createMagicTower() {
     isBuilding = 1;
     towerType = 3; //change value with each different tower
+    canMoveHero = false;
 }
 
 AM.queueDownload("./img/maps/Map002.png");
@@ -682,15 +714,28 @@ AM.queueDownload("./img/towers/magic1.png");
 AM.queueDownload("./img/level1flying_132w_102h_1pd_8fr.png");
 AM.queueDownload("./img/crystal_standing_35w_84h_1pd_6fr.png");
 AM.queueDownload("./img/hero/hero_battleidle_68w_93h_1pd_6fr.png");
+AM.queueDownload("./img/hero/hero_attack_74w_92h_1pd_7fr.png");
+AM.queueDownload("./img/hero/hero_attack_117w_161h_1pd_7fr.png");
+AM.queueDownload("./img/hero/hero_battleidle_68w_93h_1pd_6fr.png");
+AM.queueDownload("./img/hero/hero_cast_51w_96h_0pd_1fr.png");
+AM.queueDownload("./img/hero/hero_hurt_2fr_die_4fr_74w_85h_1pd.png");
+AM.queueDownload("./img/hero/hero_walk_e_54w_95h_1pd_8fr.png");
+AM.queueDownload("./img/hero/hero_walk_n_41w_97h_1pd_8fr.png");
+AM.queueDownload("./img/hero/hero_walk_ne_48w_96h_1pd_8fr.png");
+AM.queueDownload("./img/hero/hero_walk_nw_48w_96h_1pd_8fr.png");
+AM.queueDownload("./img/hero/hero_walk_s_42w_97h_1pd_8fr.png");
+AM.queueDownload("./img/hero/hero_walk_se_50w_96h_1pd_8fr.png");
+AM.queueDownload("./img/hero/hero_walk_sw_50w_96h_1pd_8fr.png");
+AM.queueDownload("./img/hero/hero_walk_w_54w_95h_1pd_8fr.png");
 AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
     var ctx = canvas.getContext("2d");
     var gameEngine = new GameEngine();
-    var gameboard = new GameBoard(gameEngine);
+    var gameBoard = new GameBoard(gameEngine);
     var hero = new Hero(gameEngine);
-    gameEngine.addEntity(gameboard);
+    gameEngine.addEntity(gameBoard);
     gameEngine.addEntity(hero);
-   gameEngine.init(ctx);
+    gameEngine.init(ctx);
     
     gameEngine.start();
     setSpawnPoint();
