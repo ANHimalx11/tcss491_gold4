@@ -9,6 +9,17 @@ var lastX, lastY;
 var distance = 24;
 var level = 1;
 var isBuilding = 0;
+//module to bind so that isBuilding can be called from other scripts
+// var buildModule = {
+//     isBuilding : 0,
+//     getStatus : function() { 
+//         return this.isBuilding;
+//     }, 
+//     setStatus: function(number) {
+//         this.isBuilding = number;
+//     }
+// }
+
 var towerType = 0;
 var spawnInterval = 1.0;
 var playerGold = 40;
@@ -67,8 +78,12 @@ function Animation(spriteSheet, frameWidth, frameHeight, sheetWidth, frameDurati
 
 Animation.prototype.drawFrame = function (tick, ctx, x, y) {
     this.elapsedTime += tick;
-    if (this.isDone()) {
-        if (this.loop) this.elapsedTime = 0;
+    if (this.loop) {
+        if (this.isDone()) {
+            this.elapsedTime = 0;
+        }
+    } else if (this.isDone()) {
+        return;
     }
     var xOffset = this.padWidth;
     var frame = this.currentFrame();
@@ -93,29 +108,6 @@ Animation.prototype.currentFrame = function () {
 
 Animation.prototype.isDone = function () {
     return (this.elapsedTime >= this.totalTime);
-}
-
-//mostly for hero to move around.
-Animation.prototype.move = function(tick, ctx, currentX, currentY, mouseX, mouseY, speed) {
-    var board2Canvas = 25;
-    var convertedMouseX = mouseX * board2Canvas;
-    var convertedMouseY = mouseY * board2Canvas;
-    var dx = convertedMouseX - currentX;
-    var dy = convertedMouseY - currentY;
-
-    var distance = Math.sqrt(dx*dx + dy*dy);
-
-    this.drawFrame(tick, ctx, currentX, currentY);
-    this.x += this.game.clockTick * this.speed;
-    this.x -= this.game.clockTick * this.speed;
-    this.y -= this.game.clockTick * this.speed;
-    this.y += this.game.clockTick * this.speed;
-    // while (currentX <= convertedMouseX && currentY <= convertedMouseY) {
-    // currentX = currentX + (currentX/dx);
-    // currentY = currentY + (currentY/dy)
-    
-   
-
 }
 
 /////////////////////////////////////////END 
@@ -148,8 +140,6 @@ base.prototype.draw = function () {
     this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     Entity.prototype.draw.call(this);
 }
-
-
 
 function spawner(game, spritesheet, gameEngine) {
     this.animation = new Animation(spritesheet, 50, 50, 1, 0.15, 1, true, 1);
@@ -586,7 +576,6 @@ GameBoard.prototype.constructor = GameBoard;
 GameBoard.prototype.update = function () {
     if (this.game.click && isBuilding != 0) {
         isBuilding = 0;
-        canMoveHero = true;
         this.board[this.game.click.x][this.game.click.y] = towerType;
         if(towerType == 1){
             this.game.addEntity(new ArrowTower(this.game, AM.getAsset("./img/towers/arrow1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset));
@@ -597,7 +586,6 @@ GameBoard.prototype.update = function () {
         } else if(towerType == 3) {
             this.game.addEntity(new ArrowTower(this.game, AM.getAsset("./img/towers/magic1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset));
             playerGold = playerGold - magicTowerPrice;
-            
         }
         update();
     }
@@ -691,20 +679,23 @@ function update() {
 }
 
 function createArrowTower() {
+    
     isBuilding = 1;
     towerType = 1; //change value with each different tower
-    canMoveHero = false;
+   
 }
 function createCannonTower() {
+    
     isBuilding = 1;
     towerType = 2; //change value with each different tower
-    canMoveHero = false;
+    
 }
 
 function createMagicTower() {
+    
     isBuilding = 1;
     towerType = 3; //change value with each different tower
-    canMoveHero = false;
+    
 }
 
 AM.queueDownload("./img/maps/Map002.png");
