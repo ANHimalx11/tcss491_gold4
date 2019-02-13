@@ -8,25 +8,20 @@ var baseY = 0;
 var lastX, lastY;
 var distance = 24;
 var level = 1;
-var isBuilding = 0;
-//module to bind so that isBuilding can be called from other scripts
-// var buildModule = {
-//     isBuilding : 0,
-//     getStatus : function() { 
-//         return this.isBuilding;
-//     }, 
-//     setStatus: function(number) {
-//         this.isBuilding = number;
-//     }
-// }
+var isBuilding = false;
 
-var towerType = 0;
+/**
+ * Moved this to gameEngine.js
+ */
+// var towerType = 0;
+// var playerGold = 40;
+// var playerHealth = 200;
+// var arrowTowerPrice = 15;
+// var cannonTowerPrice = 25;
+// var magicTowerPrice = 40;
+
+
 var spawnInterval = 1.0;
-var playerGold = 40;
-var playerHealth = 200;
-var arrowTowerPrice = 15;
-var cannonTowerPrice = 25;
-var magicTowerPrice = 40;
 var map =  [['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
             ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
             ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
@@ -60,7 +55,11 @@ var map =  [['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-
 var level1spawn = ['1', '2', '1', '2', '1', '2', '1', '2', '1', '2', '1', '1', '2', '2'];
 var level2spawn = ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'];
 
-/////////////////////////////////////////ANIMATION CLASS
+///////////////////////////////////////// START ANIMATION CODE
+
+/**
+ * All of these parameters are required when making an animation, it won't show up if there aren't exact number of parameters
+ */
 function Animation(spriteSheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale, padWidth) {
     this.spriteSheet = spriteSheet;
     this.frameWidth = frameWidth;
@@ -110,12 +109,17 @@ Animation.prototype.isDone = function () {
     return (this.elapsedTime >= this.totalTime);
 }
 
-/////////////////////////////////////////END 
+/////////////////////////////////////////END OF ANIMATION CODE
+
+
 //Animation(spriteSheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale, padWidth)
+
+
+
+//////////////////////////////////START OF BASE CODE
 function base(game, spritesheet) {
     this.animation = new Animation(spritesheet, 35, 84, 216, .08, 6, true, 1, 1);
     this.ctx = game.ctx;
-    //this.health = 200;
     this.name = "base";
     this.x = baseX;
     this.y = baseY;
@@ -141,6 +145,13 @@ base.prototype.draw = function () {
     Entity.prototype.draw.call(this);
 }
 
+
+///////////////////////////END OF BASE CODE
+
+
+
+
+////////////////////////////////////////////////////////////STARTOF SPAWNER CODE
 function spawner(game, spritesheet, gameEngine) {
     this.animation = new Animation(spritesheet, 50, 50, 1, 0.15, 1, true, 1);
     this.ctx = game.ctx;
@@ -182,6 +193,10 @@ spawner.prototype.draw = function () {
     Entity.prototype.draw.call(this);
 }
 
+
+
+
+////////////////////////////////////////////////////////////END OF SPAWNER CODE
 function Enemy1(game, spritesheet) {
     this.animation = new Animation(spritesheet, 132, 102, 1064, 0.11, 8, true, .8,1);
     this.speed = 25;
@@ -251,7 +266,7 @@ Enemy1.prototype.update = function () {
                     playerHealth = playerHealth - this.damage;
                     playerGold = playerGold + this.reward;
                     this.isDead = 1;
-                    update();
+                    updateControl();
                     //alert(ent.health + " " + gold);
                     //this.game.entities.splice(i, 1);
                 }
@@ -515,44 +530,47 @@ boss1.prototype.draw = function () {
 }
 
 
+/**
+ * 
+ * Moved this to tower.js
+ */
+// function ArrowTower(game, spritesheet, Xcoor, Ycoor) {
+//     this.animation = new Animation(spritesheet, 48, 120, 48, 0.05, 1, true, 1.0, 0);
+//     this.ctx = game.ctx;
+//     this.game = game;
+//     this.damage = 10;
+//     this.sizeX = 48;
+//     this.sizeY = 120;
+//     this.radius = 24;
+//     this.name = "ArrowTower";
 
-function ArrowTower(game, spritesheet, Xcoor, Ycoor) {
-    this.animation = new Animation(spritesheet, 48, 120, 48, 0.05, 1, true, 1.0, 0);
-    this.ctx = game.ctx;
-    this.game = game;
-    this.damage = 10;
-    this.sizeX = 48;
-    this.sizeY = 120;
-    this.radius = 24;
-    this.name = "ArrowTower";
-
-    Entity.call(this, game, Xcoor, Ycoor);
-}
-
-
-
-ArrowTower.prototype = new Entity();
-ArrowTower.prototype.constructor = ArrowTower;
+//     Entity.call(this, game, Xcoor, Ycoor);
+// }
 
 
-ArrowTower.prototype.collide = function(other) {
-    var difX = this.x - other.x;
-    var difY = this.y - other.y;
-    return Math.sqrt(difX * difX + difY * difY) < this.radius + other.radius;
-};
 
-ArrowTower.prototype.update = function () {
+// ArrowTower.prototype = new Entity();
+// ArrowTower.prototype.constructor = ArrowTower;
+
+
+// ArrowTower.prototype.collide = function(other) {
+//     var difX = this.x - other.x;
+//     var difY = this.y - other.y;
+//     return Math.sqrt(difX * difX + difY * difY) < this.radius + other.radius;
+// };
+
+// ArrowTower.prototype.update = function () {
     
 
-}
+// }
 
-ArrowTower.prototype.draw = function () {
-    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    Entity.prototype.draw.call(this);
-}
+// ArrowTower.prototype.draw = function () {
+//     this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+//     Entity.prototype.draw.call(this);
+// }
 
 
-
+//////////////////////////////GAMEBOARD CODE
 function GameBoard(game) {
     
     Entity.call(this, game, 0, 0);
@@ -574,20 +592,21 @@ GameBoard.prototype = new Entity();
 GameBoard.prototype.constructor = GameBoard;
 
 GameBoard.prototype.update = function () {
-    if (this.game.click && isBuilding != 0) {
-        isBuilding = 0;
-        this.board[this.game.click.x][this.game.click.y] = towerType;
+    if (this.game.click && isBuilding != false) {
         if(towerType == 1){
             this.game.addEntity(new ArrowTower(this.game, AM.getAsset("./img/towers/arrow1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset));
             playerGold = playerGold - arrowTowerPrice;
+            isBuilding = false;
         } else if(towerType == 2) {
-            this.game.addEntity(new ArrowTower(this.game, AM.getAsset("./img/towers/cannon1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset));
+            this.game.addEntity(new CannonTower(this.game, AM.getAsset("./img/towers/cannon1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset));
             playerGold = playerGold - cannonTowerPrice;
+            isBuilding = false;
         } else if(towerType == 3) {
-            this.game.addEntity(new ArrowTower(this.game, AM.getAsset("./img/towers/magic1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset));
+            this.game.addEntity(new MagicTower(this.game, AM.getAsset("./img/towers/magic1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset));
             playerGold = playerGold - magicTowerPrice;
+            isBuilding = false;
         }
-        update();
+        updateControl(); //makes a call to update method from game engine
     }
     Entity.prototype.update.call(this);
 }
@@ -598,7 +617,7 @@ GameBoard.prototype.draw = function (ctx) {
     ctx.drawImage(AM.getAsset("./img/maps/Map002.png"),this.x,this.y,800,700);
 
 
-    if(isBuilding == 1) {
+    if(isBuilding == true) {
 
         // draw mouse shadow
         if (this.game.mouse && towerType == 1) {
@@ -645,58 +664,42 @@ function setSpawnPoint() {
     }
 }
 
+/**
+ * Moved this to gameEngine.js, renamed to updateControl
+ */
+// function update() {
+//     var gold = document.getElementById("Gold");
+//     gold.innerHTML = "$" + playerGold;
 
-function update() {
-    var gold = document.getElementById("Gold");
-    gold.innerHTML = "$" + playerGold;
+//     var health = document.getElementById("Health");
+//     health.innerHTML = "" + playerHealth;
 
-    var health = document.getElementById("Health");
-    health.innerHTML = "" + playerHealth;
+//     //do the same with the other tower buttons
+//     if(playerGold < arrowTowerPrice) {
+//         document.getElementById("ArrowTowerButton").disabled = true;
+//     }
+//     if(playerGold >= arrowTowerPrice) {
+//         document.getElementById("ArrowTowerButton").disabled = false;
+//     }
 
-    //do the same with the other tower buttons
-    if(playerGold < arrowTowerPrice) {
-        document.getElementById("ArrowTowerButton").disabled = true;
-    }
-    if(playerGold >= arrowTowerPrice) {
-        document.getElementById("ArrowTowerButton").disabled = false;
-    }
+//     if(playerGold < cannonTowerPrice) {
+//         document.getElementById("CannonTowerButton").disabled = true;
+//     }
+//     if(playerGold >= cannonTowerPrice) {
+//         document.getElementById("CannonTowerButton").disabled = false;
+//     }
 
-    if(playerGold < cannonTowerPrice) {
-        document.getElementById("CannonTowerButton").disabled = true;
-    }
-    if(playerGold >= cannonTowerPrice) {
-        document.getElementById("CannonTowerButton").disabled = false;
-    }
-
-    if(playerGold < magicTowerPrice) {
-        document.getElementById("MagicTowerButton").disabled = true;
-    }
-    if(playerGold >= magicTowerPrice) {
-        document.getElementById("MagicTowerButton").disabled = false;
-    }
+//     if(playerGold < magicTowerPrice) {
+//         document.getElementById("MagicTowerButton").disabled = true;
+//     }
+//     if(playerGold >= magicTowerPrice) {
+//         document.getElementById("MagicTowerButton").disabled = false;
+//     }
 
 
-}
+// }
 
-function createArrowTower() {
-    
-    isBuilding = 1;
-    towerType = 1; //change value with each different tower
-   
-}
-function createCannonTower() {
-    
-    isBuilding = 1;
-    towerType = 2; //change value with each different tower
-    
-}
 
-function createMagicTower() {
-    
-    isBuilding = 1;
-    towerType = 3; //change value with each different tower
-    
-}
 
 AM.queueDownload("./img/maps/Map002.png");
 AM.queueDownload("./img/towers/arrow1.png");
@@ -730,10 +733,16 @@ AM.downloadAll(function () {
     
     gameEngine.start();
     setSpawnPoint();
-    document.getElementById("ArrowTowerButton").addEventListener("click", createArrowTower);
-    document.getElementById("CannonTowerButton").addEventListener("click", createCannonTower);
-    document.getElementById("MagicTowerButton").addEventListener("click", createMagicTower);
-    update();
+
+    /**
+     * Moved this to gameEngine.init
+     * */
+    // document.getElementById("ArrowTowerButton").addEventListener("click", createArrowTower);
+    // document.getElementById("CannonTowerButton").addEventListener("click", createCannonTower);
+    // document.getElementById("MagicTowerButton").addEventListener("click", createMagicTower);
+    // updateControl();
+
+
     gameEngine.addEntity(new base(gameEngine, AM.getAsset("./img/crystal_standing_35w_84h_1pd_6fr.png")));
     gameEngine.addEntity(new spawner(gameEngine, AM.getAsset("./img/base2.png")));
     
