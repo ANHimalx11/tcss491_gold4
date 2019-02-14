@@ -3,14 +3,12 @@
 
 <head>
     <meta charset="utf-8">
-    <title>TD for Tacomania</title>
+    <title>Game Project Shell</title>
     <link rel="stylesheet" href="style.css" type="text/css" charset="utf-8" />
 
-    <!-- Order of loading script matters! global variables affected by order -->
-    <script type="text/javascript" src="./assetmanager.js"></script>
     <script type="text/javascript" src="./gameengine.js"></script>
+    <script type="text/javascript" src="./assetmanager.js"></script>
     <script type="text/javascript" src="./main.js"></script>
-    <script type="text/javascript" src="./tower.js"></script>
     <script type="text/javascript" src="./hero.js"></script>
 </head>
 
@@ -29,8 +27,9 @@
                     <br>
                     <p>Then click on a valid area to build</p>
                     <br>
-                </div>
 
+
+                </div>
                 <!--End of left content-->
                 <div id="right">
                     <div id="right-status">
@@ -40,42 +39,69 @@
                             <span id="Health"></span>
                         </pf>
                     </div>
-
-
                     <!--We can add buttons for the towers here-->
-                    <div class="build-control ">
+                    <div id="right ">
+                        <!--<a data-name="Arrow"><img class="arrow dropdown" src="./img/towers/arrow1.png"></a>-->
+                        <!--Not sure how to handle this one.-->
+                        <!-- <script> document.getElementById("arrow_dropdown").addEventListener("click", function();</script> -->
+                        <button id="ArrowTowerButton"></button>
 
-                        
-                        	<!-- <input type="button" onclick="upgrade()" value="Upgrade" id="upgradebutton" /><br />
-                            <input type="button" onclick="isBuilding=true;towerType=1" value="Place laser tower" id="cTower1Bt" /><br />
-	                        <input type="button" onclick="isBuilding=true;towerType=2" value="Place AOE tower" id="cTower2Bt" /><br />
-                            <input type="button" onclick="isBuilding=true;towerType=3" value="Place slow tower" id="cTower3Bt" /><br />
-                            <input type="button" onclick="isBuilding=true;towerType=4" value="Place wall" id="cTower4Bt" /><br />
-                            <input type="button" onclick="sell()" value="Sell" id="sellbutton" /><br /> -->
-
-
-
-
-                        <button onclick="isBuilding=true;towerType=1"id="ArrowTowerButton"></button>
                         <script type="text/javascript">
                             var buttons = document.getElementById("ArrowTowerButton");
                             buttons.innerHTML = '<img src="./img/towers/arrow1.png" />';
                         </script>
                         <p>Arrow ($15)</p>
                         <!--have cost change dynamically later-->
-                        <button onclick="isBuilding=true;towerType=2" id="CannonTowerButton"></button>
+
+                        <div class="arrow dropdown-content">
+                            <!--insert scripts here for upgrades-->
+                            <p>
+                                <a href="javascript:void(0)">Upgrade Damage</a>
+                                <a href="upkeep-damage">Upgrade Rate</a>
+                                <a href="upkeep-rate"></a>
+                                <a href="upkeep-range"></a>
+                                <a href="upkeep-sell"></a>
+                            </p>
+                        </div>
+
+                        <!--<img class="Cannon dropdown" src="./img/towers/cannon1.png">-->
+                        <button id="CannonTowerButton"></button>
+
                         <script type="text/javascript">
                             var buttons = document.getElementById("CannonTowerButton");
                             buttons.innerHTML = '<img src="./img/towers/cannon1.png" />';
                         </script>
                         <p>Cannon ($25)</p>
 
-                        <button onclick="isBuilding=true;towerType=3" id="MagicTowerButton"></button>
+                        <div class="cannon dropdown-content">
+                            <p>
+                                <a href="upkeep-damage"></a>
+                                <a href="upkeep-rate"></a>
+                                <a href="upkeep-range"></a>
+                                <a href="upkeep-sell"></a>
+                            </p>
+                        </div>
+
+
+                        <!--<img class="Magic dropdown" src="./img/towers/magic1.png" style="align-self: auto;">-->
+                        <button id="MagicTowerButton"></button>
+
                         <script type="text/javascript">
                             var buttons = document.getElementById("MagicTowerButton");
                             buttons.innerHTML = '<img src="./img/towers/magic1.png" />';
                         </script>
                         <p>Magic ($40)</p>
+
+                        <div class="Magic dropdown-content">
+                            <p>
+                                <a href="upkeep-damage"></a>
+                                <a href="upkeep-rate"></a>
+                                <a href="upkeep-range"></a>
+                                <a href="upkeep-sell"></a>
+                            </p>
+                        </div>
+
+
                     </div>
                 </div>
 

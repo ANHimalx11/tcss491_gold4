@@ -1,17 +1,5 @@
 // This game shell was happily copied from Googler Seth Ladd's "Bad Aliens" game and his Google IO talk in 2011
 
-
-//////////////////////////////////////////////////////////////Global variables for the game
-var towerType = 0;
-var playerGold = 40;
-var playerHealth = 200;
-var arrowTowerPrice = 15;
-var cannonTowerPrice = 25;
-var magicTowerPrice = 40;
-
-////////////////////////////////////////////////////////////////////////////
-
-
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame ||
             window.webkitRequestAnimationFrame ||
@@ -58,11 +46,6 @@ GameEngine.prototype.init = function (ctx) {
     this.surfaceHeight = this.ctx.canvas.height;
     this.startInput();
     //this.timer = new Timer();
-
-    //start up ui
-    document.getElementById("ArrowTowerButton").addEventListener("click", ArrowTower());
-    document.getElementById("CannonTowerButton").addEventListener("click", CannonTower());
-    document.getElementById("MagicTowerButton").addEventListener("click", MagicTower());
     
     console.log('game initialized');
 }
@@ -132,7 +115,6 @@ GameEngine.prototype.draw = function () {
 
 GameEngine.prototype.update = function () {
     var entitiesCount = this.entities.length;
-    updateControl();
 
     for (var i = 0; i < entitiesCount; i++) {
         var entity = this.entities[i];
@@ -149,38 +131,6 @@ GameEngine.prototype.update = function () {
     }
 }
 
-
-function updateControl() { //this is the place to update the UI
-    var gold = document.getElementById("Gold");
-    gold.innerHTML = "$" + playerGold;
-
-    var health = document.getElementById("Health");
-    health.innerHTML = "" + playerHealth;
-
-    //do the same with the other tower buttons
-    if(playerGold < arrowTowerPrice) {
-        document.getElementById("ArrowTowerButton").disabled = true;
-    }
-    if(playerGold >= arrowTowerPrice) {
-        document.getElementById("ArrowTowerButton").disabled = false;
-    }
-
-    if(playerGold < cannonTowerPrice) {
-        document.getElementById("CannonTowerButton").disabled = true;
-    }
-    if(playerGold >= cannonTowerPrice) {
-        document.getElementById("CannonTowerButton").disabled = false;
-    }
-
-    if(playerGold < magicTowerPrice) {
-        document.getElementById("MagicTowerButton").disabled = true;
-    }
-    if(playerGold >= magicTowerPrice) {
-        document.getElementById("MagicTowerButton").disabled = false;
-    }
-
-}
-
 GameEngine.prototype.loop = function () {
     this.clockTick = this.timer.tick();
     this.update();
@@ -190,10 +140,6 @@ GameEngine.prototype.loop = function () {
     this.wheel = null;
 }
 
-
-
-
-//////////////////////////////////MAKE MOST OBJECTS AN ENTITY SO IT CAN BE DRAWN AND UPDATED 
 function Entity(game, x, y) {
     this.game = game;
     this.x = x;
