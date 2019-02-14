@@ -1,7 +1,7 @@
 //this script contains the functions for the hero to use on the canvas
 // var AM = new AssetManager();
 var gameBoard2CanvasConversion = 25;
-var frameRate = 8;
+var frameRate = 60;
 var currentMoveObj = [];
 var moving = false;
 
@@ -28,6 +28,8 @@ var actionMap = new Map([
 function Hero(game) {
     this.speed = 25;
     this.game = game;
+    this.oldX;
+    this.oldY;
 
     //action animations
     this.animation = new Animation(AM.getAsset("./img/hero/hero_battleidle_68w_93h_1pd_6fr.png"), 68, 93, 414, 0.12, 6, true, 1, 1);
@@ -52,13 +54,16 @@ Hero.prototype.constructor = Hero;
 
 
 ////////////////////////MATH STUFF FOR HERO////////////////////
-
+function calcDist(p1x, p1y, p2x, p2y) {//find distance between two point objects
+    var result;
+    var dx = p2x - p1x;
+    var dy = p2y - p1y;
+    result =Math.sqrt(dx * dx + dy * dy)
+    return(result);
+}
 //sets boolean flag for direction animation and returns an array of points
 //to move the hero
 function makeMovementInfo(currentX, currentY, mouseX, mouseY, frameRate) {
-
-    Entity.x = currentX;
-    Entity.y = currentY;
 
     var nextX = mouseX * gameBoard2CanvasConversion;
     var nextY = mouseY * gameBoard2CanvasConversion;
@@ -118,6 +123,8 @@ Hero.prototype.update = function () {
 
     if (this.game.click && isBuilding != 1) { 
         moving = true;//after mouse click
+        this.oldX = this.x;
+        this.oldY = this.y;
         currentMoveObj = makeMovementInfo(this.x, this.y, this.game.mouse.x, this.game.mouse.y, frameRate);
         actionMap.set('wait', false);
     } 
@@ -125,8 +132,11 @@ Hero.prototype.update = function () {
         this.x += currentMoveObj[0].mX;
         this.y += currentMoveObj[0].mY;
 
-        if(this.x == currentMoveObj[0].newX && this.y == currentMoveObj[0].newY) {
+        if(calcDist(this.oldX, this.oldY, this.x, this.y) >= currentMoveObj[0].dist) {
             moving = false;
+             //clear list of moveObj
+        currentMoveObj.splice(0,currentMoveObj.length);
+            actionMap.forEach(resetDirections);
         }
     }
         // if (this.x == currentMoveObj.newX && this.y == currentMoveObj.newY) {
