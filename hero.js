@@ -1,7 +1,6 @@
 //this script contains the functions for the hero to use on the canvas
 // var AM = new AssetManager();
 var gameBoard2CanvasConversion = 25;
-var frameRate = 8;
 var currentMoveObj = [];
 var moving = false;
 
@@ -24,10 +23,12 @@ var actionMap = new Map([
     // cast : false
 ]);
 
-//Animation(spriteSheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale, padWidth)
+////this function contains information about the hero, health, speed, animation
 function Hero(game) {
-    this.speed = 25;
+    this.speed = 60;
     this.game = game;
+    this.oldX;
+    this.oldY;
 
     //action animations
     this.animation = new Animation(AM.getAsset("./img/hero/hero_battleidle_68w_93h_1pd_6fr.png"), 68, 93, 414, 0.12, 6, true, 1, 1);
@@ -51,15 +52,30 @@ Hero.prototype = new Entity();
 Hero.prototype.constructor = Hero;
 
 
-////////////////////////MATH STUFF FOR HERO////////////////////
+////////////////////////UTILITY STUFF FOR HERO////////////////////
 
+//find distance between two point objects
+function calcDist(p1x, p1y, p2x, p2y) {
+    var result;
+
+    var dx = p2x - p1x;
+    var dy = p2y - p1y;
+    result =Math.sqrt(dx * dx + dy * dy)
+    return(result);
+}
+//reset the direction of the hero
+function resetDirections(value, key, map) {
+
+    if (map.get(key) == true) {
+        map.set(key, false);
+    }
+}
 //sets boolean flag for direction animation and returns an array of points
 //to move the hero
-function makeMovementInfo(currentX, currentY, mouseX, mouseY, frameRate) {
+function makeMovementInfo(currentX, currentY, mouseX, mouseY, speed) {
 
-    Entity.x = currentX;
-    Entity.y = currentY;
-
+    //currentX and currentY contains canvas coordinates
+    //mouseX and mouseY contain mouse clicks on the gameBoard, which needs conversion to canvas.
     var nextX = mouseX * gameBoard2CanvasConversion;
     var nextY = mouseY * gameBoard2CanvasConversion;
 
@@ -98,8 +114,8 @@ function makeMovementInfo(currentX, currentY, mouseX, mouseY, frameRate) {
 
     var moveObj = [];
 
-    var incrementX = ddx / frameRate;
-    var incrementY = ddy / frameRate;
+    var incrementX = ddx / speed;
+    var incrementY = ddy / speed;
 
     moveObj.push({
         'mX': incrementX,
@@ -111,40 +127,39 @@ function makeMovementInfo(currentX, currentY, mouseX, mouseY, frameRate) {
     return (moveObj);
 }
 
+//////////////////////////////////////////////END UTILITY STUFF
 
+////////////////////UPDATE HERO
 Hero.prototype.update = function () {
     
  
 
     if (this.game.click && isBuilding != 1) { 
         moving = true;//after mouse click
-        currentMoveObj = makeMovementInfo(this.x, this.y, this.game.mouse.x, this.game.mouse.y, frameRate);
-        actionMap.set('wait', false);
+        this.oldX = this.x;
+        this.oldY = this.y;
+        currentMoveObj = makeMovementInfo(this.x, this.y, this.game.mouse.x, this.game.mouse.y, this.speed);
     } 
-    if (moving == true) { 
+    if (moving) { 
         this.x += currentMoveObj[0].mX;
         this.y += currentMoveObj[0].mY;
 
-        if(this.x == currentMoveObj[0].newX && this.y == currentMoveObj[0].newY) {
+        if(calcDist(this.oldX, this.oldY, this.x, this.y) >= currentMoveObj[0].dist) {
             moving = false;
+            //stopped moving , go back to idle animation
+            actionMap.forEach(resetDirections);
+             //clear list of moveObj
+             currentMoveObj.splice(0,currentMoveObj.length);
         }
     }
-        // if (this.x == currentMoveObj.newX && this.y == currentMoveObj.newY) {
-        //     actionMap.set('wait', true);
-        // }   
-
-    //go through the map and if there is a true Boolean, reset interface.
     Entity.prototype.update.call(this);
-    // directionMap.forEach(resetDirections);
-}
 
-//reset the direction of the hero
-function resetDirections(value, key, map) {
-
-    if (map.get(key) == true) {
-        map.set(key, false);
-    }
 }
+///////////////////////////////END UPDATE
+
+
+/////////////////////DRAW HERO
+
 
 Hero.prototype.draw = function (ctx) {
 
@@ -185,14 +200,14 @@ Hero.prototype.draw = function (ctx) {
     if (actionMap.get('nw')) {
         this.anim_nw.drawFrame(this.game.clockTick, ctx, this.x, this.y);
 
-    } else if (!moving){
+    } else if (!moving) {
         
         this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
     }
 
     Entity.prototype.draw.call(this);
 }
-
+/////////////////////////////END DRAW
 
 
 
