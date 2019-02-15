@@ -27,9 +27,12 @@ var actionMap = new Map([
 function Hero(game) {
     this.speed = 60;
     this.game = game;
+    this.ctx = game.ctx;
     this.radius = 50;
     this.boundX = 68;
     this.boundY = 93;
+    this.x;
+    this.y; 
     this.oldX;
     this.oldY;
   
@@ -134,43 +137,36 @@ function makeMovementInfo(currentX, currentY, mouseX, mouseY, speed) {
 }
 
 
-//Collision check
-// Hero.prototype.checkCC = function () {
-//     for (var i = 2; i <= this.game.entities.length - 1; i++) {
-//        if(Entity.prototype.circleCollision(this.game.entities[i])) {
-//            console.log('i am here yo!');
-//        }
-//     }
-    
-
-   
-// }
-
-function checkCC(game) {
+Hero.prototype.checkCC = function(game) {
     for (var i = 2; i <= game.entities.length - 1; i++) {
-               if(Hero.prototype.circleCollision(game.entities[i])) {
+               if(this.collide(game.entities[i])) {
                    console.log('i am here yo!');
                }
 }
 }
 
-//returns true when collision occurs
-Hero.prototype.circleCollision = function (Entity) {
-    that = this;
-    var myCircle = {'x': that.recenterBoundX(), 'y': that.recenterBoundY(), 'r': that.radius};
-    var otherCirle = {'x': Entity.recenterBoundX(), 'y': Entity.recenterBoundY(), 'r': Entity.radius};
+
+Hero.prototype.collide = function(monster) {
+
+    var myCircle = {'x': this.recenterBoundX(), 'y': this.recenterBoundY(), 'r': this.radius};
+    var otherCirle = {'x': monster.recenterBoundX(), 'y': monster.recenterBoundY(), 'r': monster.radius};
     var dx = myCircle.x - otherCirle.x;
     var dy = myCircle.y - otherCirle.y;
     var distance = Math.sqrt(dx*dx + dy*dy);
     
     return (distance < myCircle.r + otherCirle.r);
 }
+// //returns true when collision occurs
+// Hero.prototype.circleCollision = function (hero,monster) {
+   
+   
+// }
 
 //////////////////////////////////////////////END UTILITY STUFF
 
 ////////////////////UPDATE HERO
 Hero.prototype.update = function () {
-   checkCC(this.game);
+   this.checkCC(this.game);
 
     if (this.game.click && isBuilding != 1) { 
         moving = true;//after mouse click
