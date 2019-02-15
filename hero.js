@@ -32,6 +32,7 @@ function Hero(game) {
     this.boundY = 93;
     this.oldX;
     this.oldY;
+  
 
     //action animations
     this.animation = new Animation(AM.getAsset("./img/hero/hero_battleidle_68w_93h_1pd_6fr.png"), 68, 93, 414, 0.12, 6, true, 1, 1);
@@ -73,6 +74,8 @@ function resetDirections(value, key, map) {
         map.set(key, false);
     }
 }
+
+
 //sets boolean flag for direction animation and returns an array of points
 //to move the hero
 function makeMovementInfo(currentX, currentY, mouseX, mouseY, speed) {
@@ -130,12 +133,44 @@ function makeMovementInfo(currentX, currentY, mouseX, mouseY, speed) {
     return (moveObj);
 }
 
+
+//Collision check
+// Hero.prototype.checkCC = function () {
+//     for (var i = 2; i <= this.game.entities.length - 1; i++) {
+//        if(Entity.prototype.circleCollision(this.game.entities[i])) {
+//            console.log('i am here yo!');
+//        }
+//     }
+    
+
+   
+// }
+
+function checkCC(game) {
+    for (var i = 2; i <= game.entities.length - 1; i++) {
+               if(Hero.prototype.circleCollision(game.entities[i])) {
+                   console.log('i am here yo!');
+               }
+}
+}
+
+//returns true when collision occurs
+Hero.prototype.circleCollision = function (Entity) {
+    that = this;
+    var myCircle = {'x': that.recenterBoundX(), 'y': that.recenterBoundY(), 'r': that.radius};
+    var otherCirle = {'x': Entity.recenterBoundX(), 'y': Entity.recenterBoundY(), 'r': Entity.radius};
+    var dx = myCircle.x - otherCirle.x;
+    var dy = myCircle.y - otherCirle.y;
+    var distance = Math.sqrt(dx*dx + dy*dy);
+    
+    return (distance < myCircle.r + otherCirle.r);
+}
+
 //////////////////////////////////////////////END UTILITY STUFF
 
 ////////////////////UPDATE HERO
 Hero.prototype.update = function () {
-    
- 
+   checkCC(this.game);
 
     if (this.game.click && isBuilding != 1) { 
         moving = true;//after mouse click
@@ -207,7 +242,7 @@ Hero.prototype.draw = function (ctx) {
         
         this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
     }
-    // Entity.prototype.draw(ctx);
+   
     Entity.prototype.draw.call(this);
 }
 /////////////////////////////END DRAW

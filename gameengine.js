@@ -106,7 +106,7 @@ GameEngine.prototype.addEntity = function (entity) {
 }
 
 GameEngine.prototype.addTower = function (entity) {
-    console.log('added entity');
+    console.log('added tower');
     this.towersList.push(entity);
 }
 
@@ -116,11 +116,23 @@ GameEngine.prototype.draw = function () {
     for (var i = 0; i < this.entities.length; i++) {
         this.entities[i].draw(this.ctx);
     }
+    for (var i = 0; i < this.towersList.length; i++) {
+        this.towersList[i].draw(this.ctx);
+    }
     this.ctx.restore();
 }
 
 GameEngine.prototype.update = function () {
     var entitiesCount = this.entities.length;
+    var towersCount = this.towersList.length;
+
+    for (var i = 0; i < towersCount; i++) {
+        var tower = this.towersList[i];
+
+        if (!tower.removeFromWorld) {
+            tower.update();
+        }
+    }
 
     for (var i = 0; i < entitiesCount; i++) {
         var entity = this.entities[i];
@@ -133,6 +145,13 @@ GameEngine.prototype.update = function () {
     for (var i = this.entities.length - 1; i >= 0; --i) {
         if (this.entities[i].removeFromWorld) {
             this.entities.splice(i, 1);
+            console.log('removed entity')
+        }
+    }
+
+    for (var i = this.towersList.length -1; i >= 0; --i) {
+        if (this.towersList[i].removeFromWorld) {
+            this.towersList.splice(i, 1);
         }
     }
 }
@@ -159,25 +178,29 @@ Entity.prototype.update = function () {
 Entity.prototype.draw = function (ctx) {
     if (this.game.showOutlines && this.radius && this.boundX && this.boundY) {
         this.game.ctx.beginPath();
-        this.game.ctx.strokeStyle = "green";
-        this.game.ctx.arc(this.recenterBound(this.boundX, this.boundY).x, this.recenterBound(this.boundX, this.boundY).y, this.radius, 0, Math.PI * 2, false);
+        this.game.ctx.strokeStyle = "RED";
+        this.game.ctx.arc(this.recenterBoundX(), this.recenterBoundY(), this.radius, 0, Math.PI * 2, false);
         this.game.ctx.stroke();
         this.game.ctx.closePath();
     }
 }
 
-//
-Entity.prototype.recenterBound = function (boundX, boundY) {
+//recenters the collision bounds for an entity based on its animation.
+//only works if the entity has this.boundx and this.boundy in its properties
+Entity.prototype.recenterBoundX = function () {
     var currentX = this.x;
-    var currentY = this.y;
     var newX;
-    var newY;
-
-    newX = currentX + (boundX/2);
-    newY = currentY + (boundY/2);
-
-    return { 'x': newX, 'y': newY}
+    newX = currentX + (this.boundX/2);
+    return newX;
 }
+Entity.prototype.recenterBoundY = function () {
+    var currentY = this.y;
+    var newY;
+    newY = currentY + (this.boundY/2);
+    return newY;
+}
+
+
 
 Entity.prototype.rotateAndCache = function (image, angle) {
     var offscreenCanvas = document.createElement('canvas');

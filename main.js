@@ -20,7 +20,7 @@ var isBuilding = 0;
 //     }
 // }
 
-var towerType = 0;
+var towerType;
 var spawnInterval = 1.0;
 var playerGold = 40;
 var playerHealth = 200;
@@ -520,40 +520,43 @@ boss1.prototype.draw = function () {
 
 
 
-function ArrowTower(game, spritesheet, Xcoor, Ycoor) {
-    this.animation = new Animation(spritesheet, 48, 120, 48, 0.05, 1, true, 1.0, 0);
-    this.ctx = game.ctx;
-    this.game = game;
-    this.damage = 10;
-    this.sizeX = 48;
-    this.sizeY = 120;
-    this.radius = 24;
-    this.name = "ArrowTower";
+// function ArrowTower(game, spritesheet, Xcoor, Ycoor) {
+//     this.animation = new Animation(spritesheet, 48, 120, 48, 0.05, 1, true, 1.0, 0);
+//     this.ctx = game.ctx;
+//     this.game = game;
+//     this.damage = 10;
+//     this.sizeX = 48;
+//     this.sizeY = 120;
+//     this.radius = 24;
+//     this.boundX = 48;
+//     this.boundY = 120;
+//     this.name = "ArrowTower";
 
-    Entity.call(this, game, Xcoor, Ycoor);
-}
-
-
-
-ArrowTower.prototype = new Entity();
-ArrowTower.prototype.constructor = ArrowTower;
+//     Entity.call(this, game, Xcoor, Ycoor);
+  
+// }
 
 
-ArrowTower.prototype.collide = function(other) {
-    var difX = this.x - other.x;
-    var difY = this.y - other.y;
-    return Math.sqrt(difX * difX + difY * difY) < this.radius + other.radius;
-};
 
-ArrowTower.prototype.update = function () {
+// ArrowTower.prototype = new Entity();
+// ArrowTower.prototype.constructor = ArrowTower;
+
+
+// ArrowTower.prototype.collide = function(other) {
+//     var difX = this.x - other.x;
+//     var difY = this.y - other.y;
+//     return Math.sqrt(difX * difX + difY * difY) < this.radius + other.radius;
+// };
+
+// ArrowTower.prototype.update = function () {
     
 
-}
+// }
 
-ArrowTower.prototype.draw = function () {
-    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    Entity.prototype.draw.call(this);
-}
+// ArrowTower.prototype.draw = function () {
+//     this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+//     Entity.prototype.draw.call(this);
+// }
 
 
 
@@ -581,14 +584,17 @@ GameBoard.prototype.update = function () {
     if (this.game.click && isBuilding != 0) {
         isBuilding = 0;
         this.board[this.game.click.x][this.game.click.y] = towerType;
-        if(towerType == 1){
-            this.game.addEntity(new ArrowTower(this.game, AM.getAsset("./img/towers/arrow1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset));
+        if(towerType == 0){
+            // this.game.addTower(new Tower(this.game, AM.getAsset("./img/towers/arrow1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, towerType));
+            this.game.addTower(new Tower(this.game, this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, towerType));
             playerGold = playerGold - arrowTowerPrice;
-        } else if(towerType == 2) {
-            this.game.addEntity(new ArrowTower(this.game, AM.getAsset("./img/towers/cannon1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset));
+        } else if(towerType == 1) {
+            // this.game.addTower(new Tower(this.game, AM.getAsset("./img/towers/cannon1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, towerType));
+            this.game.addTower(new Tower(this.game, this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, towerType));
             playerGold = playerGold - cannonTowerPrice;
-        } else if(towerType == 3) {
-            this.game.addEntity(new ArrowTower(this.game, AM.getAsset("./img/towers/magic1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset));
+        } else if(towerType == 2) {
+            // this.game.addTower(new Tower(this.game, AM.getAsset("./img/towers/magic1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, towerType));
+            this.game.addTower(new Tower(this.game, this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, towerType));
             playerGold = playerGold - magicTowerPrice;
         }
         update();
@@ -605,21 +611,21 @@ GameBoard.prototype.draw = function (ctx) {
     if(isBuilding == 1) {
 
         // draw mouse shadow
-        if (this.game.mouse && towerType == 1) {
+        if (this.game.mouse && towerType == 0) {
             ctx.save();
             ctx.globalAlpha = 0.5;
             ctx.drawImage(AM.getAsset("./img/towers/arrow1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, 48, 120);
             ctx.restore();
         }
 
-        if (this.game.mouse && towerType == 2) {
+        if (this.game.mouse && towerType == 1) {
             ctx.save();
             ctx.globalAlpha = 0.5;
             ctx.drawImage(AM.getAsset("./img/towers/cannon1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, 48, 120);
             ctx.restore();
         }
 
-        if (this.game.mouse && towerType == 3) {
+        if (this.game.mouse && towerType == 2) {
             ctx.save();
             ctx.globalAlpha = 0.5;
             ctx.drawImage(AM.getAsset("./img/towers/magic1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, 48, 120);
@@ -682,25 +688,7 @@ function update() {
 
 }
 
-function createArrowTower() {
-    
-    isBuilding = 1;
-    towerType = 1; //change value with each different tower
-   
-}
-function createCannonTower() {
-    
-    isBuilding = 1;
-    towerType = 2; //change value with each different tower
-    
-}
 
-function createMagicTower() {
-    
-    isBuilding = 1;
-    towerType = 3; //change value with each different tower
-    
-}
 
 AM.queueDownload("./img/maps/Map002.png");
 AM.queueDownload("./img/towers/arrow1.png");
@@ -729,7 +717,7 @@ AM.downloadAll(function () {
     var gameBoard = new GameBoard(gameEngine);
     var hero = new Hero(gameEngine);
     gameEngine.addEntity(gameBoard);
-    gameEngine.addEntity(hero);
+    gameEngine.addTower(hero);
     gameEngine.init(ctx);
     
     gameEngine.start();
