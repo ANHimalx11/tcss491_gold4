@@ -107,6 +107,7 @@ GameEngine.prototype.addEntity = function (entity) {
 
 GameEngine.prototype.addTower = function (entity) {
     console.log('added tower');
+    console.log(entity);
     this.towersList.push(entity);
 }
 

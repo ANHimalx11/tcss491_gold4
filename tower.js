@@ -31,7 +31,7 @@ function createMagicTower() {
 }
 
 Tower.prototype.update = function() {
-    tower[this.type].update;
+    this.checkCC(this.game);
     Entity.prototype.update.call(this);
 }
 
@@ -47,7 +47,8 @@ var tower = [
         animation: ArrowAnimate = new Animation(AM.getAsset("./img/towers/arrow1.png"), 48, 120, 48, 0.05, 1, true, 1.0, 0),
         cost: 25,
         damage: 20,
-        update: function() {
+        attack: function() {
+            
 
             
             
@@ -66,7 +67,7 @@ var tower = [
         animation: CannonAnimate = new Animation(AM.getAsset("./img/towers/cannon1.png"), 48, 120, 48, 0.05, 1, true, 1.0, 0),
         cost: 25,
         damage: 35,
-        update: function() {
+        attack: function() {
 
         },
         draw: function(game, ctx, x, y) {
@@ -79,7 +80,7 @@ var tower = [
         animation: MagicAnimate = new Animation(AM.getAsset("./img/towers/magic1.png"), 48, 120, 48, 0.05, 1, true, 1.0, 0),
         cost: 40,
         damage: 50,
-        update: function() {
+        attack: function() {
 
             
         },
@@ -92,14 +93,13 @@ var tower = [
 
 ////////////////////////////////////UTILITY FOR TOWERS
 
-Tower.prototype.checkCC = function(game) {
+Tower.prototype.checkCC = function (game) {
     for (var i = 2; i <= game.entities.length - 1; i++) {
-               if(this.collide(game.entities[i])) {
-                   console.log('i am here yo!');
-               }
+        if (this.collide(game.entities[i])) {
+            console.log('towers for days!');
+        }
+    }
 }
-}
-
 
 Tower.prototype.collide = function(monster) {
 
