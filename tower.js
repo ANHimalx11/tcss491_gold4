@@ -5,8 +5,8 @@ function Tower(game, x, y, towerType) {
     this.x = game.mouse.x;
     this.y = game.mouse.y;
     this.boundX = 48;
-    this.boundY = 120;
-    this.radius = 50;
+    this.boundY = 220;
+    this.radius = 100;
     this.game = game;
     this.ctx = game.ctx;
     this.type = towerType;
@@ -40,7 +40,7 @@ Tower.prototype.draw = function() {
     Entity.prototype.draw.call(this);
 }
 
-    //////////////Type of towers in an array of objects//////////////// 0 = arrow, 1 = cannonc, 2 = magic
+    //////////////Type of towers in an array of objects//////////////// 0 = arrow, 1 = cannon, 2 = magic
 var tower = [
     {
         ////Arrow tower type
@@ -64,7 +64,7 @@ var tower = [
     {
         ///Cannon tower type
         animation: CannonAnimate = new Animation(AM.getAsset("./img/towers/cannon1.png"), 48, 120, 48, 0.05, 1, true, 1.0, 0),
-        cost: 30,
+        cost: 25,
         damage: 35,
         update: function() {
 
@@ -77,7 +77,7 @@ var tower = [
     {
         ////Magic tower type
         animation: MagicAnimate = new Animation(AM.getAsset("./img/towers/magic1.png"), 48, 120, 48, 0.05, 1, true, 1.0, 0),
-        cost: 50,
+        cost: 40,
         damage: 50,
         update: function() {
 
@@ -92,14 +92,25 @@ var tower = [
 
 ////////////////////////////////////UTILITY FOR TOWERS
 
-Tower.prototype.checkCollision = function(monster) {
-
+Tower.prototype.checkCC = function(game) {
+    for (var i = 2; i <= game.entities.length - 1; i++) {
+               if(this.collide(game.entities[i])) {
+                   console.log('i am here yo!');
+               }
+}
 }
 
-Tower.prototype.attack = function(monster) {
 
+Tower.prototype.collide = function(monster) {
+
+    var myCircle = {'x': this.recenterBoundX(), 'y': this.recenterBoundY(), 'r': this.radius};
+    var otherCirle = {'x': monster.recenterBoundX(), 'y': monster.recenterBoundY(), 'r': monster.radius};
+    var dx = myCircle.x - otherCirle.x;
+    var dy = myCircle.y - otherCirle.y;
+    var distance = Math.sqrt(dx*dx + dy*dy);
+    
+    return (distance < myCircle.r + otherCirle.r);
 }
-
 
 
 

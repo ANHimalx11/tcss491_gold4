@@ -156,11 +156,7 @@ Hero.prototype.collide = function(monster) {
     
     return (distance < myCircle.r + otherCirle.r);
 }
-// //returns true when collision occurs
-// Hero.prototype.circleCollision = function (hero,monster) {
-   
-   
-// }
+
 
 //////////////////////////////////////////////END UTILITY STUFF
 

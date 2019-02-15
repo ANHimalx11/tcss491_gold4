@@ -103,10 +103,11 @@ Animation.prototype.isDone = function () {
 /////////////////////////////////////////END 
 //Animation(spriteSheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale, padWidth)
 
-function base(game, spritesheet) {
-    this.animation = new Animation(spritesheet, 35, 84, 216, .08, 6, true, 1, 1);
-    this.ani_hurt = new Animation(AM.getAsset("./img/crystal_hurt_35w_84h_1pd_4fr.png"),35,84,144,0.20,4,false,1,1);
-    this.ani_dead = new Animation(AM.getAsset("./img/crystal_death_54w_84h_1pd_21fr.png"),54,84,1155, 0.12, 21, false, 1, 1);
+function base(game) {
+    this.state = 0;
+    this.animation = new Animation(AM.getAsset("./img/crystal_standing_35w_84h_1pd_6fr.png"), 35, 84, 216, .08, 6, true, 1, 1);
+    this.ani_hurt = new Animation(AM.getAsset("./img/crystal_hurt_35w_84h_1pd_4fr.png"), 35, 84, 144, 2.0, 4, false, 1, 1);
+    this.ani_dead = new Animation(AM.getAsset("./img/crystal_death_54w_84h_1pd_21fr.png"), 54, 84, 1155, 0.12, 21, false, 1, 1);
     this.ctx = game.ctx;
     this.name = "base";
     this.x = baseX;
@@ -126,39 +127,57 @@ base.prototype.constructor = base;
 
 base.prototype.update = function () {
     this.checkCC(this.game);
-    //if the enemy is in the player's base die and decrease the base health
-    if(playerHealth == 0) {
-        //show game over screen
-    }
+
     Entity.prototype.update.call(this);
 }
 
-base.prototype.draw = function () {
-    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+base.prototype.draw = function (ctx) {
+    if (this.state == 1) {
+        this.ani_hurt.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+    }
+    else if (this.state == 2) {
+        this.ani_dead.drawFrame(this.game.clockTick, ctx, this.x - 25, this.y);
+    }
+    else if (this.state == 0) {
+        this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+    }
     Entity.prototype.draw.call(this);
 }
 
 base.prototype.checkCC = function (game) {
-    for (var i = 2; i <= game.entities.length - 1; i++) {
-        if (this.collide(game.entities[i])) {
-
+    for (var i = 0; i <= game.entities.length - 1; i++) {
+        if (this.collide(game.entities[i]) && playerHealth > 0) {
+            console.log('what');
+            this.state = 1;
+            playerHealth = playerHealth - game.entities[i].damage;
+            playerGold = playerGold + game.entities[i].reward;
+            UpdateUI();
+            game.entities[i].removeFromWorld = true;
+            return;
+        }
+        else if (this.collide(game.entities[i]) && playerHealth <= 0) {
+            console.log('already dead');
+            this.state = 2;
             playerHealth = playerHealth - game.entities[i].damage;
             playerGold = playerGold + game.entities[i].reward;
             UpdateUI();
             game.entities[i].removeFromWorld = true;
         }
+        else if (playerHealth > 0){
+            this.state = 0;
+        }
+
     }
+
 }
 
 
 base.prototype.collide = function(monster) {
-
     var myCircle = {'x': this.recenterBoundX(), 'y': this.recenterBoundY(), 'r': this.radius};
     var otherCirle = {'x': monster.recenterBoundX(), 'y': monster.recenterBoundY(), 'r': monster.radius};
     var dx = myCircle.x - otherCirle.x;
     var dy = myCircle.y - otherCirle.y;
     var distance = Math.sqrt(dx*dx + dy*dy);
-    
     return (distance < myCircle.r + otherCirle.r);
 }
 
@@ -709,7 +728,7 @@ AM.downloadAll(function () {
     document.getElementById("CannonTowerButton").addEventListener("click", createCannonTower);
     document.getElementById("MagicTowerButton").addEventListener("click", createMagicTower);
     UpdateUI();
-    gameEngine.addTower(new base(gameEngine, AM.getAsset("./img/crystal_standing_35w_84h_1pd_6fr.png")));
+    gameEngine.addTower(new base(gameEngine));
     gameEngine.addEntity(new spawner(gameEngine, AM.getAsset("./img/base2.png")));
     
 
