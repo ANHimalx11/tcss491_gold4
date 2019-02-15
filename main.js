@@ -119,7 +119,9 @@ function base(game, spritesheet) {
     this.name = "base";
     this.x = baseX;
     this.y = baseY;
-    this.radius = 25;
+    this.radius = 60;
+    this.boundX = 35;
+    this.boundY = 84;
     this.game = game;
     this.isDead = 0;
     Entity.call(this, game, baseX, baseY);
@@ -191,6 +193,8 @@ function Enemy1(game, spritesheet) {
     this.sizeX = 132 * this.animation.scale;
     this.sizeY = 102 * this.animation.scale;
     this.radius = 25;
+    this.boundX = 132;
+    this.boundY = 102;
     this.reward = 5;
     this.isDead = 0;
     this.name = "enemy1";

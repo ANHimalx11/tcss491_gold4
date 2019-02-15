@@ -27,6 +27,9 @@ var actionMap = new Map([
 function Hero(game) {
     this.speed = 60;
     this.game = game;
+    this.radius = 50;
+    this.boundX = 68;
+    this.boundY = 93;
     this.oldX;
     this.oldY;
 
@@ -204,7 +207,7 @@ Hero.prototype.draw = function (ctx) {
         
         this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
     }
-
+    // Entity.prototype.draw(ctx);
     Entity.prototype.draw.call(this);
 }
 /////////////////////////////END DRAW

@@ -30,7 +30,8 @@ Timer.prototype.tick = function () {
 
 function GameEngine() {
     this.entities = [];
-    this.showOutlines = false;
+    this.towersList = []; 
+    this.showOutlines = true;  //////USE THIS TO TEST BOUNDS
     this.ctx = null;
     this.click = null;
     this.mouse = null;
@@ -104,6 +105,11 @@ GameEngine.prototype.addEntity = function (entity) {
     this.entities.push(entity);
 }
 
+GameEngine.prototype.addTower = function (entity) {
+    console.log('added entity');
+    this.towersList.push(entity);
+}
+
 GameEngine.prototype.draw = function () {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.save();
@@ -151,13 +157,26 @@ Entity.prototype.update = function () {
 }
 
 Entity.prototype.draw = function (ctx) {
-    if (this.game.showOutlines && this.radius) {
+    if (this.game.showOutlines && this.radius && this.boundX && this.boundY) {
         this.game.ctx.beginPath();
         this.game.ctx.strokeStyle = "green";
-        this.game.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+        this.game.ctx.arc(this.recenterBound(this.boundX, this.boundY).x, this.recenterBound(this.boundX, this.boundY).y, this.radius, 0, Math.PI * 2, false);
         this.game.ctx.stroke();
         this.game.ctx.closePath();
     }
+}
+
+//
+Entity.prototype.recenterBound = function (boundX, boundY) {
+    var currentX = this.x;
+    var currentY = this.y;
+    var newX;
+    var newY;
+
+    newX = currentX + (boundX/2);
+    newY = currentY + (boundY/2);
+
+    return { 'x': newX, 'y': newY}
 }
 
 Entity.prototype.rotateAndCache = function (image, angle) {
