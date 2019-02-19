@@ -1,189 +1,198 @@
 //this script contains information for the towers
 
-var getXmouse;
-var getYmouse;
+function Tower(game, x, y, towerType) {
 
-
-
-function tower(game, x, y) {
-
-    this.x = x; //always going to be 24
-    this.y = y; //always going to be 120
-    this.radius = 
+    this.x = game.mouse.x;
+    this.y = game.mouse.y;
+    this.boundX = 48;
+    this.boundY = 220;
+    this.radius = 100;
     this.game = game;
     this.ctx = game.ctx;
-    this.list = tower.types[2];
+    this.type = towerType;
+   
+    this.fireRate = 0.5;
+    this.target; //= new Enemy1(this.gameEngine, AM.getAsset("./img/level1flying_132w_102h_1pd_8fr.png"));
+    this.targetIsSet = 0;
+    this.damage = 10 + (10 * towerType);
+    this.spawnTime = game.timer.gameTime;
+    this.fireRateCount = 0;
+     Entity.call(this, game, x, y);
+}
+Tower.prototype = new Entity();
+Tower.prototype.constructor = Tower;  
 
-    var monsterList = [];
+function createArrowTower() {
+    isBuilding = 1;
+    towerType = 0; //change value with each different tower
+}
+function createCannonTower() {
+    isBuilding = 1;
+    towerType = 1; //change value with each different tower
+}
 
-    //////////////Type of towers in an array of object////////////////
-tower.types = [];
+function createMagicTower() {
+    isBuilding = 1;
+    towerType = 2; //change value with each different tower
+}
 
-
-tower.types.Arrow = {
-    path: "./img/towers/arrow1.png",
-    x = 48,
-    y = 120,
-    cost: 20,
-    range: 10,
-    damage: 10,
-    rateOfFire: 10,
-    upgrades: [
-		{ damage: 15, rate: 38, range: 85 },
-		{ damage: 25, rate: 36, range: 90 },
-		{ damage: 50, rate: 34, range: 95 },
-    ],
-
-    fire: function (monster) {
-        var monster = monster[0];
-        var _health = monster.health;
-        var tower = this;
-
-        if ((monster.health -= tower.damage) <= 0 && _health > 0) {
-            return monster.health = monster.health - tower.damage;
-        }
-        
+Tower.prototype.update = function () {
+    var time = this.game.timer.gameTime - this.spawnTime;
+    if (time >= this.fireRate * this.fireRateCount) {
+        this.checkCC(this.game);
+        this.fireRateCount = this.fireRateCount + 1;
     }
-}
-
-tower.types.Cannon = {
-    path: "./img/towers/cannon1.png",
-    x = 48,
-    y = 120,
-    cost: 25,
-    damage: 15,
-    range: 8,
-    rateOfFire: 8,
-    upgrades: [
-		{ damage: 20, rate: 57, range: 125 },
-		{ damage: 30, rate: 54, range: 130 },
-        { damage: 40, rate: 51, range: 135 },
-    ],
-
-    fire: function (monster) {
-        var monster = monster[0];
-        var _health = monster.health;
-        var tower = this;
-
-        if ((monster.health -= tower.damage) <= 0 && _health > 0) {
-            return monster.health - tower.damage;
+    if (this.targetIsSet == 1) {
+        if (this.target.isDead == 1 || !this.collide(this.target)) {
+            this.targetIsSet = 0;
         }
-        
     }
-}
 
-tower.types.Magic = {
-    path: "./img/towers/magic1.png",
-    x = 48,
-    y = 120,
-    cost: 35,
-    range: 10,
-    damage: 20,
-	upgrades: [
-		{ damage: 5, rate: 38, range: 62 },
-		{ damage: 10, rate: 36, range: 64 },
-        { damage: 15, rate: 34, range: 66 },
-    ],
-
-    fire: function (monster) {
-        var monster = monster[0];
-        var _health = monster.health;
-        var tower = this;
-
-        if ((monster.health -= tower.damage) <= 0 && _health > 0) {
-            return monster.health - tower.damage;
+    if (this.targetIsSet != 0) {
+        if (this.target.isDead == 1 || !this.collide(this.target)) {
+            this.checkTarget(this.game);
         }
-        
-    }
-}
-    Entity.call(this);
-}
-
-tower.prototype = new Entity();
-tower.prototype.constructor = tower;
-
-tower.prototype.update = function() {
-
-    var index, len;
-    var tower = this;
-
-    for (index = 0, len = monsterList.length; index < len; ++index) {
-        // console.log(monsterList[index]);
-
-       if( tower.collision(monster) !== false && monster.health >= 0) {
-
-            tower.fire(monster);
-
-       } else {
-           removeMonsterFromList(monster);
-       }
     }
     Entity.prototype.update.call(this);
 }
 
-tower.prototype.draw = function(number) {
-    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+
+Tower.prototype.draw = function() {
+    tower[this.type].draw(this.game, this.ctx, this.x, this.y);
     Entity.prototype.draw.call(this);
 }
 
-tower.prototype.removeMonsterFromList() = function(monster) {
-    monsterList.splice(monster);
-    Entity.prototype.update.call(this);
-}
+    //////////////Type of towers in an array of objects//////////////// 0 = arrow, 1 = cannon, 2 = magic
+var tower = [
+    {
+        ////Arrow tower type
+        animation: ArrowAnimate = new Animation(AM.getAsset("./img/towers/arrow1.png"), 48, 120, 48, 0.05, 1, true, 1.0, 0),
+        cost: 25,
+        damage: 20,
+        range: 100,
+        atkRate: 15,
+        upgrade: [  {damage: 20, range: 100, atkRate: 15},
+                    {damage: 28, range: 120, atkRate: 20},
+                    {damage: 35, range: 150, atkRate: 25} ],
+                    
+        attack: function(monster) {
+            
 
-//taken from lecture
-tower.prototype.collision = function(monster) {
-    var myCircle = {radius:20, x:24, y:120};
-    var monster = {radius:monster.radius, x:monster.x, y:monster.y};
-    var dx = myCircle.x - monster.x;
-    var dy = myCircle.y - monster.y;
-    var distance = Math.sqrt(dx * dx + dy * dy);
+            
+            
+        },
+        draw: function(game, ctx, x, y) {
+            ArrowAnimate.drawFrame(game.clockTick, ctx, x, y)
+            
 
-    if(distance < myCircle.radius + monster.radius){   // collision detected!}
+        },
 
-    //add to monster list
-    monsterList.push(monster);
-    Entity.prototype.update.call(this);
-    return true;
-}
-    else return false;
-}
-//UI and Game Interactions
+        
+    },
 
-//taken from go code from class
-tower.prototype.startInput = function () {
-    console.log('Starting input');
-    var that = this;
+    {
+        ///Cannon tower type
+        animation: CannonAnimate = new Animation(AM.getAsset("./img/towers/cannon1.png"), 48, 120, 48, 0.05, 1, true, 1.0, 0),
+        cost: 25,
+        damage: 35,
+        range: 50,
+        atkRate: 12,
+        upgrade: [  {damage: 42, range: 60, atkRate: 15},
+                    {damage: 55, range: 80, atkRate: 26},
+                    {damage: 75, range: 100, atkRate: 33} ],
+            
+        attack: function(monster) {
 
-    var elementId;
+        },
+        draw: function(game, ctx, x, y) {
+            CannonAnimate.drawFrame(game.clockTick, ctx, x, y)
+        },
+    },
 
+    {
+        ////Magic tower type
+        animation: MagicAnimate = new Animation(AM.getAsset("./img/towers/magic1.png"), 48, 120, 48, 0.05, 1, true, 1.0, 0),
+        cost: 40,
+        damage: 50,
+        range: 30,
+        atkRate: 9,
+        upgrade: [  {damage: 62, range: 45, atkRate: 12},
+                    {damage: 80, range: 60, atkRate: 20},
+                    {damage: 100, range: 80, atkRate: 25} ],
+            
+        attack: function(monster) {
 
-    var getXandY = function (e,number) {
-        var x = e.clientX - that.ctx.canvas.getBoundingClientRect().left - 25;
-        var y = e.clientY - that.ctx.canvas.getBoundingClientRect().top - 25;
+            
+        },
+        draw: function(game, ctx, x, y) {
+            MagicAnimate.drawFrame(game.clockTick, ctx, x, y)
 
-        x = Math.floor(x / 39.55);
-        y = Math.floor(y / 39.55);
-
-        return{  x: x, y: y };
-
+        },
     }
-    this.ctx.getElementById("arrow dropdown",tower(GameEngine));
+];////////////////End list of tower types
 
-    this.ctx.canvas.addEventListener("mousemove", function (e) {
-        //console.log(getXandY(e));
-        that.mouse = getXandY(e);
-    }, false);
+////////////////////////////////////UTILITY FOR TOWERS
 
-    this.ctx.canvas.addEventListener("click", function (e) {
-        //console.log(getXandY(e));
-        that.click = getXandY(e);
-    }, false);
+Tower.prototype.checkCC = function (game) {
+    for (var i = 2; i <= game.entities.length - 1; i++) {
+        //alert(game.entities.length);
+        if (this.collide(game.entities[i])) {
+            if (game.entities[i].name == "enemy") {
+                if (this.targetIsSet == 0 && game.entities[i].isDead == 0) { //if the tower has no target and the entity is not dead
+                    this.target = game.entities[i];//set the new target
+                    this.targetIsSet = 1;
+                }
 
-    console.log('Input started');
+                if (this.target == game.entities[i]) {
+                    game.entities[i].health = game.entities[i].health - this.damage;
+                }
+            }
+            console.log('towers for days!');
+        }
+    }
+}
+Tower.prototype.checkTarget = function (game) {
+
+    var furthestEntity, furthestDistance = -1;
+    for (var i = 2; i <= game.entities.length - 1; i++) {
+        if (this.collide(game.entities[i])) {
+            var dist = this.getDistance(game.entities[i]);
+            if (dist > furthestDistance) {
+                furthestDistance = dist;
+                furthestEntity = game.entities[i];
+            }
+        }
+    }
+
+    if (distance == -1) {
+        this.targetIsSet = 0;
+    } else {
+        this.target = furthestEntity;
+        this.targetIsSet = 1;
+    }
+
+}
+Tower.prototype.collide = function(monster) {
+
+    var myCircle = {'x': this.recenterBoundX(), 'y': this.recenterBoundY(), 'r': this.radius};
+    var otherCirle = {'x': monster.recenterBoundX(), 'y': monster.recenterBoundY(), 'r': monster.radius};
+    var dx = myCircle.x - otherCirle.x;
+    var dy = myCircle.y - otherCirle.y;
+    var distance = Math.sqrt(dx*dx + dy*dy);
+    
+    return (distance < myCircle.r + otherCirle.r);
+}
+Tower.prototype.getDistance = function (monster) {
+    var myCircle = { 'x': this.recenterBoundX(), 'y': this.recenterBoundY(), 'r': this.radius };
+    var otherCirle = { 'x': monster.recenterBoundX(), 'y': monster.recenterBoundY(), 'r': monster.radius };
+    var dx = myCircle.x - otherCirle.x;
+    var dy = myCircle.y - otherCirle.y;
+    var distance = Math.sqrt(dx * dx + dy * dy);
+    return distance;
 }
 
-focusNoScrollMethod = function getFocusWithoutScrolling() {          
-    document.getElementById("myButton").focus({preventScroll:true});
-  }
+
+
+
+////////////////////////////END UTILITY FOR TOWERS
 

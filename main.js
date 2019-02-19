@@ -9,24 +9,14 @@ var lastX, lastY;
 var distance = 24;
 var level = 1;
 var isBuilding = 0;
-//module to bind so that isBuilding can be called from other scripts
-// var buildModule = {
-//     isBuilding : 0,
-//     getStatus : function() { 
-//         return this.isBuilding;
-//     }, 
-//     setStatus: function(number) {
-//         this.isBuilding = number;
-//     }
-// }
-
-var towerType = 0;
+var towerType;
 var spawnInterval = 1.0;
 var playerGold = 40;
-var playerHealth = 200;
+var playerHealth = 100;
 var arrowTowerPrice = 15;
 var cannonTowerPrice = 25;
 var magicTowerPrice = 40;
+
 var map =  [['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
             ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
             ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
@@ -112,35 +102,87 @@ Animation.prototype.isDone = function () {
 
 /////////////////////////////////////////END 
 //Animation(spriteSheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale, padWidth)
-function base(game, spritesheet) {
-    this.animation = new Animation(spritesheet, 35, 84, 216, .08, 6, true, 1, 1);
+
+function base(game) {
+    this.state = 0;
+    this.animation = new Animation(AM.getAsset("./img/crystal_standing_35w_84h_1pd_6fr.png"), 35, 84, 216, .08, 6, true, 1, 1);
+    this.ani_hurt = new Animation(AM.getAsset("./img/crystal_hurt_35w_84h_1pd_4fr.png"), 35, 84, 144, 2.0, 4, false, 1, 1);
+    this.ani_dead = new Animation(AM.getAsset("./img/crystal_death_54w_84h_1pd_21fr.png"), 54, 84, 1155, 0.12, 21, false, 1, 1);
     this.ctx = game.ctx;
-    //this.health = 200;
     this.name = "base";
     this.x = baseX;
     this.y = baseY;
-    this.radius = 25;
+    this.radius = 60;
+    this.boundX = 35;
+    this.boundY = 84;
     this.game = game;
     this.isDead = 0;
     Entity.call(this, game, baseX, baseY);
 }
 
+
+
 base.prototype = new Entity();
 base.prototype.constructor = base;
 
 base.prototype.update = function () {
-    //if the enemy is in the player's base die and decrease the base health
-    if(playerHealth == 0) {
-        //show game over screen
-    }
+    this.checkCC(this.game);
+
     Entity.prototype.update.call(this);
 }
 
-base.prototype.draw = function () {
-    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+base.prototype.draw = function (ctx) {
+    if (this.state == 1) {
+        this.ani_hurt.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+    }
+    else if (this.state == 2) {
+        this.ani_dead.drawFrame(this.game.clockTick, ctx, this.x - 25, this.y);
+    }
+    else if (this.state == 0) {
+        this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+    }
     Entity.prototype.draw.call(this);
 }
 
+base.prototype.checkCC = function (game) {
+    for (var i = 0; i <= game.entities.length - 1; i++) {
+        if (this.collide(game.entities[i]) && playerHealth > 0) {
+            console.log('what');
+            this.state = 1;
+            playerHealth = playerHealth - game.entities[i].damage;
+            playerGold = playerGold + game.entities[i].reward;
+            UpdateUI();
+            game.entities[i].removeFromWorld = true;
+            return;
+        }
+        else if (this.collide(game.entities[i]) && playerHealth <= 0) {
+            console.log('already dead');
+            this.state = 2;
+            playerHealth = playerHealth - game.entities[i].damage;
+            playerGold = playerGold + game.entities[i].reward;
+            UpdateUI();
+            game.entities[i].removeFromWorld = true;
+        }
+        else if (playerHealth > 0){
+            this.state = 0;
+        }
+
+    }
+
+}
+
+
+base.prototype.collide = function(monster) {
+    var myCircle = {'x': this.recenterBoundX(), 'y': this.recenterBoundY(), 'r': this.radius};
+    var otherCirle = {'x': monster.recenterBoundX(), 'y': monster.recenterBoundY(), 'r': monster.radius};
+    var dx = myCircle.x - otherCirle.x;
+    var dy = myCircle.y - otherCirle.y;
+    var distance = Math.sqrt(dx*dx + dy*dy);
+    return (distance < myCircle.r + otherCirle.r);
+}
+
+
+//////////////////////////////////SPAWN MACHINE FOR MONSTERS
 function spawner(game, spritesheet, gameEngine) {
     this.animation = new Animation(spritesheet, 50, 50, 1, 0.15, 1, true, 1);
     this.ctx = game.ctx;
@@ -160,12 +202,12 @@ spawner.prototype.update = function () {
     var time = this.gameEngine.timer.gameTime;
     if (this.index < level1spawn.length) {
         if(level1spawn[this.index] == '1' && time >= spawnInterval * this.index) {
-            this.gameEngine.addEntity(new Enemy1(this.gameEngine, AM.getAsset("./img/level1flying_132w_102h_1pd_8fr.png")));
+            this.gameEngine.addEntity(new Enemy1(this.gameEngine, AM.getAsset("./img/monsters/level1flying_132w_102h_1pd_8fr.png")));
             this.index = this.index + 1;
         }
         
         if (level1spawn[this.index] == '2' && time >= spawnInterval * this.index) {
-            this.gameEngine.addEntity(new Enemy1(this.gameEngine, AM.getAsset("./img/level1flying_132w_102h_1pd_8fr.png")));
+            this.gameEngine.addEntity(new Enemy1(this.gameEngine, AM.getAsset("./img/monsters/level1flying_132w_102h_1pd_8fr.png")));
             this.index = this.index + 1;
         }
 		if(level1spawn[this.index] == "boss1" && time >= level1spawn.length * spawnInterval + 5) {//or if all enemies are dead spawn the boss
@@ -178,7 +220,7 @@ spawner.prototype.update = function () {
 }
 
 spawner.prototype.draw = function () {
-    //this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    
     Entity.prototype.draw.call(this);
 }
 
@@ -191,6 +233,8 @@ function Enemy1(game, spritesheet) {
     this.sizeX = 132 * this.animation.scale;
     this.sizeY = 102 * this.animation.scale;
     this.radius = 25;
+    this.boundX = 132;
+    this.boundY = 102;
     this.reward = 5;
     this.isDead = 0;
     this.name = "enemy1";
@@ -251,7 +295,7 @@ Enemy1.prototype.update = function () {
                     playerHealth = playerHealth - this.damage;
                     playerGold = playerGold + this.reward;
                     this.isDead = 1;
-                    update();
+                    UpdateUI();
                     //alert(ent.health + " " + gold);
                     //this.game.entities.splice(i, 1);
                 }
@@ -515,44 +559,7 @@ boss1.prototype.draw = function () {
 }
 
 
-
-function ArrowTower(game, spritesheet, Xcoor, Ycoor) {
-    this.animation = new Animation(spritesheet, 48, 120, 48, 0.05, 1, true, 1.0, 0);
-    this.ctx = game.ctx;
-    this.game = game;
-    this.damage = 10;
-    this.sizeX = 48;
-    this.sizeY = 120;
-    this.radius = 24;
-    this.name = "ArrowTower";
-
-    Entity.call(this, game, Xcoor, Ycoor);
-}
-
-
-
-ArrowTower.prototype = new Entity();
-ArrowTower.prototype.constructor = ArrowTower;
-
-
-ArrowTower.prototype.collide = function(other) {
-    var difX = this.x - other.x;
-    var difY = this.y - other.y;
-    return Math.sqrt(difX * difX + difY * difY) < this.radius + other.radius;
-};
-
-ArrowTower.prototype.update = function () {
-    
-
-}
-
-ArrowTower.prototype.draw = function () {
-    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    Entity.prototype.draw.call(this);
-}
-
-
-
+//////////////////////////////////////////////////GAME BOARD CODE, used for enemy path and placing towers
 function GameBoard(game) {
     
     Entity.call(this, game, 0, 0);
@@ -577,17 +584,20 @@ GameBoard.prototype.update = function () {
     if (this.game.click && isBuilding != 0) {
         isBuilding = 0;
         this.board[this.game.click.x][this.game.click.y] = towerType;
-        if(towerType == 1){
-            this.game.addEntity(new ArrowTower(this.game, AM.getAsset("./img/towers/arrow1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset));
+        if(towerType == 0){
+            // this.game.addTower(new Tower(this.game, AM.getAsset("./img/towers/arrow1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, towerType));
+            this.game.addTower(new Tower(this.game, this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, towerType));
             playerGold = playerGold - arrowTowerPrice;
-        } else if(towerType == 2) {
-            this.game.addEntity(new ArrowTower(this.game, AM.getAsset("./img/towers/cannon1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset));
+        } else if(towerType == 1) {
+            // this.game.addTower(new Tower(this.game, AM.getAsset("./img/towers/cannon1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, towerType));
+            this.game.addTower(new Tower(this.game, this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, towerType));
             playerGold = playerGold - cannonTowerPrice;
-        } else if(towerType == 3) {
-            this.game.addEntity(new ArrowTower(this.game, AM.getAsset("./img/towers/magic1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset));
+        } else if(towerType == 2) {
+            // this.game.addTower(new Tower(this.game, AM.getAsset("./img/towers/magic1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, towerType));
+            this.game.addTower(new Tower(this.game, this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, towerType));
             playerGold = playerGold - magicTowerPrice;
         }
-        update();
+        UpdateUI();
     }
     Entity.prototype.update.call(this);
 }
@@ -601,21 +611,21 @@ GameBoard.prototype.draw = function (ctx) {
     if(isBuilding == 1) {
 
         // draw mouse shadow
-        if (this.game.mouse && towerType == 1) {
+        if (this.game.mouse && towerType == 0) {
             ctx.save();
             ctx.globalAlpha = 0.5;
             ctx.drawImage(AM.getAsset("./img/towers/arrow1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, 48, 120);
             ctx.restore();
         }
 
-        if (this.game.mouse && towerType == 2) {
+        if (this.game.mouse && towerType == 1) {
             ctx.save();
             ctx.globalAlpha = 0.5;
             ctx.drawImage(AM.getAsset("./img/towers/cannon1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, 48, 120);
             ctx.restore();
         }
 
-        if (this.game.mouse && towerType == 3) {
+        if (this.game.mouse && towerType == 2) {
             ctx.save();
             ctx.globalAlpha = 0.5;
             ctx.drawImage(AM.getAsset("./img/towers/magic1.png"), this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, 48, 120);
@@ -646,7 +656,7 @@ function setSpawnPoint() {
 }
 
 
-function update() {
+function UpdateUI() {
     var gold = document.getElementById("Gold");
     gold.innerHTML = "$" + playerGold;
 
@@ -678,31 +688,13 @@ function update() {
 
 }
 
-function createArrowTower() {
-    
-    isBuilding = 1;
-    towerType = 1; //change value with each different tower
-   
-}
-function createCannonTower() {
-    
-    isBuilding = 1;
-    towerType = 2; //change value with each different tower
-    
-}
 
-function createMagicTower() {
-    
-    isBuilding = 1;
-    towerType = 3; //change value with each different tower
-    
-}
 
 AM.queueDownload("./img/maps/Map002.png");
 AM.queueDownload("./img/towers/arrow1.png");
 AM.queueDownload("./img/towers/cannon1.png");
 AM.queueDownload("./img/towers/magic1.png");
-AM.queueDownload("./img/level1flying_132w_102h_1pd_8fr.png");
+AM.queueDownload("./img/monsters/level1flying_132w_102h_1pd_8fr.png");
 AM.queueDownload("./img/crystal_standing_35w_84h_1pd_6fr.png");
 AM.queueDownload("./img/hero/hero_battleidle_68w_93h_1pd_6fr.png");
 AM.queueDownload("./img/hero/hero_attack_74w_92h_1pd_7fr.png");
@@ -718,6 +710,8 @@ AM.queueDownload("./img/hero/hero_walk_s_42w_97h_1pd_8fr.png");
 AM.queueDownload("./img/hero/hero_walk_se_50w_96h_1pd_8fr.png");
 AM.queueDownload("./img/hero/hero_walk_sw_50w_96h_1pd_8fr.png");
 AM.queueDownload("./img/hero/hero_walk_w_54w_95h_1pd_8fr.png");
+AM.queueDownload("./img/crystal_death_54w_84h_1pd_21fr.png");
+AM.queueDownload("./img/crystal_hurt_35w_84h_1pd_4fr.png")
 AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
     var ctx = canvas.getContext("2d");
@@ -725,7 +719,7 @@ AM.downloadAll(function () {
     var gameBoard = new GameBoard(gameEngine);
     var hero = new Hero(gameEngine);
     gameEngine.addEntity(gameBoard);
-    gameEngine.addEntity(hero);
+    gameEngine.addTower(hero);
     gameEngine.init(ctx);
     
     gameEngine.start();
@@ -733,8 +727,8 @@ AM.downloadAll(function () {
     document.getElementById("ArrowTowerButton").addEventListener("click", createArrowTower);
     document.getElementById("CannonTowerButton").addEventListener("click", createCannonTower);
     document.getElementById("MagicTowerButton").addEventListener("click", createMagicTower);
-    update();
-    gameEngine.addEntity(new base(gameEngine, AM.getAsset("./img/crystal_standing_35w_84h_1pd_6fr.png")));
+    UpdateUI();
+    gameEngine.addTower(new base(gameEngine));
     gameEngine.addEntity(new spawner(gameEngine, AM.getAsset("./img/base2.png")));
     
 
