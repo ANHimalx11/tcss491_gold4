@@ -10,8 +10,14 @@ function Tower(game, x, y, towerType) {
     this.game = game;
     this.ctx = game.ctx;
     this.type = towerType;
-    Entity.call(this, game, x, y);
-    
+   
+    this.fireRate = 0.5;
+    this.target; //= new Enemy1(this.gameEngine, AM.getAsset("./img/level1flying_132w_102h_1pd_8fr.png"));
+    this.targetIsSet = 0;
+    this.damage = 10 + (10 * towerType);
+    this.spawnTime = game.timer.gameTime;
+    this.fireRateCount = 0;
+     Entity.call(this, game, x, y);
 }
 Tower.prototype = new Entity();
 Tower.prototype.constructor = Tower;  
@@ -30,10 +36,26 @@ function createMagicTower() {
     towerType = 2; //change value with each different tower
 }
 
-Tower.prototype.update = function() {
-    this.checkCC(this.game);
+Tower.prototype.update = function () {
+    var time = this.game.timer.gameTime - this.spawnTime;
+    if (time >= this.fireRate * this.fireRateCount) {
+        this.checkCC(this.game);
+        this.fireRateCount = this.fireRateCount + 1;
+    }
+    if (this.targetIsSet == 1) {
+        if (this.target.isDead == 1 || !this.collide(this.target)) {
+            this.targetIsSet = 0;
+        }
+    }
+
+    if (this.targetIsSet != 0) {
+        if (this.target.isDead == 1 || !this.collide(this.target)) {
+            this.checkTarget(this.game);
+        }
+    }
     Entity.prototype.update.call(this);
 }
+
 
 Tower.prototype.draw = function() {
     tower[this.type].draw(this.game, this.ctx, this.x, this.y);
@@ -113,13 +135,43 @@ var tower = [
 
 Tower.prototype.checkCC = function (game) {
     for (var i = 2; i <= game.entities.length - 1; i++) {
+        //alert(game.entities.length);
         if (this.collide(game.entities[i])) {
-            // console.log('towers for days!');
-            tower[this.type].attack(game.entities[i]);
+            if (game.entities[i].name == "enemy") {
+                if (this.targetIsSet == 0 && game.entities[i].isDead == 0) { //if the tower has no target and the entity is not dead
+                    this.target = game.entities[i];//set the new target
+                    this.targetIsSet = 1;
+                }
+
+                if (this.target == game.entities[i]) {
+                    game.entities[i].health = game.entities[i].health - this.damage;
+                }
+            }
+            console.log('towers for days!');
         }
     }
 }
+Tower.prototype.checkTarget = function (game) {
 
+    var furthestEntity, furthestDistance = -1;
+    for (var i = 2; i <= game.entities.length - 1; i++) {
+        if (this.collide(game.entities[i])) {
+            var dist = this.getDistance(game.entities[i]);
+            if (dist > furthestDistance) {
+                furthestDistance = dist;
+                furthestEntity = game.entities[i];
+            }
+        }
+    }
+
+    if (distance == -1) {
+        this.targetIsSet = 0;
+    } else {
+        this.target = furthestEntity;
+        this.targetIsSet = 1;
+    }
+
+}
 Tower.prototype.collide = function(monster) {
 
     var myCircle = {'x': this.recenterBoundX(), 'y': this.recenterBoundY(), 'r': this.radius};
@@ -130,7 +182,14 @@ Tower.prototype.collide = function(monster) {
     
     return (distance < myCircle.r + otherCirle.r);
 }
-
+Tower.prototype.getDistance = function (monster) {
+    var myCircle = { 'x': this.recenterBoundX(), 'y': this.recenterBoundY(), 'r': this.radius };
+    var otherCirle = { 'x': monster.recenterBoundX(), 'y': monster.recenterBoundY(), 'r': monster.radius };
+    var dx = myCircle.x - otherCirle.x;
+    var dy = myCircle.y - otherCirle.y;
+    var distance = Math.sqrt(dx * dx + dy * dy);
+    return distance;
+}
 
 
 
