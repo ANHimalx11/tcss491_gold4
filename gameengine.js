@@ -1,5 +1,5 @@
 // This game shell was happily copied from Googler Seth Ladd's "Bad Aliens" game and his Google IO talk in 2011
-
+var isWaveRunning = false;
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame ||
             window.webkitRequestAnimationFrame ||
@@ -11,9 +11,12 @@ window.requestAnimFrame = (function () {
             };
 })();
 
-
+function startWave() {
+    isWaveRunning = true;
+}
 function Timer() {
     this.gameTime = 0;
+    // this.waveTime = 0;
     this.maxStep = 0.05;
     this.wallLastTimestamp = 0;
 }
@@ -45,8 +48,11 @@ GameEngine.prototype.init = function (ctx) {
     this.ctx = ctx;
     this.surfaceWidth = this.ctx.canvas.width;
     this.surfaceHeight = this.ctx.canvas.height;
+    document.getElementById("ArrowTowerButton").addEventListener("click", createArrowTower);
+    document.getElementById("CannonTowerButton").addEventListener("click", createCannonTower);
+    document.getElementById("MagicTowerButton").addEventListener("click", createMagicTower);
+    // document.getElementById("startButton").addEventListener("click", startWave);
     this.startInput();
-    //this.timer = new Timer();
     
     console.log('game initialized');
 }
