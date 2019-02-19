@@ -32,10 +32,17 @@ function Hero(game) {
     this.boundX = 68;
     this.boundY = 93;
     this.x;
-    this.y; 
+    this.y;
     this.oldX;
     this.oldY;
-  
+
+    this.fireRate = 0.5;
+    this.fireRateCount = 0;
+    this.target;
+    this.targetIsSet = 0;
+    this.damage = 10;
+    this.spawnTime = game.timer.gameTime;
+
 
     //action animations
     this.animation = new Animation(AM.getAsset("./img/hero/hero_battleidle_68w_93h_1pd_6fr.png"), 68, 93, 414, 0.12, 6, true, 1, 1);
@@ -67,8 +74,8 @@ function calcDist(p1x, p1y, p2x, p2y) {
 
     var dx = p2x - p1x;
     var dy = p2y - p1y;
-    result =Math.sqrt(dx * dx + dy * dy)
-    return(result);
+    result = Math.sqrt(dx * dx + dy * dy)
+    return (result);
 }
 //reset the direction of the hero
 function resetDirections(value, key, map) {
@@ -136,50 +143,69 @@ function makeMovementInfo(currentX, currentY, mouseX, mouseY, speed) {
     return (moveObj);
 }
 
-
+/*
 Hero.prototype.checkCC = function(game) {
     for (var i = 2; i <= game.entities.length - 1; i++) {
                if(this.collide(game.entities[i])) {
                    console.log('i am here yo!');
                }
+    }
 }
-}
 
 
-Hero.prototype.collide = function(monster) {
 
-    var myCircle = {'x': this.recenterBoundX(), 'y': this.recenterBoundY(), 'r': this.radius};
-    var otherCirle = {'x': monster.recenterBoundX(), 'y': monster.recenterBoundY(), 'r': monster.radius};
+Hero.prototype.collide = function (monster) {
+
+    var myCircle = { 'x': this.recenterBoundX(), 'y': this.recenterBoundY(), 'r': this.radius };
+    var otherCirle = { 'x': monster.recenterBoundX(), 'y': monster.recenterBoundY(), 'r': monster.radius };
     var dx = myCircle.x - otherCirle.x;
     var dy = myCircle.y - otherCirle.y;
-    var distance = Math.sqrt(dx*dx + dy*dy);
-    
+    var distance = Math.sqrt(dx * dx + dy * dy);
+
     return (distance < myCircle.r + otherCirle.r);
 }
 
-
+*/
 //////////////////////////////////////////////END UTILITY STUFF
 
 ////////////////////UPDATE HERO
 Hero.prototype.update = function () {
-   this.checkCC(this.game);
+    //this.checkCC(this.game);
 
-    if (this.game.click && isBuilding != 1) { 
+    if (this.game.click && isBuilding != 1) {
         moving = true;//after mouse click
         this.oldX = this.x;
         this.oldY = this.y;
         currentMoveObj = makeMovementInfo(this.x, this.y, this.game.mouse.x, this.game.mouse.y, this.speed);
-    } 
-    if (moving) { 
+    }
+    if (moving) {
         this.x += currentMoveObj[0].mX;
         this.y += currentMoveObj[0].mY;
 
-        if(calcDist(this.oldX, this.oldY, this.x, this.y) >= currentMoveObj[0].dist) {
+        if (calcDist(this.oldX, this.oldY, this.x, this.y) >= currentMoveObj[0].dist) {
             moving = false;
             //stopped moving , go back to idle animation
             actionMap.forEach(resetDirections);
-             //clear list of moveObj
-             currentMoveObj.splice(0,currentMoveObj.length);
+            //clear list of moveObj
+            currentMoveObj.splice(0, currentMoveObj.length);
+        }
+    }
+    if (!moving) {
+        var time = this.game.timer.gameTime - this.spawnTime;
+        if (time >= this.fireRate * this.fireRateCount) {
+            this.checkCC(this.game);
+            this.fireRateCount = this.fireRateCount + 1;
+        }
+        if (this.targetIsSet == 1) {
+            if (this.target.isDead == 1 || !this.collide(this.target)) {
+                this.targetIsSet = 0;
+            }
+        }
+
+        if (this.targetIsSet != 0) {
+            if (this.target.isDead == 1 || !this.collide(this.target)) {
+                this.checkTarget(this.game);
+            }
         }
     }
     Entity.prototype.update.call(this);
@@ -231,14 +257,74 @@ Hero.prototype.draw = function (ctx) {
         this.anim_nw.drawFrame(this.game.clockTick, ctx, this.x, this.y);
 
     } else if (!moving) {
-        
+
         this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
     }
-   
+
     Entity.prototype.draw.call(this);
 }
 /////////////////////////////END DRAW
 
+////////////////////////////////////UTILITY FOR HERO
 
+Hero.prototype.checkCC = function (game) {
+    for (var i = 2; i <= game.entities.length - 1; i++) {
+        //alert(game.entities.length);
+        if (this.collide(game.entities[i])) {
+            if (game.entities[i].name == "enemy") {
+                if (this.targetIsSet == 0 && game.entities[i].isDead == 0) { //if the tower has no target and the entity is not dead
+                    this.target = game.entities[i];//set the new target
+                    this.targetIsSet = 1;
+                }
+
+                if (this.target == game.entities[i]) {
+                    game.entities[i].health = game.entities[i].health - this.damage;
+                }
+            }
+            console.log('towers for days!');
+        }
+    }
+}
+
+Hero.prototype.checkTarget = function (game) {
+
+    var furthestEntity, furthestDistance = -1;
+    for (var i = 2; i <= game.entities.length - 1; i++) {
+        if (this.collide(game.entities[i])) {
+            var dist = this.getDistance(game.entities[i]);
+            if (dist > furthestDistance) {
+                furthestDistance = dist;
+                furthestEntity = game.entities[i];
+            }
+        }
+    }
+
+    if (distance == -1) {
+        this.targetIsSet = 0;
+    } else {
+        this.target = furthestEntity;
+        this.targetIsSet = 1;
+    }
+
+}
+
+Hero.prototype.collide = function (monster) {
+
+    var myCircle = { 'x': this.recenterBoundX(), 'y': this.recenterBoundY(), 'r': this.radius };
+    var otherCirle = { 'x': monster.recenterBoundX(), 'y': monster.recenterBoundY(), 'r': monster.radius };
+    var dx = myCircle.x - otherCirle.x;
+    var dy = myCircle.y - otherCirle.y;
+    var distance = Math.sqrt(dx * dx + dy * dy);
+    return (distance < myCircle.r + otherCirle.r);
+}
+
+Hero.prototype.getDistance = function (monster) {
+    var myCircle = { 'x': this.recenterBoundX(), 'y': this.recenterBoundY(), 'r': this.radius };
+    var otherCirle = { 'x': monster.recenterBoundX(), 'y': monster.recenterBoundY(), 'r': monster.radius };
+    var dx = myCircle.x - otherCirle.x;
+    var dy = myCircle.y - otherCirle.y;
+    var distance = Math.sqrt(dx * dx + dy * dy);
+    return distance;
+}
 
 
