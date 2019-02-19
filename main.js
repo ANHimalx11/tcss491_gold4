@@ -202,12 +202,12 @@ spawner.prototype.update = function () {
     var time = this.gameEngine.timer.gameTime;
     if (this.index < level1spawn.length) {
         if(level1spawn[this.index] == '1' && time >= spawnInterval * this.index) {
-            this.gameEngine.addEntity(new Enemy1(this.gameEngine, AM.getAsset("./img/level1flying_132w_102h_1pd_8fr.png")));
+            this.gameEngine.addEntity(new Enemy1(this.gameEngine, AM.getAsset("./img/monsters/level1flying_132w_102h_1pd_8fr.png")));
             this.index = this.index + 1;
         }
         
         if (level1spawn[this.index] == '2' && time >= spawnInterval * this.index) {
-            this.gameEngine.addEntity(new Enemy1(this.gameEngine, AM.getAsset("./img/level1flying_132w_102h_1pd_8fr.png")));
+            this.gameEngine.addEntity(new Enemy1(this.gameEngine, AM.getAsset("./img/monsters/level1flying_132w_102h_1pd_8fr.png")));
             this.index = this.index + 1;
         }
 		if(level1spawn[this.index] == "boss1" && time >= level1spawn.length * spawnInterval + 5) {//or if all enemies are dead spawn the boss
@@ -694,7 +694,7 @@ AM.queueDownload("./img/maps/Map002.png");
 AM.queueDownload("./img/towers/arrow1.png");
 AM.queueDownload("./img/towers/cannon1.png");
 AM.queueDownload("./img/towers/magic1.png");
-AM.queueDownload("./img/level1flying_132w_102h_1pd_8fr.png");
+AM.queueDownload("./img/monsters/level1flying_132w_102h_1pd_8fr.png");
 AM.queueDownload("./img/crystal_standing_35w_84h_1pd_6fr.png");
 AM.queueDownload("./img/hero/hero_battleidle_68w_93h_1pd_6fr.png");
 AM.queueDownload("./img/hero/hero_attack_74w_92h_1pd_7fr.png");
