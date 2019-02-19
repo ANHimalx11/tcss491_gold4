@@ -102,6 +102,7 @@ GameEngine.prototype.startInput = function () {
 
 GameEngine.prototype.addEntity = function (entity) {
     console.log('added entity');
+    console.log(entity);
     this.entities.push(entity);
 }
 

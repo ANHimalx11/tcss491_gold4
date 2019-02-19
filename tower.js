@@ -47,7 +47,13 @@ var tower = [
         animation: ArrowAnimate = new Animation(AM.getAsset("./img/towers/arrow1.png"), 48, 120, 48, 0.05, 1, true, 1.0, 0),
         cost: 25,
         damage: 20,
-        attack: function() {
+        range: 100,
+        atkRate: 15,
+        upgrade: [  {damage: 20, range: 100, atkRate: 15},
+                    {damage: 28, range: 120, atkRate: 20},
+                    {damage: 35, range: 150, atkRate: 25} ],
+                    
+        attack: function(monster) {
             
 
             
@@ -67,7 +73,13 @@ var tower = [
         animation: CannonAnimate = new Animation(AM.getAsset("./img/towers/cannon1.png"), 48, 120, 48, 0.05, 1, true, 1.0, 0),
         cost: 25,
         damage: 35,
-        attack: function() {
+        range: 50,
+        atkRate: 12,
+        upgrade: [  {damage: 42, range: 60, atkRate: 15},
+                    {damage: 55, range: 80, atkRate: 26},
+                    {damage: 75, range: 100, atkRate: 33} ],
+            
+        attack: function(monster) {
 
         },
         draw: function(game, ctx, x, y) {
@@ -80,7 +92,13 @@ var tower = [
         animation: MagicAnimate = new Animation(AM.getAsset("./img/towers/magic1.png"), 48, 120, 48, 0.05, 1, true, 1.0, 0),
         cost: 40,
         damage: 50,
-        attack: function() {
+        range: 30,
+        atkRate: 9,
+        upgrade: [  {damage: 62, range: 45, atkRate: 12},
+                    {damage: 80, range: 60, atkRate: 20},
+                    {damage: 100, range: 80, atkRate: 25} ],
+            
+        attack: function(monster) {
 
             
         },
@@ -96,7 +114,8 @@ var tower = [
 Tower.prototype.checkCC = function (game) {
     for (var i = 2; i <= game.entities.length - 1; i++) {
         if (this.collide(game.entities[i])) {
-            console.log('towers for days!');
+            // console.log('towers for days!');
+            tower[this.type].attack(game.entities[i]);
         }
     }
 }
