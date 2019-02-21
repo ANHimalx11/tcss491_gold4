@@ -1,5 +1,5 @@
 // This game shell was happily copied from Googler Seth Ladd's "Bad Aliens" game and his Google IO talk in 2011
-
+var isWaveRunning = false;
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame ||
             window.webkitRequestAnimationFrame ||
@@ -11,9 +11,12 @@ window.requestAnimFrame = (function () {
             };
 })();
 
-
+function startWave() {
+    isWaveRunning = true;
+}
 function Timer() {
     this.gameTime = 0;
+    // this.waveTime = 0;
     this.maxStep = 0.05;
     this.wallLastTimestamp = 0;
 }
@@ -45,8 +48,11 @@ GameEngine.prototype.init = function (ctx) {
     this.ctx = ctx;
     this.surfaceWidth = this.ctx.canvas.width;
     this.surfaceHeight = this.ctx.canvas.height;
+    document.getElementById("ArrowTowerButton").addEventListener("click", createArrowTower);
+    document.getElementById("CannonTowerButton").addEventListener("click", createCannonTower);
+    document.getElementById("MagicTowerButton").addEventListener("click", createMagicTower);
+    // document.getElementById("startButton").addEventListener("click", startWave);
     this.startInput();
-    //this.timer = new Timer();
     
     console.log('game initialized');
 }
@@ -60,9 +66,13 @@ GameEngine.prototype.start = function () {
     })();
 }
 
+
+var keys = [];
+
 GameEngine.prototype.startInput = function () {
     console.log('Starting input');
     var that = this;
+ 
 
     var getXandY = function (e) {
         var x = e.clientX - that.ctx.canvas.getBoundingClientRect().left;
@@ -97,7 +107,84 @@ GameEngine.prototype.startInput = function () {
         e.preventDefault();
     }, false);
 
+    this.ctx.canvas.addEventListener("keypress", function (e) {
+       
+        e.preventDefault();
+        var keyCode = e.keyCode;
+        // console.log(e);
+       checkKeyPress(keyCode);
+       
+    }, false);
+
+    this.ctx.canvas.addEventListener("keydown", function (e) {
+        
+        
+        var keyCodeDown = e.keyCode;
+        // console.log(e);
+        movingByKey = true;
+        checkKeyDown(keyCodeDown);
+        e.preventDefault();
+    }, false);
+    
+    this.ctx.canvas.addEventListener("keyup", function (e) {
+    
+        var keyCodeUp = e.keyCode;
+        console.log(e);
+        movingByKey = false;
+        checkKeyUpHelper(e);
+        Hero.prototype.checkKeyUp(keyCodeUp);
+        e.preventDefault();
+    }, false);
+
     console.log('Input started');
+}
+
+
+function checkKeyPress(e) {
+    switch (e) {
+        case 49: //1
+            console.log('heal skill');
+            Hero.prototype.skillHeal();
+            break;
+        case 50: //2
+            console.log('thunder skill');
+            Hero.prototype.skillThunder()
+            break;
+        case 51: //3 
+            console.log('fire skill');
+            Hero.prototype.skillFire();
+            break;
+        case 52: //4
+            console.log('ice skill');
+            Hero.prototype.skillIce();
+            break;
+        default:
+            return;     
+    }
+};
+function checkKeyDown(e) {
+    keys[e.keyCode] = true;
+
+    switch (e) {
+        case 87: //w
+            Hero.prototype.moveUp();
+            break;
+        case 65: //a
+            Hero.prototype.moveLeft();
+            break;
+        case 83: //s
+            Hero.prototype.moveDown();
+            break;
+        case 68: //d
+            Hero.prototype.moveRight();
+            break;
+        default:
+            return;
+    }
+}
+
+function checkKeyUpHelper(e) {
+    keys[e.keyCode] = false;
 }
 
 GameEngine.prototype.addEntity = function (entity) {

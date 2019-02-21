@@ -10,7 +10,7 @@ var distance = 24;
 var level = 1;
 var isBuilding = 0;
 var towerType;
-var spawnInterval = 1.0;
+var spawnInterval = 10.0;
 var playerGold = 40;
 var playerHealth = 100;
 var arrowTowerPrice = 15;
@@ -201,7 +201,8 @@ spawner.prototype.constructor = spawner;
 spawner.prototype.update = function () {
     var time = this.gameEngine.timer.gameTime;
     if (this.index < level1spawn.length) {
-        if(level1spawn[this.index] == '1' && time >= spawnInterval * this.index) {
+        if (level1spawn[this.index] == '1' && time >= spawnInterval * this.index) {
+            console.log(time);
             this.gameEngine.addEntity(new Enemy1(this.gameEngine, AM.getAsset("./img/monsters/level1flying_132w_102h_1pd_8fr.png")));
             this.index = this.index + 1;
         }
@@ -724,9 +725,7 @@ AM.downloadAll(function () {
     
     gameEngine.start();
     setSpawnPoint();
-    document.getElementById("ArrowTowerButton").addEventListener("click", createArrowTower);
-    document.getElementById("CannonTowerButton").addEventListener("click", createCannonTower);
-    document.getElementById("MagicTowerButton").addEventListener("click", createMagicTower);
+
     UpdateUI();
     gameEngine.addTower(new base(gameEngine));
     gameEngine.addEntity(new spawner(gameEngine, AM.getAsset("./img/base2.png")));
