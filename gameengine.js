@@ -66,9 +66,13 @@ GameEngine.prototype.start = function () {
     })();
 }
 
+
+var keys = [];
+
 GameEngine.prototype.startInput = function () {
     console.log('Starting input');
     var that = this;
+ 
 
     var getXandY = function (e) {
         var x = e.clientX - that.ctx.canvas.getBoundingClientRect().left;
@@ -103,7 +107,84 @@ GameEngine.prototype.startInput = function () {
         e.preventDefault();
     }, false);
 
+    this.ctx.canvas.addEventListener("keypress", function (e) {
+       
+        e.preventDefault();
+        var keyCode = e.keyCode;
+        // console.log(e);
+       checkKeyPress(keyCode);
+       
+    }, false);
+
+    this.ctx.canvas.addEventListener("keydown", function (e) {
+        
+        
+        var keyCodeDown = e.keyCode;
+        // console.log(e);
+        movingByKey = true;
+        checkKeyDown(keyCodeDown);
+        e.preventDefault();
+    }, false);
+    
+    this.ctx.canvas.addEventListener("keyup", function (e) {
+    
+        var keyCodeUp = e.keyCode;
+        console.log(e);
+        movingByKey = false;
+        checkKeyUpHelper(e);
+        Hero.prototype.checkKeyUp(keyCodeUp);
+        e.preventDefault();
+    }, false);
+
     console.log('Input started');
+}
+
+
+function checkKeyPress(e) {
+    switch (e) {
+        case 49: //1
+            console.log('heal skill');
+            Hero.prototype.skillHeal();
+            break;
+        case 50: //2
+            console.log('thunder skill');
+            Hero.prototype.skillThunder()
+            break;
+        case 51: //3 
+            console.log('fire skill');
+            Hero.prototype.skillFire();
+            break;
+        case 52: //4
+            console.log('ice skill');
+            Hero.prototype.skillIce();
+            break;
+        default:
+            return;     
+    }
+};
+function checkKeyDown(e) {
+    keys[e.keyCode] = true;
+
+    switch (e) {
+        case 87: //w
+            Hero.prototype.moveUp();
+            break;
+        case 65: //a
+            Hero.prototype.moveLeft();
+            break;
+        case 83: //s
+            Hero.prototype.moveDown();
+            break;
+        case 68: //d
+            Hero.prototype.moveRight();
+            break;
+        default:
+            return;
+    }
+}
+
+function checkKeyUpHelper(e) {
+    keys[e.keyCode] = false;
 }
 
 GameEngine.prototype.addEntity = function (entity) {
