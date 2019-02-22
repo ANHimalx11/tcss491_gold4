@@ -777,7 +777,8 @@ AM.queueDownload("./img/hero/hero_walk_se_50w_96h_1pd_8fr.png");
 AM.queueDownload("./img/hero/hero_walk_sw_50w_96h_1pd_8fr.png");
 AM.queueDownload("./img/hero/hero_walk_w_54w_95h_1pd_8fr.png");
 AM.queueDownload("./img/crystal_death_54w_84h_1pd_21fr.png");
-AM.queueDownload("./img/crystal_hurt_35w_84h_1pd_4fr.png")
+AM.queueDownload("./img/crystal_hurt_35w_84h_1pd_4fr.png");
+AM.queueDownload("./img/towers/p_cannon_86w_86h_onFire_1fr_onHit1to10fr_1pd.png");
 AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
     var ctx = canvas.getContext("2d");

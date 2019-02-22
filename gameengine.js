@@ -71,7 +71,7 @@ GameEngine.prototype.startInput = function () {
 
     var getXandY = function (e) {
         var x = e.clientX - that.ctx.canvas.getBoundingClientRect().left;
-        var y = e.clientY - that.ctx.canvas.getBoundingClientRect().top - 25;
+        var y = e.clientY - that.ctx.canvas.getBoundingClientRect().top;
 
         x = Math.floor(x / 25);
         y = Math.floor(y / 25);
@@ -320,6 +320,14 @@ Entity.prototype.recenterBoundY = function () {
     return newY;
 }
 
+Entity.prototype.getDistance = function (monster) {
+    var myCircle = { 'x': this.recenterBoundX(), 'y': this.recenterBoundY(), 'r': this.radius };
+    var otherCirle = { 'x': monster.recenterBoundX(), 'y': monster.recenterBoundY(), 'r': monster.radius };
+    var dx = myCircle.x - otherCirle.x;
+    var dy = myCircle.y - otherCirle.y;
+    var distance = Math.sqrt(dx * dx + dy * dy);
+    return distance;
+}
 
 
 Entity.prototype.rotateAndCache = function (image, angle) {

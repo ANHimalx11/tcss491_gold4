@@ -1,9 +1,9 @@
 //this script contains information for the towers
 
 function Tower(game, x, y, towerType, towerName) {
-    this.x = game.mouse.x;
+    this.x = game.mouse.x; ///game board coordinates
     this.y = game.mouse.y;
-    this.boundX = 48;
+    this.boundX = 48; ///canvas coordinates
     this.boundY = 220;
     this.radius = 100;
     this.game = game;
@@ -204,6 +204,7 @@ var tower = [
 ////////////////////////////////////UTILITY FOR TOWERS
 
 Tower.prototype.checkCC = function (game) {
+    var that = this;
     for (var i = 2; i <= game.entities.length - 1; i++) {
         //alert(game.entities.length);
         if (this.collide(game.entities[i])) {
@@ -214,7 +215,21 @@ Tower.prototype.checkCC = function (game) {
                 }
 
                 if (this.target == game.entities[i]) {
-                    game.entities[i].health = game.entities[i].health - this.damage;
+                    //this is where we call a flag to fire
+                    switch (this.type) {
+                        case 0: //make arrow
+                            break;
+                        case 3: //make cannon
+                            var boomBoom = new cannonBall(that.game, that.x, that.y, that, game.entities[i]);
+                            game.addTower(boomBoom);
+                            boomBoom.fire = true;
+                            console.log('we make a boom boom');
+                            break;
+                        case 6: //make magic
+                            break;
+
+                    }
+                    // game.entities[i].health = game.entities[i].health - this.damage;            /////moved this to projectiles
                 }
             }
             console.log('towers for days!');
@@ -269,3 +284,106 @@ Tower.prototype.getDistance = function (monster) {
 
 ////////////////////////////END UTILITY FOR TOWERS
 
+/////////////////////////////////////////END 
+//Animation(spriteSheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale, padWidth)
+//////////projectiles
+function cannonBall(game, x, y, tower, monster) { 
+    this.game = game;
+    this.fire = false;
+    this.hit = false;
+    this.done = false;
+    this.x = x;
+    this.y = y;
+    this.boundX = 0;
+    this.boundY = 0;
+    this.radius = 20;
+    this.towerInfo = tower;
+    this.cTarget = monster;
+    this.totalDistance = this.getDistance(this.cTarget);
+    this.speed = 10;
+    this.onFire = new Animation(AM.getAsset("./img/towers/p_cannon_86w_86h_onFire_1fr_onHit1to10fr_1pd.png"), 86, 86, 870, 0.16, 2, true, .8, 1);
+    this.cannonCollidedWithMonster = new Animation(AM.getAsset("./img/towers/p_cannon_86w_86h_onFire_1fr_onHit1to10fr_1pd.png"), 86, 86, 870, 0.12, 10, false, 1, 1);
+    Entity.call(this, game, x, y);
+}
+
+cannonBall.prototype = new Entity();
+cannonBall.prototype.constructor = cannonBall;
+
+cannonBall.prototype.update = function () {
+    if (this.fire) {
+        this.isShot(this.totalDistance, this.ctarget);
+    }
+    if (this.hit) {
+        //take out damage from target
+        // game.entities[i].health = game.entities[i].health - this.damage;  
+        this.cTarget.health = this.cTarget - this.towerInfo.damage; 
+    }
+    if (this.done) {
+        this.reload();
+    }
+    
+    //x and y velocity based on range
+    //call isshot, then trigger onHit flag to true
+    
+    Entity.prototype.update.call(this);
+}
+
+
+cannonBall.prototype.draw = function () {
+
+    if (this.fire) {
+        //animation to onFire
+        this.onFire.drawFrame(this.game.clockTick, this.game.ctx, this.x, this.y);
+        if (this.hit) {
+            this.cannonCollidedWithMonster.drawFrame(this.game.clockTick, this.game.ctx, this.x, this.y);
+            if (this.cannonCollidedWithMonster.isDone()) {
+                this.done = true;
+            }
+        }
+        //animation to explode at monster
+        //onHit.isdone then set on fire flag back to false
+    }
+
+
+    
+
+    Entity.prototype.draw.call(this);
+}
+
+cannonBall.prototype.isShot = function () {
+
+
+    var vx = this.totalDistance /(this.game.clockTick*this.speed) / 1000;
+    var midPoint = this.totalDistance / 2;
+    var vy = 2 * Math.sin(vx);
+    var vy2 = 2 * Math.cos(vx); //after midpoint, switch this.y to vy2
+
+    if (this.x <= this.cTarget.x) {
+        this.x += vx * this.game.clockTick /this.speed;
+        this.y += vy * this.game.clockTick /this.speed;
+
+        if (this.x >= midPoint) {
+            this.x += vx * this.game.clockTick * this.speed;
+            this.y += vy2 * this.game.clockTick * this.speed;
+        }
+        if (this.x >= this.cTarget.x) {
+            this.hit = true;
+        }
+    }
+
+
+    //when onHit, set this.Hit to true
+}
+
+cannonBall.prototype.reload = function () {
+    this.removeFromWorld = true;
+}
+cannonBall.prototype.getDistance = function (monster) {
+
+    var myCircle = { 'x': this.towerInfo.recenterBoundX(), 'y': this.towerInfo.recenterBoundY(), 'r': this.towerInfo.radius };
+    var otherCirle = { 'x': monster.recenterBoundX(), 'y': monster.recenterBoundY(), 'r': monster.radius };
+    var dx = myCircle.x - otherCirle.x;
+    var dy = myCircle.y - otherCirle.y;
+    var distance = Math.sqrt(dx * dx + dy * dy);
+    return (distance);
+}
