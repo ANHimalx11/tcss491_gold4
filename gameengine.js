@@ -12,12 +12,9 @@ window.requestAnimFrame = (function () {
             };
 })();
 
-function startWave() {
-    isWaveRunning = true;
-}
+
 function Timer() {
     this.gameTime = 0;
-    // this.waveTime = 0;
     this.maxStep = 0.05;
     this.wallLastTimestamp = 0;
 }
@@ -50,10 +47,6 @@ GameEngine.prototype.init = function (ctx) {
     this.ctx = ctx;
     this.surfaceWidth = this.ctx.canvas.width;
     this.surfaceHeight = this.ctx.canvas.height;
-    document.getElementById("ArrowTowerButton").addEventListener("click", createArrowTower);
-    document.getElementById("CannonTowerButton").addEventListener("click", createCannonTower);
-    document.getElementById("MagicTowerButton").addEventListener("click", createMagicTower);
-    // document.getElementById("startButton").addEventListener("click", startWave);
     this.startInput();
     
     console.log('game initialized');
@@ -268,7 +261,7 @@ GameEngine.prototype.update = function () {
         }
     }
 
-    for (var i = this.ui.length - 1; i >= 0; --i) {
+    for (var i = this.uiList.length - 1; i >= 0; --i) {
         if (this.uiList[i].removeFromWorld) {
             this.uiList.splice(i, 1);
             console.log('removed entity')

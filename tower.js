@@ -1,7 +1,6 @@
 //this script contains information for the towers
 
-function Tower(game, x, y, towerType) {
-
+function Tower(game, x, y, towerType, towerName) {
     this.x = game.mouse.x;
     this.y = game.mouse.y;
     this.boundX = 48;
@@ -10,18 +9,21 @@ function Tower(game, x, y, towerType) {
     this.game = game;
     this.ctx = game.ctx;
     this.type = towerType;
-   
-    this.fireRate = 0.5;
+    this.fireRate = 0.5 + (0.05 * towerType);
+    this.level = 1;
+    this.upgradeCost = 15 + (5 * towerType);
+    this.sellCost = 10 + (3 * towerType);
     this.target; //= new Enemy1(this.gameEngine, AM.getAsset("./img/level1flying_132w_102h_1pd_8fr.png"));
     this.targetIsSet = 0;
-    this.damage = 10 + (10 * towerType);
+    this.damage = 7 + (3 * towerType);
     this.spawnTime = game.timer.gameTime;
     this.fireRateCount = 0;
+    this.name = towerName;
     Entity.call(this, game, x, y);
-    
+
 }
 Tower.prototype = new Entity();
-Tower.prototype.constructor = Tower;  
+Tower.prototype.constructor = Tower;
 
 function createArrowTower() {
     isBuilding = 1;
@@ -29,15 +31,15 @@ function createArrowTower() {
 }
 function createCannonTower() {
     isBuilding = 1;
-    towerType = 1; //change value with each different tower
+    towerType = 3; //change value with each different tower
 }
 
 function createMagicTower() {
     isBuilding = 1;
-    towerType = 2; //change value with each different tower
+    towerType = 6; //change value with each different tower
 }
-
-
+Tower.prototype = new Entity();
+Tower.prototype.constructor = Tower;  
 
 Tower.prototype.update = function () {
     var time = this.game.timer.gameTime - this.spawnTime;
@@ -45,13 +47,13 @@ Tower.prototype.update = function () {
         this.checkCC(this.game);
         this.fireRateCount = this.fireRateCount + 1;
     }
-    if (this.targetIsSet == 1) {
-        if (this.target.isDead == 1 || !this.collide(this.target)) {
+    if(this.targetIsSet == 1) {
+        if(this.target.isDead == 1 || !this.collide(this.target)) {
             this.targetIsSet = 0;
         }
     }
 
-    if (this.targetIsSet != 0) {
+    if(this.targetIsSet != 0) {
         if (this.target.isDead == 1 || !this.collide(this.target)) {
             this.checkTarget(this.game);
         }
@@ -59,79 +61,144 @@ Tower.prototype.update = function () {
     Entity.prototype.update.call(this);
 }
 
-
-Tower.prototype.draw = function() {
+Tower.prototype.draw = function () {
     tower[this.type].draw(this.game, this.ctx, this.x, this.y);
     Entity.prototype.draw.call(this);
 }
 
-    //////////////Type of towers in an array of objects//////////////// 0 = arrow, 1 = cannon, 2 = magic
+//////////////Type of towers in an array of objects//////////////// 0 = arrow, 1 = cannon, 2 = magic
 var tower = [
     {
         ////Arrow tower type
-        animation: ArrowAnimate = new Animation(AM.getAsset("./img/towers/arrow1.png"), 48, 120, 48, 0.05, 1, true, 1.0, 0),
-        cost: 25,
-        damage: 20,
-        range: 100,
-        atkRate: 15,
-        upgrade: [  {damage: 20, range: 100, atkRate: 15},
-                    {damage: 28, range: 120, atkRate: 20},
-                    {damage: 35, range: 150, atkRate: 25} ],
-                    
-        attack: function(monster) {
-            
-
-            
-            
+        animation: ArrowAnimate = new Animation(AM.getAsset("./img/towers/tower_a1_48w_107h.png"), 48, 107, 48, 0.05, 1, true, 1.0, 0),
+        //cost: 25,
+        //damage: 20,
+        attack: function () {
         },
-        draw: function(game, ctx, x, y) {
+        draw: function (game, ctx, x, y) {
             ArrowAnimate.drawFrame(game.clockTick, ctx, x, y)
-            
+        },
+
+
+    },
+
+    {
+        ////Arrow tower type
+        animation: ArrowAnimate2 = new Animation(AM.getAsset("./img/towers/tower_a2_48w_111h.png"), 48, 111, 48, 0.05, 1, true, 1.0, 0),
+        //cost: 50,
+        //damage: 20,
+        attack: function () {
+        },
+        draw: function (game, ctx, x, y) {
+            ArrowAnimate2.drawFrame(game.clockTick, ctx, x, y)
+
+
+        },
+
+
+    },
+
+    {
+        ////Arrow tower type
+        animation: ArrowAnimate3 = new Animation(AM.getAsset("./img/towers/tower_a3_48w_116h.png"), 48, 116, 48, 0.05, 1, true, 1.0, 0),
+        //cost: 50,
+        //damage: 20,
+        attack: function () {
+        },
+        draw: function (game, ctx, x, y) {
+            ArrowAnimate3.drawFrame(game.clockTick, ctx, x, y)
+
+
+        },
+
+
+    },
+
+    {
+        ///Cannon tower type
+        animation: CannonAnimate1 = new Animation(AM.getAsset("./img/towers/tower_c1_48w_96h.png"), 48, 107, 48, 0.05, 1, true, 1.0, 0),
+        //cost: 25,
+        //damage: 35,
+        attack: function () {
+        },
+        draw: function (game, ctx, x, y) {
+            CannonAnimate1.drawFrame(game.clockTick, ctx, x, y)
+        },
+    },
+
+    {
+        ///Cannon tower type
+        animation: CannonAnimate2 = new Animation(AM.getAsset("./img/towers/tower_c2_48w_96h.png"), 48, 107, 48, 0.05, 1, true, 1.0, 0),
+        //cost: 25,
+        //damage: 35,
+        attack: function () {
+        },
+        draw: function (game, ctx, x, y) {
+            CannonAnimate2.drawFrame(game.clockTick, ctx, x, y)
+        },
+    },
+
+
+    {
+        ///Cannon tower type
+        animation: CannonAnimate3 = new Animation(AM.getAsset("./img/towers/tower_c3_48w_100h.png"), 48, 107, 48, 0.05, 1, true, 1.0, 0),
+        //cost: 25,
+        //damage: 35,
+        attack: function () {
+        },
+        draw: function (game, ctx, x, y) {
+            CannonAnimate3.drawFrame(game.clockTick, ctx, x, y)
+        },
+    },
+
+    {
+        ////Magic tower type
+        animation: MagicAnimate1 = new Animation(AM.getAsset("./img/towers/tower_m1_48w_102h.png"), 48, 102, 48, 0.05, 1, true, 1.0, 0),
+        //cost: 40,
+        //damage: 50,
+        attack: function () {
+        },
+        draw: function (game, ctx, x, y) {
+            MagicAnimate1.drawFrame(game.clockTick, ctx, x, y)
+
+        },
+
+        
+    }, 
+
+
+    {
+        ////Magic tower type
+        animation: MagicAnimate2 = new Animation(AM.getAsset("./img/towers/tower_m2_48w_102h.png"), 48, 102, 48, 0.05, 1, true, 1.0, 0),
+        //cost: 40,
+        //damage: 50,
+        attack: function () {
+        },
+        draw: function (game, ctx, x, y) {
+            MagicAnimate2.drawFrame(game.clockTick, ctx, x, y)
 
         },
 
         
     },
 
-    {
-        ///Cannon tower type
-        animation: CannonAnimate = new Animation(AM.getAsset("./img/towers/cannon1.png"), 48, 120, 48, 0.05, 1, true, 1.0, 0),
-        cost: 25,
-        damage: 35,
-        range: 50,
-        atkRate: 12,
-        upgrade: [  {damage: 42, range: 60, atkRate: 15},
-                    {damage: 55, range: 80, atkRate: 26},
-                    {damage: 75, range: 100, atkRate: 33} ],
-            
-        attack: function(monster) {
-
-        },
-        draw: function(game, ctx, x, y) {
-            CannonAnimate.drawFrame(game.clockTick, ctx, x, y)
-        },
-    },
 
     {
         ////Magic tower type
-        animation: MagicAnimate = new Animation(AM.getAsset("./img/towers/magic1.png"), 48, 120, 48, 0.05, 1, true, 1.0, 0),
-        cost: 40,
-        damage: 50,
-        range: 30,
-        atkRate: 9,
-        upgrade: [  {damage: 62, range: 45, atkRate: 12},
-                    {damage: 80, range: 60, atkRate: 20},
-                    {damage: 100, range: 80, atkRate: 25} ],
-            
-        attack: function(monster) {
-
-            
+        animation: MagicAnimate3 = new Animation(AM.getAsset("./img/towers/tower_m3_48w_108h.png"), 48, 108, 48, 0.05, 1, true, 1.0, 0),
+        //cost: 40,
+        //damage: 50,
+        attack: function () {
         },
-        draw: function(game, ctx, x, y) {
-            MagicAnimate.drawFrame(game.clockTick, ctx, x, y)
+        draw: function (game, ctx, x, y) {
+            MagicAnimate3.drawFrame(game.clockTick, ctx, x, y)
 
         },
+
+        
     }
+
+    
 ];////////////////End list of tower types
 
 ////////////////////////////////////UTILITY FOR TOWERS
@@ -154,8 +221,9 @@ Tower.prototype.checkCC = function (game) {
         }
     }
 }
-Tower.prototype.checkTarget = function (game) {
 
+Tower.prototype.checkTarget = function (game) {
+    
     var furthestEntity, furthestDistance = -1;
     for (var i = 2; i <= game.entities.length - 1; i++) {
         if (this.collide(game.entities[i])) {
@@ -173,18 +241,19 @@ Tower.prototype.checkTarget = function (game) {
         this.target = furthestEntity;
         this.targetIsSet = 1;
     }
-
+    
 }
-Tower.prototype.collide = function(monster) {
 
-    var myCircle = {'x': this.recenterBoundX(), 'y': this.recenterBoundY(), 'r': this.radius};
-    var otherCirle = {'x': monster.recenterBoundX(), 'y': monster.recenterBoundY(), 'r': monster.radius};
+Tower.prototype.collide = function (monster) {
+
+    var myCircle = { 'x': this.recenterBoundX(), 'y': this.recenterBoundY(), 'r': this.radius };
+    var otherCirle = { 'x': monster.recenterBoundX(), 'y': monster.recenterBoundY(), 'r': monster.radius };
     var dx = myCircle.x - otherCirle.x;
     var dy = myCircle.y - otherCirle.y;
-    var distance = Math.sqrt(dx*dx + dy*dy);
-    
+    var distance = Math.sqrt(dx * dx + dy * dy);
     return (distance < myCircle.r + otherCirle.r);
 }
+
 Tower.prototype.getDistance = function (monster) {
     var myCircle = { 'x': this.recenterBoundX(), 'y': this.recenterBoundY(), 'r': this.radius };
     var otherCirle = { 'x': monster.recenterBoundX(), 'y': monster.recenterBoundY(), 'r': monster.radius };
@@ -193,6 +262,7 @@ Tower.prototype.getDistance = function (monster) {
     var distance = Math.sqrt(dx * dx + dy * dy);
     return distance;
 }
+
 
 
 

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -28,16 +28,24 @@
                     <br>
                     <p>Then click on a valid area to build</p>
                     <br>
-
-
+                    <!--<p id ="Tower Type: "></p>-->
+                    <p id ="Damage"></p>
+                    <p id ="Level"></p>
+                    <p id ="FireRate"></p>
+                    <p id ="UpgradeCost"></p>
+                    <p id ="SellCost"></p>
+                    <div class="horiz-buttons" id="upgrade-sell">
+                        <button id="Sell" onclick="if (currentTower) sell(currentTower)">Sell</button>
+                        <button id="Upgrade" onclick="if (currentTower) upgrade(currentTower)">Upgrade</button>
+                      </div>
                 </div>
                 <!--End of left content-->
                 <div id="right">
                     <div id="right-status">
                         <pf> Gold $
-                            <span id="Gold"></span>
+                            <span id = "Gold"></span>
                             <br> Health
-                            <span id="Health"></span>
+                            <span id = "Health"></span>
                         </pf>
                     </div>
                     <!--We can add buttons for the towers here-->
@@ -49,7 +57,7 @@
 
                         <script type="text/javascript">
                             var buttons = document.getElementById("ArrowTowerButton");
-                            buttons.innerHTML = '<img src="./img/towers/arrow1.png" />';
+                            buttons.innerHTML = '<img src="./img/towers/tower_a1_48w_107h.png" />';
                         </script>
                         <p>Arrow ($15)</p>
                         <!--have cost change dynamically later-->
@@ -70,7 +78,7 @@
 
                         <script type="text/javascript">
                             var buttons = document.getElementById("CannonTowerButton");
-                            buttons.innerHTML = '<img src="./img/towers/cannon1.png" />';
+                            buttons.innerHTML = '<img src="./img/towers/tower_c1_48w_96h.png" />';
                         </script>
                         <p>Cannon ($25)</p>
 
@@ -89,7 +97,7 @@
 
                         <script type="text/javascript">
                             var buttons = document.getElementById("MagicTowerButton");
-                            buttons.innerHTML = '<img src="./img/towers/magic1.png" />';
+                            buttons.innerHTML = '<img src="./img/towers/tower_m1_48w_102h.png" />';
                         </script>
                         <p>Magic ($40)</p>
 
@@ -124,8 +132,7 @@
             </div>
             <div id="control">
                 <div id="control-left">
-                   <button id="startButton" type="button"><a>Start Wave</a></button>
-                    <!-- <img src="img/towers/arrow1.png" width="55" height="55"> -->
+                    <img src="img/towers/arrow1.png" width="55" height="55">
 
                 </div>
 
