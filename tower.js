@@ -17,7 +17,8 @@ function Tower(game, x, y, towerType) {
     this.damage = 10 + (10 * towerType);
     this.spawnTime = game.timer.gameTime;
     this.fireRateCount = 0;
-     Entity.call(this, game, x, y);
+    Entity.call(this, game, x, y);
+    
 }
 Tower.prototype = new Entity();
 Tower.prototype.constructor = Tower;  
@@ -35,6 +36,8 @@ function createMagicTower() {
     isBuilding = 1;
     towerType = 2; //change value with each different tower
 }
+
+
 
 Tower.prototype.update = function () {
     var time = this.game.timer.gameTime - this.spawnTime;

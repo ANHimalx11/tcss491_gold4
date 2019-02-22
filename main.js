@@ -719,8 +719,10 @@ AM.downloadAll(function () {
     var gameEngine = new GameEngine();
     var gameBoard = new GameBoard(gameEngine);
     var hero = new Hero(gameEngine);
+    var uiMaster = new uiEntity(gameEngine, gameBoard, hero);
     gameEngine.addEntity(gameBoard);
     gameEngine.addTower(hero);
+    gameEngine.addUI(uiMaster);
     gameEngine.init(ctx);
     
     gameEngine.start();

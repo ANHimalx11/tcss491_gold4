@@ -1,5 +1,6 @@
 // This game shell was happily copied from Googler Seth Ladd's "Bad Aliens" game and his Google IO talk in 2011
-var isWaveRunning = false;
+var foundTower = false;
+var towerSelected;
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame ||
             window.webkitRequestAnimationFrame ||
@@ -34,6 +35,7 @@ Timer.prototype.tick = function () {
 function GameEngine() {
     this.entities = [];
     this.towersList = []; 
+    this.uiList = [];
     this.showOutlines = true;  //////USE THIS TO TEST BOUNDS
     this.ctx = null;
     this.click = null;
@@ -104,6 +106,16 @@ GameEngine.prototype.startInput = function () {
     this.ctx.canvas.addEventListener("contextmenu", function (e) {
         //console.log(getXandY(e));
         that.rightclick = getXandY(e);
+        var queryX = that.rightclick.x;
+        var queryY = that.rightclick.y;
+
+        for (var i = 0; i <= towersList.length - 1; i++) {
+            if (towersList[i].contains(queryX, queryY)) {
+                foundTower = true;
+                towerSelected = towersList[i];
+                return towerSelected;
+            }
+        }
         e.preventDefault();
     }, false);
 
@@ -199,6 +211,12 @@ GameEngine.prototype.addTower = function (entity) {
     this.towersList.push(entity);
 }
 
+GameEngine.prototype.addUI = function (entity) {
+    console.log('added UI');
+    console.log(entity);
+    this.uiList.push(entity);
+}
+
 GameEngine.prototype.draw = function () {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.save();
@@ -208,18 +226,30 @@ GameEngine.prototype.draw = function () {
     for (var i = 0; i < this.towersList.length; i++) {
         this.towersList[i].draw(this.ctx);
     }
+
+    for (var i = 0; i < this.uiList.length; i++) {
+        this.uiList[i].draw(this.ctx);
+    }
     this.ctx.restore();
 }
 
 GameEngine.prototype.update = function () {
     var entitiesCount = this.entities.length;
     var towersCount = this.towersList.length;
+    var uiCount = this.uiList.length;
 
     for (var i = 0; i < towersCount; i++) {
         var tower = this.towersList[i];
 
         if (!tower.removeFromWorld) {
             tower.update();
+        }
+    }
+    for (var i = 0; i < uiCount; i++) {
+        var ui = this.uiList[i];
+
+        if (!ui.removeFromWorld) {
+            ui.update();
         }
     }
 
@@ -238,9 +268,17 @@ GameEngine.prototype.update = function () {
         }
     }
 
+    for (var i = this.ui.length - 1; i >= 0; --i) {
+        if (this.uiList[i].removeFromWorld) {
+            this.uiList.splice(i, 1);
+            console.log('removed entity')
+        }
+    }
+
     for (var i = this.towersList.length -1; i >= 0; --i) {
         if (this.towersList[i].removeFromWorld) {
             this.towersList.splice(i, 1);
+            console.log('removed tower')
         }
     }
 }
@@ -307,3 +345,47 @@ Entity.prototype.rotateAndCache = function (image, angle) {
     //offscreenCtx.strokeRect(0,0,size,size);
     return offscreenCanvas;
 }
+
+
+//////////////////UI ENTITY
+
+function uiEntity(uiGameEng, uiBoard, uiHero) {
+    
+    this.game = uiGameEng;
+    this.board = uiBoard;
+    this.hero = uiHero;
+    this.functionList = [];
+
+    Entity.call();
+}
+
+uiEntity.prototype = new Entity();
+uiEntity.prototype.constructor = uiEntity;
+
+uiEntity.prototype.update = function() {
+    Entity.prototype.update.call(this);
+}
+
+uiEntity.prototype.draw = function() {
+    Entity.prototype.draw.call(this);
+}
+
+// uiEntity.prototype.addFunction = function(entity, funcName, doSomething) {
+//     var obj = entity;
+//     var e;
+
+//     funcName => (obj function(obj){doSomething};
+//     e = [funcName , doSomething];
+//     this.functionList.push(e);
+// }
+
+
+
+
+
+
+
+////////////////////END UI ENTITY
+
+
+
