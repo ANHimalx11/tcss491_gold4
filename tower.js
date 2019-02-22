@@ -1,6 +1,6 @@
 //this script contains information for the towers
 
-function Tower(game, x, y, towerType) {
+function Tower(game, x, y, towerType, towerName) {
     this.x = game.mouse.x;
     this.y = game.mouse.y;
     this.boundX = 48;
@@ -9,12 +9,16 @@ function Tower(game, x, y, towerType) {
     this.game = game;
     this.ctx = game.ctx;
     this.type = towerType;
-    this.fireRate = 0.5;
+    this.fireRate = 0.5 + (0.05 * towerType);
+    this.level = 1;
+    this.upgradeCost = 15 + (5 * towerType);
+    this.sellCost = 10 + (3 * towerType);
     this.target; //= new Enemy1(this.gameEngine, AM.getAsset("./img/level1flying_132w_102h_1pd_8fr.png"));
     this.targetIsSet = 0;
-    this.damage = 10 + (10 * towerType);
+    this.damage = 7 + (3 * towerType);
     this.spawnTime = game.timer.gameTime;
     this.fireRateCount = 0;
+    this.name = towerName;
     Entity.call(this, game, x, y);
 
 }
@@ -27,12 +31,12 @@ function createArrowTower() {
 }
 function createCannonTower() {
     isBuilding = 1;
-    towerType = 1; //change value with each different tower
+    towerType = 3; //change value with each different tower
 }
 
 function createMagicTower() {
     isBuilding = 1;
-    towerType = 2; //change value with each different tower
+    towerType = 6; //change value with each different tower
 }
 
 Tower.prototype.update = function () {
@@ -64,17 +68,43 @@ Tower.prototype.draw = function () {
 var tower = [
     {
         ////Arrow tower type
-        animation: ArrowAnimate = new Animation(AM.getAsset("./img/towers/arrow1.png"), 48, 120, 48, 0.05, 1, true, 1.0, 0),
-        cost: 25,
-        damage: 20,
+        animation: ArrowAnimate = new Animation(AM.getAsset("./img/towers/tower_a1_48w_107h.png"), 48, 107, 48, 0.05, 1, true, 1.0, 0),
+        //cost: 25,
+        //damage: 20,
         attack: function () {
-
-
-
-
         },
         draw: function (game, ctx, x, y) {
             ArrowAnimate.drawFrame(game.clockTick, ctx, x, y)
+        },
+
+
+    },
+
+    {
+        ////Arrow tower type
+        animation: ArrowAnimate2 = new Animation(AM.getAsset("./img/towers/tower_a2_48w_111h.png"), 48, 111, 48, 0.05, 1, true, 1.0, 0),
+        //cost: 50,
+        //damage: 20,
+        attack: function () {
+        },
+        draw: function (game, ctx, x, y) {
+            ArrowAnimate2.drawFrame(game.clockTick, ctx, x, y)
+
+
+        },
+
+
+    },
+
+    {
+        ////Arrow tower type
+        animation: ArrowAnimate3 = new Animation(AM.getAsset("./img/towers/tower_a3_48w_116h.png"), 48, 116, 48, 0.05, 1, true, 1.0, 0),
+        //cost: 50,
+        //damage: 20,
+        attack: function () {
+        },
+        draw: function (game, ctx, x, y) {
+            ArrowAnimate3.drawFrame(game.clockTick, ctx, x, y)
 
 
         },
@@ -84,31 +114,89 @@ var tower = [
 
     {
         ///Cannon tower type
-        animation: CannonAnimate = new Animation(AM.getAsset("./img/towers/cannon1.png"), 48, 120, 48, 0.05, 1, true, 1.0, 0),
-        cost: 25,
-        damage: 35,
+        animation: CannonAnimate1 = new Animation(AM.getAsset("./img/towers/tower_c1_48w_96h.png"), 48, 107, 48, 0.05, 1, true, 1.0, 0),
+        //cost: 25,
+        //damage: 35,
         attack: function () {
-
         },
         draw: function (game, ctx, x, y) {
-            CannonAnimate.drawFrame(game.clockTick, ctx, x, y)
+            CannonAnimate1.drawFrame(game.clockTick, ctx, x, y)
+        },
+    },
+
+    {
+        ///Cannon tower type
+        animation: CannonAnimate2 = new Animation(AM.getAsset("./img/towers/tower_c2_48w_96h.png"), 48, 107, 48, 0.05, 1, true, 1.0, 0),
+        //cost: 25,
+        //damage: 35,
+        attack: function () {
+        },
+        draw: function (game, ctx, x, y) {
+            CannonAnimate2.drawFrame(game.clockTick, ctx, x, y)
+        },
+    },
+
+
+    {
+        ///Cannon tower type
+        animation: CannonAnimate3 = new Animation(AM.getAsset("./img/towers/tower_c3_48w_100h.png"), 48, 107, 48, 0.05, 1, true, 1.0, 0),
+        //cost: 25,
+        //damage: 35,
+        attack: function () {
+        },
+        draw: function (game, ctx, x, y) {
+            CannonAnimate3.drawFrame(game.clockTick, ctx, x, y)
         },
     },
 
     {
         ////Magic tower type
-        animation: MagicAnimate = new Animation(AM.getAsset("./img/towers/magic1.png"), 48, 120, 48, 0.05, 1, true, 1.0, 0),
-        cost: 40,
-        damage: 50,
+        animation: MagicAnimate1 = new Animation(AM.getAsset("./img/towers/tower_m1_48w_102h.png"), 48, 102, 48, 0.05, 1, true, 1.0, 0),
+        //cost: 40,
+        //damage: 50,
         attack: function () {
-
-
         },
         draw: function (game, ctx, x, y) {
-            MagicAnimate.drawFrame(game.clockTick, ctx, x, y)
+            MagicAnimate1.drawFrame(game.clockTick, ctx, x, y)
 
         },
+
+        
+    }, 
+
+
+    {
+        ////Magic tower type
+        animation: MagicAnimate2 = new Animation(AM.getAsset("./img/towers/tower_m2_48w_102h.png"), 48, 102, 48, 0.05, 1, true, 1.0, 0),
+        //cost: 40,
+        //damage: 50,
+        attack: function () {
+        },
+        draw: function (game, ctx, x, y) {
+            MagicAnimate2.drawFrame(game.clockTick, ctx, x, y)
+
+        },
+
+        
+    },
+
+
+    {
+        ////Magic tower type
+        animation: MagicAnimate3 = new Animation(AM.getAsset("./img/towers/tower_m3_48w_108h.png"), 48, 108, 48, 0.05, 1, true, 1.0, 0),
+        //cost: 40,
+        //damage: 50,
+        attack: function () {
+        },
+        draw: function (game, ctx, x, y) {
+            MagicAnimate3.drawFrame(game.clockTick, ctx, x, y)
+
+        },
+
+        
     }
+
+    
 ];////////////////End list of tower types
 
 ////////////////////////////////////UTILITY FOR TOWERS
