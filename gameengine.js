@@ -33,7 +33,7 @@ function GameEngine() {
     this.entities = [];
     this.towersList = []; 
     this.uiList = [];
-    this.showOutlines = true;  //////USE THIS TO TEST BOUNDS
+    this.showOutlines = false;  //////USE THIS TO TEST BOUNDS
     this.ctx = null;
     this.click = null;
     this.mouse = null;
