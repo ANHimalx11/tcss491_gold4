@@ -320,14 +320,7 @@ Entity.prototype.recenterBoundY = function () {
     return newY;
 }
 
-Entity.prototype.getDistance = function (monster) {
-    var myCircle = { 'x': this.recenterBoundX(), 'y': this.recenterBoundY(), 'r': this.radius };
-    var otherCirle = { 'x': monster.recenterBoundX(), 'y': monster.recenterBoundY(), 'r': monster.radius };
-    var dx = myCircle.x - otherCirle.x;
-    var dy = myCircle.y - otherCirle.y;
-    var distance = Math.sqrt(dx * dx + dy * dy);
-    return distance;
-}
+
 
 
 Entity.prototype.rotateAndCache = function (image, angle) {
@@ -337,10 +330,9 @@ Entity.prototype.rotateAndCache = function (image, angle) {
     offscreenCanvas.height = size;
     var offscreenCtx = offscreenCanvas.getContext('2d');
     offscreenCtx.save();
-    offscreenCtx.translate(size / 2, size / 2);
+    // offscreenCtx.translate(size / 2, size / 2);
     offscreenCtx.rotate(angle);
     offscreenCtx.translate(0, 0);
-    offscreenCtx.drawImage(image, -(image.width / 2), -(image.height / 2));
     offscreenCtx.restore();
     //offscreenCtx.strokeStyle = "red";
     //offscreenCtx.strokeRect(0,0,size,size);
