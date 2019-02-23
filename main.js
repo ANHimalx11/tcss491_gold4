@@ -11,11 +11,11 @@ var level = 1;
 var isBuilding = 0;
 var towerType;
 var spawnInterval = 2.0;
-var playerGold = 1000;
+var playerGold = 150;
 var playerHealth = 100;
-var arrowTowerPrice = 15;
-var cannonTowerPrice = 25;
-var magicTowerPrice = 40;
+var arrowTowerPrice = 50;
+var cannonTowerPrice = 65;
+var magicTowerPrice = 80;
 var currentTower;
 var map =  [['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
             ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
@@ -50,47 +50,17 @@ var map =  [['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-
 var level1spawn = ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'];
 var level2spawn = ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'];
 
-var levels = [['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'],
-			  ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1'],
-			  ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'],
-			  ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1'],
-			  ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'],
-			  ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1'],
-			  ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'],
-			  ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1'],
-			  ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'],
-			  ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1'],
-			  ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
-			   '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1']
+var levels = [['1', '1', '1', '1', '1', '2', '2', '2', '2', '2', '2', '2', '2', '3'],
+			  ['1', '2', '1', '2', '4', '4', '5', '5', '4', '5', '2', '2', '4', '5', 
+			   '4', '4', '4', '5', '5', '5', '5', '6'],
+			  ['4', '4', '5', '5', '7', '7', '7', '7', '8', '8', '8', '8', '8', '7', 
+			   '7', '8', '7', '7', '8', '8', '8', '8', '7', '7', '7', '8', '8', '8', '8', '9'],
+			  ['7', '8', '7', '7', '8', '8', '8', '8', '7', '7', '7', '8', '8', '8', '8', '8', 
+			   '10', '10', '10', '10', '11', '11', '11', '11', '11', '11', '10', '11', '10', '11', '10', '11', 
+			   '10', '10', '11', '11', '11', '12'],
+               ['3', '6', '10', '10', '10', '11', '11', '11', '11', '10', '10', '10', '10', '10', '11', '11', 
+			   '10', '10', '10', '10', '11', '11', '11', '11', '11', '11', '10', '11', '10', '11', '10', '11', 
+			   '10', '10', '11', '11', '11', '12']
 ];
 
 /////////////////////////////////////////ANIMATION CLASS
@@ -226,7 +196,7 @@ base.prototype.collide = function(monster) {
 
 
 //////////////////////////////////SPAWN MACHINE FOR MONSTERS
-function spawner(game, spritesheet, gameEngine) {
+function spawner(game, spritesheet) {
     this.animation = new Animation(spritesheet, 50, 50, 1, 0.15, 1, true, 1);
     this.ctx = game.ctx;
     this.name = "spawner";
@@ -245,25 +215,66 @@ spawner.prototype.constructor = spawner;
 spawner.prototype.update = function () {
     var time = this.gameEngine.timer.gameTime - this.time;
     if (this.index < this.levelSpawn.length) {
+        var groundBaseHealth = 200;
+        var flyingBaseHealth = 160;
+        var bossBaseHealth = 700;
+        //game, spritesheet, level, type, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale, padWidth, XBuffer, YBuffer, health, damage, radius, reward, speed
         if(this.levelSpawn[this.index] == '1' && time >= spawnInterval * this.index) {
-            this.gameEngine.addEntity(new Enemy1(this.gameEngine, AM.getAsset("./img/level1flying_132w_102h_1pd_8fr.png"), level));
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level1ground_atk_walk__8fr_41w_34h_1pd.png"), level, 0, 40, 34, 328, 0.11, 8, true, 1.5, 1, 0, 24, groundBaseHealth, 10, 25, 2, 40);
+            this.gameEngine.addEntity(temp);
+            this.index = this.index + 1;
+        } else if (this.levelSpawn[this.index] == '2' && time >= spawnInterval * this.index) {
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/level1flying_132w_102h_1pd_8fr.png"), level, 0, 132, 102, 1064, 0.11, 8, true, .8, 1, 0, 0, flyingBaseHealth, 15, 25, 3, 45);
+            this.gameEngine.addEntity(temp);
+            this.index = this.index + 1;
+        } else if (this.levelSpawn[this.index] == '3' && time >= spawnInterval * this.index) {
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level1boss_walking_116w_134h_1pd_6fr.png"), level, 0, 116, 134, 702, 0.11, 6, true, 1, 1, 0, 0, bossBaseHealth, 50, 50, 50, 30);
+            this.gameEngine.addEntity(temp);
+            this.index = this.index + 1;
+        } else if (this.levelSpawn[this.index] == '4' && time >= spawnInterval * this.index) {
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level2ground_walking_134w_140h_1pd_6fr.png"), level, 0, 134, 140, 810, 0.11, 6, true, 1, 1, 0, 0, groundBaseHealth * 1.6, 15, 50, 3, 45);
+            this.gameEngine.addEntity(temp);
+            this.index = this.index + 1;
+        } else if (this.levelSpawn[this.index] == '5' && time >= spawnInterval * this.index) {
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level2flying_walking_95w_122h_1pd_8fr.png"), level, 0, 95, 122, 768, 0.11, 8, true, 1, 1, 0, 0, flyingBaseHealth * 1.6, 12, 50, 4, 55);
+            this.gameEngine.addEntity(temp);
+            this.index = this.index + 1;
+        } else if (this.levelSpawn[this.index] == '6' && time >= spawnInterval * this.index) {
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level2boss_walking_196w_163h_1pd_6fr.png"), level, 0, 196, 163, 1182, 0.11, 6, true, 1, 1, 0, 0, bossBaseHealth * 1.5, 30, 50, 60, 35);
+            this.gameEngine.addEntity(temp);
+            this.index = this.index + 1;
+        } else if (this.levelSpawn[this.index] == '7' && time >= spawnInterval * this.index) {
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level3ground_walking_119w_136h_1pd_8fr.png"), level, 0, 119, 136, 960, 0.11, 8, true, 1, 1, 0, 0, groundBaseHealth * 2.1, 15, 50, 4, 45);
+            this.gameEngine.addEntity(temp);
+            this.index = this.index + 1;
+        } else if (this.levelSpawn[this.index] == '8' && time >= spawnInterval * this.index) {
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level3_flying_walking_112w_133h_1pd_6fr.png"), level, 0, 112, 133, 678, 0.11, 6, true, 1, 1, 0, 0, flyingBaseHealth * 2.1, 12, 50, 5, 55);
+            this.gameEngine.addEntity(temp);
+            this.index = this.index + 1;
+        } else if (this.levelSpawn[this.index] == '9' && time >= spawnInterval * this.index) {
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level3boss_walking_86w_118h_6fr_1pd.png"), level, 0, 86, 118, 522, 0.11, 6, true, 1, 1, 0, 0, bossBaseHealth * 1.7, 40, 50, 70, 35);
+            this.gameEngine.addEntity(temp);
+            this.index = this.index + 1;
+        } else if (this.levelSpawn[this.index] == '10' && time >= spawnInterval * this.index) {
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level4ground_walking_170_127h_1pd_9fr.png"), level, 0, 170, 127, 1539, 0.11, 9, true, 1, 1, 0, 0, groundBaseHealth * 2.6, 15, 50, 5, 45);
+            this.gameEngine.addEntity(temp);
+            this.index = this.index + 1;
+        } else if (this.levelSpawn[this.index] == '11' && time >= spawnInterval * this.index) {
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level4_flying_171w_268h_1pd_7fr.png"), level, 0, 171, 268, 1204, 0.11, 7, true, 0.7, 1, 0, 0, flyingBaseHealth * 2.6, 170, 50, 5, 55);
+            this.gameEngine.addEntity(temp);
+            this.index = this.index + 1;
+        } else if (this.levelSpawn[this.index] == '12' && time >= spawnInterval * this.index) {
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level4boss_walk_150_217_1pd_8fr.png"), level, 0, 150, 217, 1208, 0.11, 8, true, 1, 1, 0, 0, bossBaseHealth * 1.9, 50, 50, 80, 35);
+            this.gameEngine.addEntity(temp);
             this.index = this.index + 1;
         }
-        /*
-        if (this.levelSpawn[this.index] == '2' && time >= spawnInterval * this.index) {
-            this.gameEngine.addEntity(new Enemy1(this.gameEngine, AM.getAsset("./img/level1flying_132w_102h_1pd_8fr.png")));
-            this.index = this.index + 1;
-        }
-		if(this.levelSpawn[this.index] == "boss1" && time >= this.levelSpawn.length * spawnInterval + 5) {//or if all enemies are dead spawn the boss
-			this.gameEngine.addEntity(new boss1(this.gameEngine, AM.getAsset("./img/boss1.png")));
-			this.index = this.index + 1;
-		}
-		*/
 	}
 	
 	if (this.index >= this.levelSpawn.length) {
 		if(!this.areMonstersAlive()) {
-			this.nextLevel();
+            this.nextLevel();
+            level++;
+            UpdateUI();
 			alert("next level");
 			
 		}
@@ -301,19 +312,21 @@ spawner.prototype.draw = function () {
     Entity.prototype.draw.call(this);
 }
 
-function Enemy1(game, spritesheet, level) {
-    this.animation = new Animation(spritesheet, 132, 102, 1064, 0.11, 8, true, .8,1);
-    this.speed = 25 + (3 * level);
+function Enemy(game, spritesheet, level, type, frameWidth, frameHeight, sheetWidth, 
+               frameDuration, frames, loop, scale, padWidth, XBuffer, YBuffer, health, damage, radius, reward, speed) {
+    //this.animation = new Animation(spritesheet, 132, 102, 1064, 0.11, 8, true, .8,1);
+    this.animation = new Animation(spritesheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale, padWidth);
+    this.speed = speed + (1 * level);
+    this.spritesheet = spritesheet;
     this.ctx = game.ctx;
     this.game = game;
-    this.health = 90 + (5 * level);
-    this.damage = 10 + (3 * level);
-    this.sizeX = 132 * this.animation.scale;
-    this.sizeY = 102 * this.animation.scale;
-    this.radius = 25;
+    this.health = health + (40 * level);
+    this.damage = damage + (3 * level);
+    this.type = type;
+    this.radius = radius;
     this.boundX = 132;
     this.boundY = 102;
-    this.reward = 2 + (level);
+    this.reward = reward;
     this.isDead = 0;
     this.name = "enemy";
     this.visited = [['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
@@ -345,26 +358,20 @@ function Enemy1(game, spritesheet, level) {
                     ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
                     ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']
                     ];
-    Entity.call(this, game, spawnX, spawnY);
+    Entity.call(this, game, spawnX + XBuffer, spawnY + YBuffer);
 }
 
 
 
-Enemy1.prototype = new Entity();
-Enemy1.prototype.constructor = Enemy1;
+Enemy.prototype = new Entity();
+Enemy.prototype.constructor = Enemy;
 
-function distance(a, b) {
-    var difX = a.x - b.x;
-    var difY = a.y - b.y;
-    return Math.sqrt(difX * difX + difY * difY);
-};
-
-Enemy1.prototype.collide = function(other) {
+Enemy.prototype.collide = function(other) {
     var difX = this.x - other.x;
     var difY = this.y - other.y;
     return Math.sqrt(difX * difX + difY * difY) < this.radius + other.radius;
 };
-Enemy1.prototype.update = function () {
+Enemy.prototype.update = function () {
     if(this.health <= 0 && this.isDead == 0) {
         this.isDead = 1;
         playerGold = playerGold + this.reward;
@@ -378,11 +385,7 @@ Enemy1.prototype.update = function () {
                     playerHealth = playerHealth - this.damage;
                     this.isDead = 1;
                     UpdateUI();
-                    //alert(ent.health + " " + gold);
-                    //this.game.entities.splice(i, 1);
                 }
-
-                //if enemy collides with a projectile or hero ability then...
             }
         }
         var currentXFrame = Math.floor((this.x) / (800 / map[0].length));
@@ -395,18 +398,14 @@ Enemy1.prototype.update = function () {
             this.x -= this.game.clockTick * this.speed;
             this.visited[currentYFrame][currentXFrame] = '1';
         }
-     
         if((map[currentYFrame - 1][currentXFrame] == 'm' || map[currentYFrame - 1][currentXFrame] == 'p') && this.visited[currentYFrame - 1][currentXFrame] == '0') {
               this.y -= this.game.clockTick * this.speed;
               this.visited[currentYFrame][currentXFrame] = '1';
         }
-         
-         
         if((map[currentYFrame + 1][currentXFrame] == 'm' || map[currentYFrame + 1][currentXFrame] == 'p') && this.visited[currentYFrame + 1][currentXFrame] == '0') {
              this.y += this.game.clockTick * this.speed;
              this.visited[currentYFrame][currentXFrame] = '1';
         }
-        //if the enemy is in the player's base die and decrease the base health
         Entity.prototype.update.call(this);
     } else {
         this.removeFromWorld = true;
@@ -414,132 +413,39 @@ Enemy1.prototype.update = function () {
     
 }
 
-Enemy1.prototype.draw = function () {
+Enemy.prototype.draw = function () {
     this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     Entity.prototype.draw.call(this);
 }
 
+/*
+var enemyList = [
+    {
+
+        animation: TestAnimate = new Animation(AM.getAsset("./img/towers/tower_a1_48w_107h.png"), 48, 107, 48, 0.05, 1, true, 1.0, 0),
+
+        draw: function (game, ctx, x, y) {
+            TestAnimate.drawFrame(game.clockTick, ctx, x, y)
+        },
 
 
+    },
 
-function boss1(game, spritesheet) {
-    this.animation = new Animation(spritesheet, 168, 165, 4, 0.15, 4, true, 1.0);
-    this.speed = 50;
-    this.ctx = game.ctx;
-    this.game = game;
-    this.damage = 100;
-	this.health = 500;
-    this.sizeX = 165;
-    this.sizeY = 168;
-    this.radius = 25;
-    this.isDead = 0;
-    this.name = "boss1";
-    this.visited = [['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']
-                    ];
-    Entity.call(this, game, spawnX, spawnY);
-}
+    {
+        ////Arrow tower type
+        animation: ArrowAnimate = new Animation(AM.getAsset("./img/level1flying_132w_102h_1pd_8fr.png"), 132, 102, 1064, 0.11, 8, true, .8,1),
+        attack: function () {
+        },
+        draw: function (game, ctx, x, y) {
+            ArrowAnimate.drawFrame(game.clockTick, ctx, x, y)
+        },
 
 
-
-boss1.prototype = new Entity();
-boss1.prototype.constructor = boss1;
-
-
-boss1.prototype.collide = function(other) {
-    var difX = this.x - other.x;
-    var difY = this.y - other.y;
-    return Math.sqrt(difX * difX + difY * difY) < this.radius + other.radius;
-};
-boss1.prototype.update = function () {
-    if(this.isDead != 1) {
-        for(var i = 0; i < this.game.entities.length; i++) {
-            var ent = this.game.entities[i];
-            if (ent.name == "base") {
-                if(this.collide(ent)) {
-                    this.isDead = 1;
-                    //this.game.entities.splice(this, i);
-                }
-
-                //if enemy collides with a projectile or hero ability then...
-            }
-        }
-        var currentXFrame = Math.floor((this.x) / (800 / map[0].length));
-        var currentYFrame = Math.floor((this.y) / (700 / map.length));
-        if((map[currentYFrame][currentXFrame + 1] == 'm' || map[currentYFrame][currentXFrame + 1] == 'p')   && this.visited[currentYFrame][currentXFrame + 1] == '0') {
-            this.x += this.game.clockTick * this.speed;
-            this.visited[currentYFrame][currentXFrame] = '1';
-         }
-        if((map[currentYFrame][currentXFrame - 1] == 'm' || map[currentYFrame][currentXFrame - 1] == 'p')   && this.visited[currentYFrame][currentXFrame - 1] == '0') {
-            this.x -= this.game.clockTick * this.speed;
-            this.visited[currentYFrame][currentXFrame] = '1';
-         }
-        if((map[currentYFrame][currentXFrame - 1] == 'm' || map[currentYFrame][currentXFrame - 1] == 'p')   && this.visited[currentYFrame][currentXFrame - 1] == '0') {
-            this.x -= this.game.clockTick * this.speed;
-            this.visited[currentYFrame][currentXFrame] = '1';
-        }
-     
-        if((map[currentYFrame - 1][currentXFrame] == 'm' || map[currentYFrame - 1][currentXFrame] == 'p') && this.visited[currentYFrame - 1][currentXFrame] == '0') {
-              this.y -= this.game.clockTick * this.speed;
-              this.visited[currentYFrame][currentXFrame] = '1';
-        }
-         
-         
-        if((map[currentYFrame + 1][currentXFrame] == 'm' || map[currentYFrame + 1][currentXFrame] == 'p') && this.visited[currentYFrame + 1][currentXFrame] == '0') {
-             this.y += this.game.clockTick * this.speed;
-             this.visited[currentYFrame][currentXFrame] = '1';
-        }
-     
-        if((map[currentYFrame - 1][currentXFrame] == 'm' || map[currentYFrame - 1][currentXFrame] == 'p') && this.visited[currentYFrame - 1][currentXFrame] == '0') {
-              this.y -= this.game.clockTick * this.speed;
-              this.visited[currentYFrame][currentXFrame] = '1';
-        }
-         
-         
-        if((map[currentYFrame + 1][currentXFrame] == 'm' || map[currentYFrame + 1][currentXFrame] == 'p') && this.visited[currentYFrame + 1][currentXFrame] == '0') {
-             this.y += this.game.clockTick * this.speed;
-             this.visited[currentYFrame][currentXFrame] = '1';
-        }
-        //if the enemy is in the player's base die and decrease the base health
-        Entity.prototype.update.call(this);
-    } else {
-        //need to remove entity 
-        this.x = -100;
-        this.y = -100;
-    }
+    },
     
-}
+];////////////////End list of tower types
 
-boss1.prototype.draw = function () {
-    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    Entity.prototype.draw.call(this);
-}
+*/
 
 
 //////////////////////////////////////////////////GAME BOARD CODE, used for enemy path and placing towers
@@ -664,15 +570,15 @@ function upgrade(tower) {
     if(playerGold >= tower.upgradeCost) {
         playerGold-=tower.upgradeCost;
         tower.type++;
-        tower.damage+=5;
+        tower.damage+=10;
         tower.level++;
         tower.upgradeCost+=(5 * tower.type);
-        tower.sellCost+=(3 * tower.type);
+        tower.sellCost+=(30 * level) + (3 * towerType);
         if(tower.level >= 3) {
             tower.level = "max";
             tower.upgradeCost = "N/A"
         }
-        tower.fireRate-=0.1;
+        tower.fireRate-=0.05;
         tower.radius+=15;
         displayTower(tower);
         UpdateUI();
@@ -721,7 +627,8 @@ function UpdateUI() {
 
     var health = document.getElementById("Health");
     health.innerHTML = "" + playerHealth;
-
+    var wave = document.getElementById("Wave");
+    wave.innerHTML = "" + level;
     //do the same with the other tower buttons
     if(playerGold < arrowTowerPrice) {
         document.getElementById("ArrowTowerButton").disabled = true;
@@ -781,6 +688,31 @@ AM.queueDownload("./img/crystal_hurt_35w_84h_1pd_4fr.png");
 AM.queueDownload("./img/towers/p_cannon_86w_86h_onFire_1fr_onHit1to10fr_1pd.png");
 AM.queueDownload("./img/towers/p_arrow_6w_59h_1fr_0pd.png");
 AM.queueDownload("./img/towers/p_magic_62w_75h_oncharge_1to7fr_onFire_7to10fr_1pd_.png");
+AM.queueDownload("./img/crystal_hurt_35w_84h_1pd_4fr.png")
+
+
+AM.queueDownload("./img/monsters/level1flying_132w_102h_1pd_8fr.png");
+AM.queueDownload("./img/monsters/level1ground_atk_walk__8fr_41w_34h_1pd.png");
+AM.queueDownload("./img/monsters/level1boss_walking_116w_134h_1pd_6fr.png");
+
+AM.queueDownload("./img/monsters/level2boss_walking_196w_163h_1pd_6fr.png");
+AM.queueDownload("./img/monsters/level2flying_walking_95w_122h_1pd_8fr.png");
+AM.queueDownload("./img/monsters/level2ground_walking_134w_140h_1pd_6fr.png");
+
+
+AM.queueDownload("./img/monsters/level3_flying_walking_112w_133h_1pd_6fr.png");
+AM.queueDownload("./img/monsters/level3boss_walking_86w_118h_6fr_1pd.png");
+AM.queueDownload("./img/monsters/level3ground_walking_119w_136h_1pd_8fr.png");
+
+AM.queueDownload("./img/monsters/level4boss_walk_150_217_1pd_8fr.png");
+AM.queueDownload("./img/monsters/level4ground_walking_170_127h_1pd_9fr.png");
+AM.queueDownload("./img/monsters/level4_flying_171w_268h_1pd_7fr.png");
+
+
+
+
+
+
 AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
     var ctx = canvas.getContext("2d");
@@ -790,6 +722,7 @@ AM.downloadAll(function () {
     gameEngine.addEntity(gameBoard);
     gameEngine.addTower(hero);
     gameEngine.init(ctx);
+    
     gameEngine.start();
     setSpawnPoint();
     document.getElementById("ArrowTowerButton").addEventListener("click", createArrowTower);
