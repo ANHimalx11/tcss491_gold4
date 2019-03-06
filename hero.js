@@ -5,6 +5,7 @@ var currentMoveObj = [];
 var movingByMouse = false;
 var movingByKey = false;
 var keyFired = false;
+var isAttack = false;
 
 //map of booleans for walking directions
 var actionMap = new Map([
@@ -16,7 +17,7 @@ var actionMap = new Map([
     ['s', false],
     ['sw', false],
     ['w', false],
-    ['nw', false]
+    ['nw', false],
 
     // hurt : false,
     // dead : false,
@@ -43,7 +44,7 @@ function Hero(game) {
     this.fireRateCount = 0;
     this.target;
     this.targetIsSet = 0;
-    this.damage = 10;
+    this.damage = 25;
     this.spawnTime = game.timer.gameTime;
 
 
@@ -59,7 +60,7 @@ function Hero(game) {
     this.anim_nw = new Animation(AM.getAsset("./img/hero/hero_walk_nw_48w_96h_1pd_8fr.png"), 48, 96, 392, 0.12, 8, true, 1, 1);
     this.anim_hurt = new Animation(AM.getAsset("./img/hero/hero_hurt_2fr_die_4fr_74w_85h_1pd.png"), 74, 85, 300, 0.12, 2, false, 1, 1);
     this.anim_dead = new Animation(AM.getAsset("./img/hero/hero_hurt_2fr_die_4fr_74w_85h_1pd.png"), 74, 85, 300, 0.12, 4, false, 1, 1);
-    this.anim_attack = new Animation(AM.getAsset("./img/hero/hero_attack_117w_161h_1pd_7fr.png"), 117, 161, 826, 0.12, 7, false, 1, 1);
+    this.anim_attack = new Animation(AM.getAsset("./img/hero/hero_attack_117w_161h_1pd_7fr.png"), 117, 161, 826, 0.12, 7, true, 1, 1);
     this.anim_cast = new Animation(AM.getAsset("./img/hero/hero_cast_51w_96h_0pd_1fr.png"), 51, 96, 51, .9, 2, false, 1, 0);
 
     Entity.call(this, game, 250, 300);
@@ -187,6 +188,7 @@ Hero.prototype.checkKeyUp = function (e) {
 Hero.prototype.update = function () {
 
     if (this.game.click && isBuilding != 1 && !movingByKey) { 
+        isAttack = false;
         movingByMouse = true;//after mouse click
         movingByKey = false; //cancel movement by wasd
         this.oldX = this.x;
@@ -194,6 +196,7 @@ Hero.prototype.update = function () {
         currentMoveObj = makeMovementInfo(this.x, this.y, this.game.mouse.x, this.game.mouse.y, this.speed);
     } 
     if (movingByMouse && !movingByKey) { 
+        isAttack = false;
         this.x += currentMoveObj[0].mX;
         this.y += currentMoveObj[0].mY;
 
@@ -266,6 +269,10 @@ Hero.prototype.skillIce = function () {
 
 Hero.prototype.draw = function (ctx) {
 
+    if (isAttack) {
+        this.anim_attack.drawFrame(this.game.clockTick,ctx, this.x - 35, this.y- 52);
+    }
+
     if (actionMap.get('n')) {
         this.anim_n.drawFrame(this.game.clockTick, ctx, this.x, this.y);
 
@@ -303,7 +310,8 @@ Hero.prototype.draw = function (ctx) {
     if (actionMap.get('nw')) {
         this.anim_nw.drawFrame(this.game.clockTick, ctx, this.x, this.y);
 
-    } else if (!movingByMouse && !movingByKey) {
+    } 
+    if (!movingByMouse && !movingByKey && !isAttack) {
         
         this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
     }
@@ -317,17 +325,22 @@ Hero.prototype.draw = function (ctx) {
 Hero.prototype.checkCC = function (game) {
     for (var i = 2; i <= game.entities.length - 1; i++) {
         //alert(game.entities.length);
-        if (this.collide(game.entities[i])) {
+        if (this.collide(game.entities[i])) { 
+            isAttack = true;
             if (game.entities[i].name == "enemy") {
                 if (this.targetIsSet == 0 && game.entities[i].isDead == 0) { //if the tower has no target and the entity is not dead
+                   
                     this.target = game.entities[i];//set the new target
                     this.targetIsSet = 1;
                 }
 
                 if (this.target == game.entities[i]) {
+                    console.log(game.entities[i].health);
                     game.entities[i].health = game.entities[i].health - this.damage;
+                    console.log(game.entities[i].health);
                 }
             }
+            
             console.log('towers for days!');
         }
     }

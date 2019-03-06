@@ -693,7 +693,6 @@ AM.queueDownload("./img/towers/tower_m3_48w_108h.png");
 AM.queueDownload("./img/level1flying_132w_102h_1pd_8fr.png");
 AM.queueDownload("./img/crystal_standing_35w_84h_1pd_6fr.png");
 AM.queueDownload("./img/hero/hero_battleidle_68w_93h_1pd_6fr.png");
-AM.queueDownload("./img/hero/hero_attack_74w_92h_1pd_7fr.png");
 AM.queueDownload("./img/hero/hero_attack_117w_161h_1pd_7fr.png");
 AM.queueDownload("./img/hero/hero_battleidle_68w_93h_1pd_6fr.png");
 AM.queueDownload("./img/hero/hero_cast_51w_96h_0pd_1fr.png");
