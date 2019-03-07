@@ -225,12 +225,14 @@ spawner.prototype.update = function () {
     if (this.index < this.levelSpawn.length) {
         var groundBaseHealth = 200;
         var flyingBaseHealth = 160;
-        var bossBaseHealth = 700;
+        var bossBaseHealth = 2000;
         //game, spritesheet, level, type, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale, padWidth, XBuffer, YBuffer, health, damage, radius, reward, speed
         if (this.levelSpawn[this.index] == '1' && time >= spawnInterval * this.index) {
             var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level1ground_atk_walk__8fr_41w_34h_1pd.png"), level, 0, 40, 34, 328, 0.11, 8, true, 1.5, 1, 0, 0, groundBaseHealth, 10, 25, 2, 40, false);
             this.gameEngine.addEntity(temp);
             this.index = this.index + 1;
+
+            
         } else if (this.levelSpawn[this.index] == '1-2' && time >= spawnInterval * this.index) {
             var temp = new SplitEnemy(this.gameEngine, AM.getAsset("./img/monsters/level1ground_atk_walk__8fr_41w_34h_1pd.png"), level, 0, 40, 34, 328, 0.11, 8, true, 1.5, 1, 0, 0, groundBaseHealth, 10, 25, 2, 40, false);
             this.gameEngine.addEntity(temp);
@@ -280,6 +282,7 @@ spawner.prototype.update = function () {
             this.gameEngine.addEntity(temp);
             this.index = this.index + 1;
         }
+        
     }
 
     if (this.index >= this.levelSpawn.length) {
@@ -636,6 +639,186 @@ SplitEnemy.prototype.draw = function () {
 }
 
 //////////////////////////////////////////////////End of Splitting enemy code
+
+
+
+
+
+
+//////////////////////////////////////////////////Start of shrinking enemy
+
+function ShrinkEnemy(game, spritesheet, level, type, frameWidth, frameHeight, sheetWidth,
+    frameDuration, frames, loop, scale, padWidth, XBuffer, YBuffer, health, damage, radius, reward, speed, isNewSpawn) {
+    //this.animation = new Animation(spritesheet, 132, 102, 1064, 0.11, 8, true, .8,1);
+    this.animation = new Animation(spritesheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale, padWidth);
+    this.speed = speed + (1 * level);
+    this.spritesheet = spritesheet;
+    this.frameWidth = frameWidth;
+    this.frameHeight = frameHeight;
+    this.sheetWidth = sheetWidth;
+    this.frameDuration = frameDuration;
+    this.frames = frames;
+    this.loop = loop;
+    this.scale = scale;
+    this.padWidth = padWidth;
+    this.ctx = game.ctx;
+    this.game = game;
+    this.baseHealth = health + (40 * level);
+    this.health = health + (40 * level);
+    this.damage = damage + (3 * level);
+    this.type = type;
+    this.radius = radius;
+    this.boundX = 132;
+    this.boundY = 102;
+    this.reward = reward;
+    this.isDead = 0;
+    this.findX;
+    this.findY;
+    this.pathIsNotFound = true;
+    this.threshold75 = true;
+    this.threshold50 = true;
+    this.threshold25 = true;
+    this.name = "enemy";
+
+    if (isNewSpawn) {
+        Entity.call(this, game, XBuffer, YBuffer);
+    } else {
+        Entity.call(this, game, spawnX + XBuffer, spawnY + YBuffer);
+    }
+}
+
+
+
+ShrinkEnemy.prototype = new Entity();
+ShrinkEnemy.prototype.constructor = ShrinkEnemy;
+
+ShrinkEnemy.prototype.collide = function (other) {
+    var difX = this.x - other.x;
+    var difY = this.y - other.y;
+    return Math.sqrt(difX * difX + difY * difY) < this.radius + other.radius;
+};
+ShrinkEnemy.prototype.update = function () {
+    if (this.health <= 0 && this.isDead == 0) {
+        this.isDead = 1;
+        playerGold = playerGold + this.reward;
+        UpdateUI();
+        this.removeFromWorld = true;
+    }
+    if (this.isDead != 1) {
+        for (var i = 0; i < this.game.entities.length; i++) {
+            var ent = this.game.entities[i];
+            if (ent.name == "base") {
+                if (this.collide(ent)) {
+                    playerHealth = playerHealth - this.damage;
+                    this.isDead = 1;
+                    UpdateUI();
+                }
+            }
+        }
+        var currentXFrame = Math.floor((this.x) / (800 / map[0].length));
+        var currentYFrame = Math.floor((this.y) / (700 / map.length));
+
+        if (isNumber(map[currentYFrame][currentXFrame])) {
+            if (isNumber(map[currentYFrame][currentXFrame + 1])) {
+                if (parseInt(map[currentYFrame][currentXFrame + 1]) > parseInt(map[currentYFrame][currentXFrame]) || map[currentYFrame][currentXFrame + 1] == 'p') {
+                    this.x += this.game.clockTick * this.speed;
+                }
+
+            }
+            if (isNumber(map[currentYFrame][currentXFrame - 1])) {
+                if (parseInt(map[currentYFrame][currentXFrame - 1]) > parseInt(map[currentYFrame][currentXFrame]) || map[currentYFrame][currentXFrame - 1] == 'p') {
+                    this.x -= this.game.clockTick * this.speed;
+                }
+
+            }
+            if (isNumber(map[currentYFrame - 1][currentXFrame])) {
+                if (parseInt(map[currentYFrame - 1][currentXFrame]) > parseInt(map[currentYFrame][currentXFrame]) || map[currentYFrame - 1][currentXFrame] == 'p') {
+                    this.y -= this.game.clockTick * this.speed;
+                }
+
+
+            } if (isNumber(map[currentYFrame + 1][currentXFrame])) {
+                if (parseInt(map[currentYFrame + 1][currentXFrame]) > parseInt(map[currentYFrame][currentXFrame]) || map[currentYFrame + 1][currentXFrame] == 'p') {
+                    this.y += this.game.clockTick * this.speed;
+                }
+
+            }
+        } else {
+            if (this.pathIsNotFound) {
+                var directions = findPath(currentXFrame, currentYFrame);
+                this.findX = directions[0];
+                this.findY = directions[1];
+                this.pathIsNotFound = false;
+            } else {
+                if (this.findX < currentXFrame) {
+                    this.x -= this.game.clockTick * this.speed;
+                } else if (this.findX > currentXFrame) {
+                    this.x += this.game.clockTick * this.speed;
+                }
+
+                if (this.findY < currentYFrame) {
+                    this.y -= this.game.clockTick * this.speed;
+                } else if (this.findY > currentYFrame) {
+                    this.y += this.game.clockTick * this.speed;
+                }
+            }
+        }
+
+        if(this.health / this.baseHealth <= 0.75 && this.threshold75) {
+            this.animation = new Animation(this.spritesheet, this.frameWidth, this.frameHeight, this.sheetWidth, this.frameDuration, this.frames, this.loop, this.scale - 0.1, this.padWidth);
+            this.threshold75 = false;
+            this.speed += 10;
+        }
+        if(this.health / this.baseHealth <= 0.50 && this.threshold50) {
+            this.animation = new Animation(this.spritesheet, this.frameWidth, this.frameHeight, this.sheetWidth, this.frameDuration, this.frames, this.loop, this.scale - 0.2, this.padWidth);
+            this.threshold50 = false;
+            this.speed += 10;
+        }
+        if(this.health / this.baseHealth <= 0.25 && this.threshold25) {
+            this.animation = new Animation(this.spritesheet, this.frameWidth, this.frameHeight, this.sheetWidth, this.frameDuration, this.frames, this.loop, this.scale - 0.3, this.padWidth);
+            this.threshold25 = false;
+            this.speed += 10;
+        }
+        Entity.prototype.update.call(this);
+    }
+}
+
+ShrinkEnemy.prototype.draw = function () {
+    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    Entity.prototype.draw.call(this);
+}
+
+function findPath(currentXFrame, currentYFrame) {
+    var i, j;
+    var closestX, closestY, closestDistance = 9999;
+    for (i = currentYFrame + 1; i < map.length; i++) {
+        for (j = currentXFrame + 1; j < map[0].length; j++) {
+            if (isNumber(map[i][j])) {
+                var distance = Math.sqrt(Math.pow(j - currentXFrame, 2) + Math.pow(i - currentYFrame, 2));
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestX = j;
+                    closestY = i;
+                }
+
+            }
+        }
+    }
+
+    if (closestX && closestY) {
+        return [closestX, closestY];
+    } else {
+        return [0, 0];
+    }
+
+}
+
+
+function isNumber(n) {
+    return !isNaN(parseFloat(n)) && !isNaN(n - 0);
+}
+
+//////////////////////////////////////////////////End of shrinking enemy
 
 //////////////////////////////////////////////////GAME BOARD CODE, used for enemy path and placing towers
 function GameBoard(game) {
