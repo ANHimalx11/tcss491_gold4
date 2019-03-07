@@ -788,35 +788,6 @@ ShrinkEnemy.prototype.draw = function () {
     Entity.prototype.draw.call(this);
 }
 
-function findPath(currentXFrame, currentYFrame) {
-    var i, j;
-    var closestX, closestY, closestDistance = 9999;
-    for (i = currentYFrame + 1; i < map.length; i++) {
-        for (j = currentXFrame + 1; j < map[0].length; j++) {
-            if (isNumber(map[i][j])) {
-                var distance = Math.sqrt(Math.pow(j - currentXFrame, 2) + Math.pow(i - currentYFrame, 2));
-                if (distance < closestDistance) {
-                    closestDistance = distance;
-                    closestX = j;
-                    closestY = i;
-                }
-
-            }
-        }
-    }
-
-    if (closestX && closestY) {
-        return [closestX, closestY];
-    } else {
-        return [0, 0];
-    }
-
-}
-
-
-function isNumber(n) {
-    return !isNaN(parseFloat(n)) && !isNaN(n - 0);
-}
 
 //////////////////////////////////////////////////End of shrinking enemy
 
@@ -828,12 +799,15 @@ function GameBoard(game) {
     this.game = game;
     this.player = 1;
     this.board = [];
+    this.towerLocations = [];
     this.size = 25;
     this.offset = -65;
     for (var i = 0; i < map.length; i++) {
         this.board.push([]);
+        this.towerLocations.push([]);
         for (var j = 0; j < map[0].length; j++) {
             this.board[i].push(0);
+            this.towerLocations[i].push([]);
         }
     }
 }
@@ -843,8 +817,8 @@ GameBoard.prototype.constructor = GameBoard;
 
 GameBoard.prototype.update = function () {
     if (this.game.click) {
-        var towerT = this.board[this.game.click.y][this.game.click.x];
-        var name = "tower" + this.game.click.y + this.game.click.x;
+        //var name = "tower" + this.game.click.y + this.game.click.x;
+        var name = this.towerLocations[this.game.click.y][this.game.click.x];
         var i;
         for (i = 0; i < this.game.towersList.length; i++) {
             var temp = this.game.towersList[i];
@@ -856,7 +830,6 @@ GameBoard.prototype.update = function () {
                 document.getElementById("Upgrade").style.visibility = "visible";
             }
         }
-        //alert(towerT);
 
     }
     if (this.game.click && isBuilding != 0) {
@@ -866,19 +839,63 @@ GameBoard.prototype.update = function () {
 
             var tempTower = new Tower(this.game, this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, towerType, name);
             //this.board[this.game.click.x][this.game.click.y] = tempTower;
-            this.board[this.game.click.y][this.game.click.x] = tempTower;
+            this.board[this.game.click.y][this.game.click.x] = tempTower;//the original click location
+
+            this.towerLocations[this.game.click.y][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 1][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 1][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 2][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 2][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 3][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 3][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 4][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 4][this.game.click.x + 1] = name;
+
             this.game.addTower(tempTower);
             playerGold = playerGold - arrowTowerPrice;
         } else if (towerType == 3) {
             var tempTower = new Tower(this.game, this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, towerType, name);
             //this.board[this.game.click.x][this.game.click.y] = tempTower;
-            this.board[this.game.click.y][this.game.click.x] = tempTower;
+            this.board[this.game.click.y][this.game.click.x] = tempTower;//the original click location
+            this.towerLocations[this.game.click.y][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 1][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 1][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 2][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 2][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 3][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 3][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 4][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 4][this.game.click.x + 1] = name;
             this.game.addTower(tempTower);
             playerGold = playerGold - cannonTowerPrice;
         } else if (towerType == 6) {
             var tempTower = new Tower(this.game, this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, towerType, name);
             //this.board[this.game.click.x][this.game.click.y] = tempTower;
-            this.board[this.game.click.y][this.game.click.x] = tempTower;
+            this.board[this.game.click.y][this.game.click.x] = tempTower;//the original click location
+            this.towerLocations[this.game.click.y][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 1][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 1][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 2][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 2][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 3][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 3][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 4][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 4][this.game.click.x + 1] = name;
             this.game.addTower(tempTower);
             playerGold = playerGold - magicTowerPrice;
         }
