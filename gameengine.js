@@ -87,6 +87,7 @@ GameEngine.prototype.startInput = function () {
     this.ctx.canvas.addEventListener("click", function (e) {
         // console.log(getXandY(e));
         that.click = getXandY(e);
+        
     }, false);
 
     this.ctx.canvas.addEventListener("wheel", function (e) {
@@ -143,6 +144,11 @@ GameEngine.prototype.startInput = function () {
 
     console.log('Input started');
 }
+//parameter e is x and y from getXandY from click.
+function checkUI(e) {
+}
+
+function loadLevel(hero, level, engine, board)
 
 
 function checkKeyPress(e) {
@@ -323,6 +329,7 @@ Entity.prototype.recenterBoundY = function () {
 
 
 
+
 Entity.prototype.rotateAndCache = function (image, angle) {
     var offscreenCanvas = document.createElement('canvas');
     var size = Math.max(image.width, image.height);
@@ -342,11 +349,11 @@ Entity.prototype.rotateAndCache = function (image, angle) {
 
 //////////////////UI ENTITY
 
-function uiEntity(uiGameEng, uiBoard, uiHero) {
+function uiEntity(uiGameEng, uiBoard) {
     
     this.game = uiGameEng;
     this.board = uiBoard;
-    this.hero = uiHero;
+    // this.hero = uiHero;
     this.functionList = [];
 
     Entity.call();
@@ -371,6 +378,10 @@ uiEntity.prototype.draw = function() {
 //     e = [funcName , doSomething];
 //     this.functionList.push(e);
 // }
+uiEntity.prototype.uiLoadLevel = function() {
+
+}
+
 
 
 

@@ -736,8 +736,8 @@ AM.queueDownload("./img/monsters/level4_flying_171w_268h_1pd_7fr.png");
 
 
 AM.queueDownload("./img/Enemy1walk.png");
-AM.queueDownload("./img/runningcat.png");
-AM.queueDownload("./img/guy.jpg");
+// AM.queueDownload("./img/runningcat.png");
+// AM.queueDownload("./img/guy.jpg");
 AM.queueDownload("./img/base2.png");
 AM.queueDownload("./img/enemy2.png");
 AM.downloadAll(function () {
