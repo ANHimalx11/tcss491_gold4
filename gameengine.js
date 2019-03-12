@@ -1,6 +1,8 @@
 // This game shell was happily copied from Googler Seth Ladd's "Bad Aliens" game and his Google IO talk in 2011
 var foundTower = false;
 var towerSelected;
+
+
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame ||
             window.webkitRequestAnimationFrame ||
@@ -33,9 +35,10 @@ function GameEngine() {
     this.entities = [];
     this.towersList = []; 
     this.uiList = [];
-    this.showOutlines = true;  //////USE THIS TO TEST BOUNDS
+    this.showOutlines = false;  //////USE THIS TO TEST BOUNDS
     this.ctx = null;
     this.click = null;
+    this.clickInGame = null; //This is for ui access
     this.mouse = null;
     this.wheel = null;
     this.surfaceWidth = null;
@@ -78,6 +81,11 @@ GameEngine.prototype.startInput = function () {
 
         return { x: x, y: y };
     }
+    var getUiXandY = function(e) {
+        var x = e.clientX - that.ctx.canvas.getBoundingClientRect().left;
+        var y = e.clientY - that.ctx.canvas.getBoundingClientRect().top;
+       return { x: x, y: y };
+    }
 
     this.ctx.canvas.addEventListener("mousemove", function (e) {
         //console.log(getXandY(e));
@@ -85,8 +93,11 @@ GameEngine.prototype.startInput = function () {
     }, false);
 
     this.ctx.canvas.addEventListener("click", function (e) {
-        // console.log(getXandY(e));
+        console.log(getXandY(e));
         that.click = getXandY(e);
+        that.clickInGame = getUiXandY(e);
+        console.log(getUiXandY(e));
+
         
     }, false);
 
@@ -148,9 +159,6 @@ GameEngine.prototype.startInput = function () {
 function checkUI(e) {
 }
 
-function loadLevel(hero, level, engine, board)
-
-
 function checkKeyPress(e) {
     switch (e) {
         case 49: //1
@@ -197,6 +205,8 @@ function checkKeyDown(e) {
 function checkKeyUpHelper(e) {
     keys[e.keyCode] = false;
 }
+
+
 
 GameEngine.prototype.addEntity = function (entity) {
     console.log('added entity');
@@ -270,7 +280,7 @@ GameEngine.prototype.update = function () {
     for (var i = this.uiList.length - 1; i >= 0; --i) {
         if (this.uiList[i].removeFromWorld) {
             this.uiList.splice(i, 1);
-            console.log('removed entity')
+            console.log('removed ui entity')
         }
     }
 
@@ -287,6 +297,7 @@ GameEngine.prototype.loop = function () {
     this.update();
     this.draw();
     this.click = null;
+    this.clickInGame = null;
     this.rightclick = null;
     this.wheel = null;
 }
@@ -345,51 +356,6 @@ Entity.prototype.rotateAndCache = function (image, angle) {
     //offscreenCtx.strokeRect(0,0,size,size);
     return offscreenCanvas;
 }
-
-
-//////////////////UI ENTITY
-
-function uiEntity(uiGameEng, uiBoard) {
-    
-    this.game = uiGameEng;
-    this.board = uiBoard;
-    // this.hero = uiHero;
-    this.functionList = [];
-
-    Entity.call();
-}
-
-uiEntity.prototype = new Entity();
-uiEntity.prototype.constructor = uiEntity;
-
-uiEntity.prototype.update = function() {
-    Entity.prototype.update.call(this);
-}
-
-uiEntity.prototype.draw = function() {
-    Entity.prototype.draw.call(this);
-}
-
-// uiEntity.prototype.addFunction = function(entity, funcName, doSomething) {
-//     var obj = entity;
-//     var e;
-
-//     funcName => (obj function(obj){doSomething};
-//     e = [funcName , doSomething];
-//     this.functionList.push(e);
-// }
-uiEntity.prototype.uiLoadLevel = function() {
-
-}
-
-
-
-
-
-
-
-
-////////////////////END UI ENTITY
 
 
 

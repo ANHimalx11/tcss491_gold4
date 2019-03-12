@@ -1,11 +1,11 @@
 var AM = new AssetManager();
-var spawnX = 0;
-var spawnY = 0;
-var baseX = 0;
-var baseY = 0;
-var lastX, lastY;
-var distance = 24;
-var level = 1;
+var spawnX = 0; //this will set the X placement of spawner
+var spawnY = 0; //this will set the Y placement of spawner
+var baseX = 0;//this will set the X placement of base
+var baseY = 0;//this will set the Y placement of base
+var backgroundSelection = 0; //this selects background
+var mapSelection = 0;
+var level = 1; //this will select the selection of monsters via Enemy
 var temp1 = 0, temp2  = 0;
 var map =  [['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ],
             ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ],
@@ -22,15 +22,6 @@ var map =  [['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-
             ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ],
             ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ]
             ];
-
-
-var spawnX = 0;
-var spawnY = 0;
-var baseX = 0;
-var baseY = 0;
-var lastX, lastY;
-var distance = 24;
-var level = 1;
 var isBuilding = 0;
 var towerType;
 var spawnInterval = 2.0;
@@ -40,7 +31,8 @@ var arrowTowerPrice = 50;
 var cannonTowerPrice = 65;
 var magicTowerPrice = 80;
 var currentTower;
-var map =  [['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+var map =  [
+    ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-','-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
             ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
             ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
             ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
@@ -470,7 +462,85 @@ var enemyList = [
 
 */
 
+///////////////uiEntity
+function uiEntity(game, board, x, y, boundBoxX, boundBoxY, name) {
+    this.game = game;
+    this.board = board;
+    this.boundBoxX = boundBoxX; //create limits  of the bound on the uiEntity
+    this.boundBoxY = boundBoxY;
+    this.isClickedOn = false;
+    this.name = name;
+    //list of functions if the uiEntity.name is inside function list, do that function
+    
+    this.functionList = [
+        {
+            ////startButton, make gameBoard change draw
+            //game already loads with mapSelection 0, the title screen
+            startButton: function (game) {
+                backgroundSelection = 1;
+                mapSelection = 1;
+                level = 1;
+            }
 
+        },
+        {
+            ////startButton, make gameBoard change draw
+            level1Button: function (game) {
+                backgroundSelection = 2;
+            }
+
+        }, {
+            ////startButton, make gameBoard change draw
+            level2Button: function (game) {
+                backgroundSelection = 3;
+            }
+
+        },
+        {
+            ////startButton, make gameBoard change draw
+            level3Button: function (game) {
+                backgroundSelection = 4;
+            }
+
+        },
+        {
+            ////startButton, make gameBoard change draw
+            level4Button: function (game) {
+                backgroundSelection = 5;
+            }
+
+        },
+        
+
+
+
+
+    ];
+
+    Entity.call(this, game, x, y);
+
+}
+
+uiEntity.prototype = new Entity();
+uiEntity.prototype.constructor = uiEntity;
+
+uiEntity.prototype.update = function() {
+    if(this.isClickedOn) {
+        if(this.functionList.includes(this.name)) {
+            this.functionList[this.name]
+        }
+    }
+
+
+    Entity.prototype.update.call(this);
+}
+
+uiEntity.prototype.checkClickInGame = function() {
+
+    //check for bounds on the entity from canvas 
+    //make 
+
+}
 //////////////////////////////////////////////////GAME BOARD CODE, used for enemy path and placing towers
 function GameBoard(game) {
     
@@ -538,10 +608,52 @@ GameBoard.prototype.update = function () {
     Entity.prototype.update.call(this);
 }
 
+GameBoard.prototype.selectBackground = function(mapSelection, ctx) {
+    switch (mapSelection) { //mapSelection corresponds to background
+        case 0: //startImage
+        ctx.drawImage(AM.getAsset("./img/maps/MapStart.png"), this.x, this.y, 800, 700);
+        break;
+        case 1: //overWorldMap Map000.png
+        ctx.drawImage(AM.getAsset("./img/maps/Map000.png"), this.x, this.y, 800, 700);
+        break;
+        case 2: // Map001.png
+        ctx.drawImage(AM.getAsset("./img/maps/Map001.png"), this.x, this.y, 800, 700);
+        break;
+        case 3: // Map002.png
+        ctx.drawImage(AM.getAsset("./img/maps/Map002.png"), this.x, this.y, 800, 700);
+        break;
+        case 4: // Map003.png
+        ctx.drawImage(AM.getAsset("./img/maps/Map003.png"), this.x, this.y, 800, 700);
+        break;
+        case 5: // Map004.png
+        ctx.drawImage(AM.getAsset("./img/maps/Map004.png"), this.x, this.y, 800, 700);
+        break;
+
+    }
+}
+
 GameBoard.prototype.draw = function (ctx) {
 
     //make the game board draw the background yo.
-    ctx.drawImage(AM.getAsset("./img/maps/Map002.png"),this.x,this.y,800,700);
+    if(backgroundSelection == 0) {
+        this.selectBackground(0, ctx);
+    }
+    if(backgroundSelection == 1) {
+        this.selectBackground(1, ctx);
+    } 
+    if(backgroundSelection == 2) {
+        this.selectBackground(2, ctx);
+    } 
+    if(backgroundSelection == 3) {
+        this.selectBackground(3, ctx);
+    } 
+    if(backgroundSelection == 4) {
+        this.selectBackground(4, ctx);
+    } 
+    if(backgroundSelection == 5) {
+        this.selectBackground(5, ctx);
+    }
+    // ctx.drawImage(AM.getAsset("./img/maps/Map002.png"),this.x,this.y,800,700);
 
 
     if(isBuilding == 1) {
@@ -642,6 +754,8 @@ function setSpawnPoint() {
         }
     }
 }
+
+function selectMap()
 
 
 function UpdateUI() {
