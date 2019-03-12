@@ -193,7 +193,7 @@ Tower.prototype.checkCC = function (game) {
                             break;
 
                     }
-                    // game.entities[i].health = game.entities[i].health - this.damage;            /////moved this to projectiles
+                     game.entities[i].health = game.entities[i].health - this.damage;            /////moved this to projectiles
                 }
             }
 

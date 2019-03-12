@@ -1,27 +1,9 @@
 var AM = new AssetManager();
-var spawnX = 0; //this will set the X placement of spawner
-var spawnY = 0; //this will set the Y placement of spawner
-var baseX = 0;//this will set the X placement of base
-var baseY = 0;//this will set the Y placement of base
-var backgroundSelection = 0; //this selects background
-var mapSelection = 0;
-var level = 1; //this will select the selection of monsters via Enemy
-var temp1 = 0, temp2  = 0;
-var map =  [['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'b', 'p', 'b', ],
-            ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', '-', '-', '-', '-', '-', 'b', 'm', 'b', ],
-            ['s', 'm', 'm', 'm', 'm', 'm', 'm', 'b', '-', '-', '-', '-', '-', 'b', 'm', 'b', ],
-            ['b', 'b', 'b', 'b', 'b', 'b', 'm', 'b', '-', '-', '-', '-', '-', 'b', 'm', 'b', ],
-            ['-', '-', '-', '-', '-', 'b', 'm', 'b', '-', '-', '-', '-', '-', 'b', 'm', 'b', ],
-            ['-', '-', '-', '-', '-', 'b', 'm', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'm', 'b', ],
-            ['-', '-', '-', '-', '-', 'b', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'b', ],
-            ['-', '-', '-', '-', '-', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', ],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', ]
-            ];
+var spawnX = 0;
+var spawnY = 0;
+var baseX = 0;
+var baseY = 0;
+var level = 1;
 var isBuilding = 0;
 var towerType;
 var spawnInterval = 2.0;
@@ -31,51 +13,50 @@ var arrowTowerPrice = 50;
 var cannonTowerPrice = 65;
 var magicTowerPrice = 80;
 var currentTower;
-var map =  [
-    ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-','-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'm', 'p', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'm', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'm', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'm', '-', '-'],
-            ['s', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'm', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'm', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'm', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'm', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'm', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'm', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'm', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'm', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'm', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'm', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'm', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'm', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'm', '-', '-'],
-			['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'm', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'm', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-']
-            ];
 
-var level1spawn = ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'];
-var level2spawn = ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'];
+var map = [['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '51', 'p', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '50', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '49', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '48', '-', '-'],
+['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '47', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '13', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '46', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '14', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '45', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '15', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '44', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '16', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '43', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '17', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '42', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '18', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '41', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '19', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '40', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '20', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '39', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-']
+];
 
-var levels = [['1', '1', '1', '1', '1', '2', '2', '2', '2', '2', '2', '2', '2', '3'],
-			  ['1', '2', '1', '2', '4', '4', '5', '5', '4', '5', '2', '2', '4', '5', 
-			   '4', '4', '4', '5', '5', '5', '5', '6'],
-			  ['4', '4', '5', '5', '7', '7', '7', '7', '8', '8', '8', '8', '8', '7', 
-			   '7', '8', '7', '7', '8', '8', '8', '8', '7', '7', '7', '8', '8', '8', '8', '9'],
-			  ['7', '8', '7', '7', '8', '8', '8', '8', '7', '7', '7', '8', '8', '8', '8', '8', 
-			   '10', '10', '10', '10', '11', '11', '11', '11', '11', '11', '10', '11', '10', '11', '10', '11', 
-			   '10', '10', '11', '11', '11', '12'],
-               ['3', '6', '10', '10', '10', '11', '11', '11', '11', '10', '10', '10', '10', '10', '11', '11', 
-			   '10', '10', '10', '10', '11', '11', '11', '11', '11', '11', '10', '11', '10', '11', '10', '11', 
-			   '10', '10', '11', '11', '11', '12']
+
+
+var levels = [['1', '1', '1', '1', '1-2', '2', '2', '2', '2', '2', '2', '2', '2', '3'],
+['1', '2', '1', '2', '4', '4', '5', '5', '4', '5', '2', '2', '4', '5',
+    '4', '4', '4', '5', '5', '5', '5', '6'],
+['4', '4', '5', '5', '7', '7', '7', '7', '8', '8', '8', '8', '8', '7',
+    '7', '8', '7', '7', '8', '8', '8', '8', '7', '7', '7', '8', '8', '8', '8', '9'],
+['7', '8', '7', '7', '8', '8', '8', '8', '7', '7', '7', '8', '8', '8', '8', '8',
+    '10', '10', '10', '10', '11', '11', '11', '11', '11', '11', '10', '11', '10', '11', '10', '11',
+    '10', '10', '11', '11', '11', '12'],
+['3', '6', '10', '10', '10', '11', '11', '11', '11', '10', '10', '10', '10', '10', '11', '11',
+    '10', '10', '10', '10', '11', '11', '11', '11', '11', '11', '10', '11', '10', '11', '10', '11',
+    '10', '10', '11', '11', '11', '12']
 ];
 
 /////////////////////////////////////////ANIMATION CLASS
@@ -107,17 +88,17 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y) {
     var frame = this.currentFrame();
     var xindex = 0;
     var yindex = 0;
-    
+
     xindex = frame % this.sheetWidth;
     yindex = Math.floor(frame / this.sheetWidth);
-    var drawXpx = xindex * this.frameWidth + xOffset*xindex + xOffset;
+    var drawXpx = xindex * this.frameWidth + xOffset * xindex + xOffset;
 
     ctx.drawImage(this.spriteSheet,
-                 drawXpx, yindex * this.frameHeight,  // source from sheet
-                 this.frameWidth, this.frameHeight,
-                 x, y,
-                 this.frameWidth * this.scale,
-                 this.frameHeight * this.scale);
+        drawXpx, yindex * this.frameHeight,  // source from sheet
+        this.frameWidth, this.frameHeight,
+        x, y,
+        this.frameWidth * this.scale,
+        this.frameHeight * this.scale);
 }
 
 Animation.prototype.currentFrame = function () {
@@ -191,7 +172,7 @@ base.prototype.checkCC = function (game) {
             UpdateUI();
             game.entities[i].removeFromWorld = true;
         }
-        else if (playerHealth > 0){
+        else if (playerHealth > 0) {
             this.state = 0;
         }
 
@@ -200,12 +181,12 @@ base.prototype.checkCC = function (game) {
 }
 
 
-base.prototype.collide = function(monster) {
-    var myCircle = {'x': this.recenterBoundX(), 'y': this.recenterBoundY(), 'r': this.radius};
-    var otherCirle = {'x': monster.recenterBoundX(), 'y': monster.recenterBoundY(), 'r': monster.radius};
+base.prototype.collide = function (monster) {
+    var myCircle = { 'x': this.recenterBoundX(), 'y': this.recenterBoundY(), 'r': this.radius };
+    var otherCirle = { 'x': monster.recenterBoundX(), 'y': monster.recenterBoundY(), 'r': monster.radius };
     var dx = myCircle.x - otherCirle.x;
     var dy = myCircle.y - otherCirle.y;
-    var distance = Math.sqrt(dx*dx + dy*dy);
+    var distance = Math.sqrt(dx * dx + dy * dy);
     return (distance < myCircle.r + otherCirle.r);
 }
 
@@ -218,9 +199,9 @@ function spawner(game, spritesheet) {
     this.gameEngine = game;
     this.radius = 25;
     this.index = 0;
-	this.currentLevel = 0;
-	this.levelSpawn = levels[this.currentLevel];
-	this.time = this.gameEngine.timer.gameTime;
+    this.currentLevel = 0;
+    this.levelSpawn = levels[this.currentLevel];
+    this.time = this.gameEngine.timer.gameTime;
     Entity.call(this, game, spawnX, spawnY);
 }
 
@@ -232,103 +213,110 @@ spawner.prototype.update = function () {
     if (this.index < this.levelSpawn.length) {
         var groundBaseHealth = 200;
         var flyingBaseHealth = 160;
-        var bossBaseHealth = 700;
+        var bossBaseHealth = 2000;
         //game, spritesheet, level, type, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale, padWidth, XBuffer, YBuffer, health, damage, radius, reward, speed
-        if(this.levelSpawn[this.index] == '1' && time >= spawnInterval * this.index) {
-            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level1ground_atk_walk__8fr_41w_34h_1pd.png"), level, 0, 40, 34, 328, 0.11, 8, true, 1.5, 1, 0, 24, groundBaseHealth, 10, 25, 2, 40);
+        if (this.levelSpawn[this.index] == '1' && time >= spawnInterval * this.index) {
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level1ground_atk_walk__8fr_41w_34h_1pd.png"), level, 0, 40, 34, 328, 0.11, 8, true, 1.5, 1, 0, 0, groundBaseHealth, 10, 25, 2, 40, false);
             this.gameEngine.addEntity(temp);
             this.index = this.index + 1;
-        } else if (this.levelSpawn[this.index] == '2' && time >= spawnInterval * this.index) {
-            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/level1flying_132w_102h_1pd_8fr.png"), level, 0, 132, 102, 1064, 0.11, 8, true, .8, 1, 0, 0, flyingBaseHealth, 15, 25, 3, 45);
+
+            
+        } else if (this.levelSpawn[this.index] == '1-2' && time >= spawnInterval * this.index) {
+            var temp = new SplitEnemy(this.gameEngine, AM.getAsset("./img/monsters/level1ground_atk_walk__8fr_41w_34h_1pd.png"), level, 0, 40, 34, 328, 0.11, 8, true, 1.5, 1, 0, 0, groundBaseHealth, 10, 25, 2, 40, false);
+            this.gameEngine.addEntity(temp);
+            this.index = this.index + 1;
+        }else if (this.levelSpawn[this.index] == '2' && time >= spawnInterval * this.index) {
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/level1flying_132w_102h_1pd_8fr.png"), level, 0, 132, 102, 1064, 0.11, 8, true, .8, 1, 0, 0, flyingBaseHealth, 15, 25, 3, 45, false);
             this.gameEngine.addEntity(temp);
             this.index = this.index + 1;
         } else if (this.levelSpawn[this.index] == '3' && time >= spawnInterval * this.index) {
-            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level1boss_walking_116w_134h_1pd_6fr.png"), level, 0, 116, 134, 702, 0.11, 6, true, 1, 1, 0, 0, bossBaseHealth, 50, 50, 50, 30);
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level1boss_walking_116w_134h_1pd_6fr.png"), level, 0, 116, 134, 702, 0.11, 6, true, 1, 1, 0, 0, bossBaseHealth, 50, 50, 50, 30, false);
             this.gameEngine.addEntity(temp);
             this.index = this.index + 1;
         } else if (this.levelSpawn[this.index] == '4' && time >= spawnInterval * this.index) {
-            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level2ground_walking_134w_140h_1pd_6fr.png"), level, 0, 134, 140, 810, 0.11, 6, true, 1, 1, 0, 0, groundBaseHealth * 1.6, 15, 50, 3, 45);
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level2ground_walking_134w_140h_1pd_6fr.png"), level, 0, 134, 140, 810, 0.11, 6, true, 1, 1, 0, 0, groundBaseHealth * 1.6, 15, 50, 3, 45, false);
             this.gameEngine.addEntity(temp);
             this.index = this.index + 1;
         } else if (this.levelSpawn[this.index] == '5' && time >= spawnInterval * this.index) {
-            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level2flying_walking_95w_122h_1pd_8fr.png"), level, 0, 95, 122, 768, 0.11, 8, true, 1, 1, 0, 0, flyingBaseHealth * 1.6, 12, 50, 4, 55);
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level2flying_walking_95w_122h_1pd_8fr.png"), level, 0, 95, 122, 768, 0.11, 8, true, 1, 1, 0, 0, flyingBaseHealth * 1.6, 12, 50, 4, 55, false);
             this.gameEngine.addEntity(temp);
             this.index = this.index + 1;
         } else if (this.levelSpawn[this.index] == '6' && time >= spawnInterval * this.index) {
-            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level2boss_walking_196w_163h_1pd_6fr.png"), level, 0, 196, 163, 1182, 0.11, 6, true, 1, 1, 0, 0, bossBaseHealth * 1.5, 30, 50, 60, 35);
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level2boss_walking_196w_163h_1pd_6fr.png"), level, 0, 196, 163, 1182, 0.11, 6, true, 1, 1, 0, 0, bossBaseHealth * 1.5, 30, 50, 60, 35, false);
             this.gameEngine.addEntity(temp);
             this.index = this.index + 1;
         } else if (this.levelSpawn[this.index] == '7' && time >= spawnInterval * this.index) {
-            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level3ground_walking_119w_136h_1pd_8fr.png"), level, 0, 119, 136, 960, 0.11, 8, true, 1, 1, 0, 0, groundBaseHealth * 2.1, 15, 50, 4, 45);
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level3ground_walking_119w_136h_1pd_8fr.png"), level, 0, 119, 136, 960, 0.11, 8, true, 1, 1, 0, 0, groundBaseHealth * 2.1, 15, 50, 4, 45, false);
             this.gameEngine.addEntity(temp);
             this.index = this.index + 1;
         } else if (this.levelSpawn[this.index] == '8' && time >= spawnInterval * this.index) {
-            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level3_flying_walking_112w_133h_1pd_6fr.png"), level, 0, 112, 133, 678, 0.11, 6, true, 1, 1, 0, 0, flyingBaseHealth * 2.1, 12, 50, 5, 55);
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level3_flying_walking_112w_133h_1pd_6fr.png"), level, 0, 112, 133, 678, 0.11, 6, true, 1, 1, 0, 0, flyingBaseHealth * 2.1, 12, 50, 5, 55, false);
             this.gameEngine.addEntity(temp);
             this.index = this.index + 1;
         } else if (this.levelSpawn[this.index] == '9' && time >= spawnInterval * this.index) {
-            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level3boss_walking_86w_118h_6fr_1pd.png"), level, 0, 86, 118, 522, 0.11, 6, true, 1, 1, 0, 0, bossBaseHealth * 1.7, 40, 50, 70, 35);
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level3boss_walking_86w_118h_6fr_1pd.png"), level, 0, 86, 118, 522, 0.11, 6, true, 1, 1, 0, 0, bossBaseHealth * 1.7, 40, 50, 70, 35, false);
             this.gameEngine.addEntity(temp);
             this.index = this.index + 1;
         } else if (this.levelSpawn[this.index] == '10' && time >= spawnInterval * this.index) {
-            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level4ground_walking_170_127h_1pd_9fr.png"), level, 0, 170, 127, 1539, 0.11, 9, true, 1, 1, 0, 0, groundBaseHealth * 2.6, 15, 50, 5, 45);
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level4ground_walking_170_127h_1pd_9fr.png"), level, 0, 170, 127, 1539, 0.11, 9, true, 1, 1, 0, 0, groundBaseHealth * 2.6, 15, 50, 5, 45, false);
             this.gameEngine.addEntity(temp);
             this.index = this.index + 1;
         } else if (this.levelSpawn[this.index] == '11' && time >= spawnInterval * this.index) {
-            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level4_flying_171w_268h_1pd_7fr.png"), level, 0, 171, 268, 1204, 0.11, 7, true, 0.7, 1, 0, 0, flyingBaseHealth * 2.6, 170, 50, 5, 55);
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level4_flying_171w_268h_1pd_7fr.png"), level, 0, 171, 268, 1204, 0.11, 7, true, 0.7, 1, 0, 0, flyingBaseHealth * 2.6, 170, 50, 5, 55, false);
             this.gameEngine.addEntity(temp);
             this.index = this.index + 1;
         } else if (this.levelSpawn[this.index] == '12' && time >= spawnInterval * this.index) {
-            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level4boss_walk_150_217_1pd_8fr.png"), level, 0, 150, 217, 1208, 0.11, 8, true, 1, 1, 0, 0, bossBaseHealth * 1.9, 50, 50, 80, 35);
+            var temp = new Enemy(this.gameEngine, AM.getAsset("./img/monsters/level4boss_walk_150_217_1pd_8fr.png"), level, 0, 150, 217, 1208, 0.11, 8, true, 1, 1, 0, 0, bossBaseHealth * 1.9, 50, 50, 80, 35, false);
             this.gameEngine.addEntity(temp);
             this.index = this.index + 1;
         }
-	}
-	
-	if (this.index >= this.levelSpawn.length) {
-		if(!this.areMonstersAlive()) {
+        
+    }
+
+    if (this.index >= this.levelSpawn.length) {
+        if (!this.areMonstersAlive()) {
             this.nextLevel();
             level++;
             UpdateUI();
-			alert("next level");
-			
-		}
+            alert("next level");
 
-	}
-	
+        }
+
+    }
+
     Entity.prototype.update.call(this);
 }
 
-spawner.prototype.areMonstersAlive = function() {
-	var i;
-	for(i = 0; i < this.game.entities.length; i++) {
-		if(this.game.entities[i].name == "enemy") {
-			return true;
-		}
-	}
-	return false;
+spawner.prototype.areMonstersAlive = function () {
+    var i;
+    for (i = 0; i < this.game.entities.length; i++) {
+        if (this.game.entities[i].name == "enemy") {
+            return true;
+        }
+    }
+    return false;
 }
 
-spawner.prototype.nextLevel = function() {
-	this.currentLevel++;
-	//update htlm
-	if(this.currentLevel < levels.length) {
-		this.levelSpawn = levels[this.currentLevel];
-		this.index = 0;
-		this.time = this.gameEngine.timer.gameTime;
-		spawnInterval = spawnInterval - (0.1 * this.currentLevel);
-	} else {
-		//go on to next map
-	}
+spawner.prototype.nextLevel = function () {
+    this.currentLevel++;
+    //update htlm
+    if (this.currentLevel < levels.length) {
+        this.levelSpawn = levels[this.currentLevel];
+        this.index = 0;
+        this.time = this.gameEngine.timer.gameTime;
+        spawnInterval = spawnInterval - (0.1 * this.currentLevel);
+    } else {
+        //go on to next map
+    }
 }
 
 spawner.prototype.draw = function () {
-    
+
     Entity.prototype.draw.call(this);
 }
 
-function Enemy(game, spritesheet, level, type, frameWidth, frameHeight, sheetWidth, 
-               frameDuration, frames, loop, scale, padWidth, XBuffer, YBuffer, health, damage, radius, reward, speed) {
+function Enemy(game, spritesheet, level, type, frameWidth, frameHeight, sheetWidth,
+    frameDuration, frames, loop, scale, padWidth, XBuffer, YBuffer, health, damage, radius, reward, speed, isNewSpawn) {
     //this.animation = new Animation(spritesheet, 132, 102, 1064, 0.11, 8, true, .8,1);
     this.animation = new Animation(spritesheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale, padWidth);
     this.speed = speed + (1 * level);
@@ -343,37 +331,16 @@ function Enemy(game, spritesheet, level, type, frameWidth, frameHeight, sheetWid
     this.boundY = 102;
     this.reward = reward;
     this.isDead = 0;
+    this.findX;
+    this.findY;
+    this.pathIsNotFound = true;
     this.name = "enemy";
-    this.visited = [['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-                    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']
-                    ];
-    Entity.call(this, game, spawnX + XBuffer, spawnY + YBuffer);
+
+    if (isNewSpawn) {
+        Entity.call(this, game, XBuffer, YBuffer);
+    } else {
+        Entity.call(this, game, spawnX + XBuffer, spawnY + YBuffer);
+    }
 }
 
 
@@ -381,22 +348,23 @@ function Enemy(game, spritesheet, level, type, frameWidth, frameHeight, sheetWid
 Enemy.prototype = new Entity();
 Enemy.prototype.constructor = Enemy;
 
-Enemy.prototype.collide = function(other) {
+Enemy.prototype.collide = function (other) {
     var difX = this.x - other.x;
     var difY = this.y - other.y;
     return Math.sqrt(difX * difX + difY * difY) < this.radius + other.radius;
 };
 Enemy.prototype.update = function () {
-    if(this.health <= 0 && this.isDead == 0) {
+    if (this.health <= 0 && this.isDead == 0) {
         this.isDead = 1;
         playerGold = playerGold + this.reward;
         UpdateUI();
+        this.removeFromWorld = true;
     }
-    if(this.isDead != 1) {
-        for(var i = 0; i < this.game.entities.length; i++) {
+    if (this.isDead != 1) {
+        for (var i = 0; i < this.game.entities.length; i++) {
             var ent = this.game.entities[i];
             if (ent.name == "base") {
-                if(this.collide(ent)) {
+                if (this.collide(ent)) {
                     playerHealth = playerHealth - this.damage;
                     this.isDead = 1;
                     UpdateUI();
@@ -405,27 +373,54 @@ Enemy.prototype.update = function () {
         }
         var currentXFrame = Math.floor((this.x) / (800 / map[0].length));
         var currentYFrame = Math.floor((this.y) / (700 / map.length));
-        if((map[currentYFrame][currentXFrame + 1] == 'm' || map[currentYFrame][currentXFrame + 1] == 'p')   && this.visited[currentYFrame][currentXFrame + 1] == '0') {
-            this.x += this.game.clockTick * this.speed;
-            this.visited[currentYFrame][currentXFrame] = '1';
-         }
-        if((map[currentYFrame][currentXFrame - 1] == 'm' || map[currentYFrame][currentXFrame - 1] == 'p')   && this.visited[currentYFrame][currentXFrame - 1] == '0') {
-            this.x -= this.game.clockTick * this.speed;
-            this.visited[currentYFrame][currentXFrame] = '1';
-        }
-        if((map[currentYFrame - 1][currentXFrame] == 'm' || map[currentYFrame - 1][currentXFrame] == 'p') && this.visited[currentYFrame - 1][currentXFrame] == '0') {
-              this.y -= this.game.clockTick * this.speed;
-              this.visited[currentYFrame][currentXFrame] = '1';
-        }
-        if((map[currentYFrame + 1][currentXFrame] == 'm' || map[currentYFrame + 1][currentXFrame] == 'p') && this.visited[currentYFrame + 1][currentXFrame] == '0') {
-             this.y += this.game.clockTick * this.speed;
-             this.visited[currentYFrame][currentXFrame] = '1';
+
+        if (isNumber(map[currentYFrame][currentXFrame])) {
+            if (isNumber(map[currentYFrame][currentXFrame + 1])) {
+                if (parseInt(map[currentYFrame][currentXFrame + 1]) > parseInt(map[currentYFrame][currentXFrame]) || map[currentYFrame][currentXFrame + 1] == 'p') {
+                    this.x += this.game.clockTick * this.speed;
+                }
+
+            }
+            if (isNumber(map[currentYFrame][currentXFrame - 1])) {
+                if (parseInt(map[currentYFrame][currentXFrame - 1]) > parseInt(map[currentYFrame][currentXFrame]) || map[currentYFrame][currentXFrame - 1] == 'p') {
+                    this.x -= this.game.clockTick * this.speed;
+                }
+
+            }
+            if (isNumber(map[currentYFrame - 1][currentXFrame])) {
+                if (parseInt(map[currentYFrame - 1][currentXFrame]) > parseInt(map[currentYFrame][currentXFrame]) || map[currentYFrame - 1][currentXFrame] == 'p') {
+                    this.y -= this.game.clockTick * this.speed;
+                }
+
+
+            } if (isNumber(map[currentYFrame + 1][currentXFrame])) {
+                if (parseInt(map[currentYFrame + 1][currentXFrame]) > parseInt(map[currentYFrame][currentXFrame]) || map[currentYFrame + 1][currentXFrame] == 'p') {
+                    this.y += this.game.clockTick * this.speed;
+                }
+
+            }
+        } else {
+            if (this.pathIsNotFound) {
+                var directions = findPath(currentXFrame, currentYFrame);
+                this.findX = directions[0];
+                this.findY = directions[1];
+                this.pathIsNotFound = false;
+            } else {
+                if (this.findX < currentXFrame) {
+                    this.x -= this.game.clockTick * this.speed;
+                } else if (this.findX > currentXFrame) {
+                    this.x += this.game.clockTick * this.speed;
+                }
+
+                if (this.findY < currentYFrame) {
+                    this.y -= this.game.clockTick * this.speed;
+                } else if (this.findY > currentYFrame) {
+                    this.y += this.game.clockTick * this.speed;
+                }
+            }
         }
         Entity.prototype.update.call(this);
-    } else {
-        this.removeFromWorld = true;
     }
-    
 }
 
 Enemy.prototype.draw = function () {
@@ -433,34 +428,254 @@ Enemy.prototype.draw = function () {
     Entity.prototype.draw.call(this);
 }
 
-/*
-var enemyList = [
-    {
+function findPath(currentXFrame, currentYFrame) {
+    var i, j;
+    var closestX, closestY, closestDistance = 9999;
+    for (i = currentYFrame + 1; i < map.length; i++) {
+        for (j = currentXFrame + 1; j < map[0].length; j++) {
+            if (isNumber(map[i][j])) {
+                var distance = Math.sqrt(Math.pow(j - currentXFrame, 2) + Math.pow(i - currentYFrame, 2));
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestX = j;
+                    closestY = i;
+                }
 
-        animation: TestAnimate = new Animation(AM.getAsset("./img/towers/tower_a1_48w_107h.png"), 48, 107, 48, 0.05, 1, true, 1.0, 0),
+            }
+        }
+    }
 
-        draw: function (game, ctx, x, y) {
-            TestAnimate.drawFrame(game.clockTick, ctx, x, y)
-        },
+    if (closestX && closestY) {
+        return [closestX, closestY];
+    } else {
+        return [0, 0];
+    }
 
-
-    },
-
-    {
-        ////Arrow tower type
-        animation: ArrowAnimate = new Animation(AM.getAsset("./img/level1flying_132w_102h_1pd_8fr.png"), 132, 102, 1064, 0.11, 8, true, .8,1),
-        attack: function () {
-        },
-        draw: function (game, ctx, x, y) {
-            ArrowAnimate.drawFrame(game.clockTick, ctx, x, y)
-        },
+}
 
 
-    },
-    
-];////////////////End list of tower types
+function isNumber(n) {
+    return !isNaN(parseFloat(n)) && !isNaN(n - 0);
+}
 
-*/
+
+//////////////////////////////////////////////////Splitting Enemy Code
+
+function SplitEnemy(game, spritesheet, level, type, frameWidth, frameHeight, sheetWidth,
+    frameDuration, frames, loop, scale, padWidth, XBuffer, YBuffer, health, damage, radius, reward, speed) {
+    //this.animation = new Animation(spritesheet, 132, 102, 1064, 0.11, 8, true, .8,1);
+    this.animation = new Animation(spritesheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale, padWidth);
+    this.speed = speed + (1 * level);
+    this.direction = 1;//1 = right 2 = up, 3 = down, 4 = left
+    this.spritesheet = spritesheet;
+    this.level = level;
+    this.type = type;
+    this.frameWidth = frameWidth;
+    this.frameHeight = frameHeight;
+    this.sheetWidth = sheetWidth;
+    this.frameDuration = frameDuration;
+    this.frames = frames;
+    this.loop = loop;
+    this.scale = scale;
+    this.padWidth = padWidth;
+    this.XBuffer = XBuffer;
+    this.YBuffer = YBuffer;
+    this.damage = damage + (3 * level);
+    this.radius = radius;
+    this.ctx = game.ctx;
+    this.game = game;
+    this.baseHealth = health + (40 * level);
+    this.health = health + (40 * level);
+    this.damage = damage + (3 * level);
+    this.type = type;
+    this.radius = radius;
+    this.boundX = 132;
+    this.boundY = 102;
+    this.reward = reward;
+    this.isDead = 0;
+    this.name = "enemy";
+    Entity.call(this, game, spawnX + XBuffer, spawnY + YBuffer);
+}
+
+
+
+SplitEnemy.prototype = new Entity();
+SplitEnemy.prototype.constructor = SplitEnemy;
+
+SplitEnemy.prototype.collide = function (other) {
+    var difX = this.x - other.x;
+    var difY = this.y - other.y;
+    return Math.sqrt(difX * difX + difY * difY) < this.radius + other.radius;
+};
+SplitEnemy.prototype.update = function () {
+    if (this.health <= 0 && this.isDead == 0) {
+        this.isDead = 1;
+        playerGold = playerGold + this.reward;
+        UpdateUI();
+
+
+        //game, spritesheet, level, type, frameWidth, frameHeight, sheetWidth,frameDuration, frames, loop, scale, padWidth, XBuffer, YBuffer, health, damage, radius, reward, speed
+        //spawn one upwards
+
+        var temp = new Enemy(this.game, this.spritesheet, level, this.type, this.frameWidth, this.frameHeight, this.sheetWidth, this.frameDuration,
+            this.frames, this.loop, this.scale * 0.5, this.padWidth, this.x, this.y + (this.radius * 2), this.baseHealth / 4, this.damage,
+            this.radius, this.reward, this.speed, true);
+        this.game.addEntity(temp);
+        //spawn one below
+
+        var temp = new Enemy(this.game, this.spritesheet, level, this.type, this.frameWidth, this.frameHeight, this.sheetWidth, this.frameDuration,
+            this.frames, this.loop, this.scale * 0.5, this.padWidth, this.x, this.y + (-this.radius * 2), this.baseHealth / 4, this.damage,
+            this.radius, this.reward, this.speed, true);
+        this.game.addEntity(temp);
+
+        //spawn one to the left
+        var temp = new Enemy(this.game, this.spritesheet, level, this.type, this.frameWidth, this.frameHeight, this.sheetWidth, this.frameDuration,
+            this.frames, this.loop, this.scale * 0.5, this.padWidth, this.x + (this.radius * 2), this.y, this.baseHealth / 4, this.damage,
+            this.radius, this.reward, this.speed, true);
+        this.game.addEntity(temp);
+        //spawn one to the right
+        var temp = new Enemy(this.game, this.spritesheet, level, this.type, this.frameWidth, this.frameHeight, this.sheetWidth, this.frameDuration,
+            this.frames, this.loop, this.scale * 0.5, this.padWidth, this.x + (-this.radius * 2), this.y, this.baseHealth / 4, this.damage,
+            this.radius, this.reward, this.speed, true);
+        this.game.addEntity(temp);
+        //spawn one to the bottom left
+        var temp = new Enemy(this.game, this.spritesheet, level, this.type, this.frameWidth, this.frameHeight, this.sheetWidth, this.frameDuration,
+            this.frames, this.loop, this.scale * 0.5, this.padWidth, this.x + (this.radius * 2), this.y + (-this.radius * 2), this.baseHealth / 4, this.damage,
+            this.radius, this.reward, this.speed, true);
+        this.game.addEntity(temp);
+        //spawn one to the bottom right
+        var temp = new Enemy(this.game, this.spritesheet, level, this.type, this.frameWidth, this.frameHeight, this.sheetWidth, this.frameDuration,
+            this.frames, this.loop, this.scale * 0.5, this.padWidth, this.x + (-this.radius * 2), this.y + (this.radius * 2), this.baseHealth / 4, this.damage,
+            this.radius, this.reward, this.speed, true);
+        this.game.addEntity(temp);
+        //spawn one to the top left
+        var temp = new Enemy(this.game, this.spritesheet, level, this.type, this.frameWidth, this.frameHeight, this.sheetWidth, this.frameDuration,
+            this.frames, this.loop, this.scale * 0.5, this.padWidth, this.x + (-this.radius * 2), this.y + (-this.radius * 2), this.baseHealth / 3, this.damage,
+            this.radius, this.reward, this.speed, true);
+        this.game.addEntity(temp);
+        //spawn one to the top right
+        var temp = new Enemy(this.game, this.spritesheet, level, this.type, this.frameWidth, this.frameHeight, this.sheetWidth, this.frameDuration,
+            this.frames, this.loop, this.scale * 0.5, this.padWidth, this.x + (this.radius * 2), this.y + (this.radius * 2), this.baseHealth / 3, this.damage,
+            this.radius, this.reward, this.speed, true);
+        this.game.addEntity(temp);
+
+        //}
+
+        //}
+        this.removeFromWorld = true;
+    }
+    if (this.isDead != 1) {
+        for (var i = 0; i < this.game.entities.length; i++) {
+            var ent = this.game.entities[i];
+            if (ent.name == "base") {
+                if (this.collide(ent)) {
+                    playerHealth = playerHealth - this.damage;
+                    this.isDead = 1;
+                    UpdateUI();
+                }
+            }
+        }
+        var currentXFrame = Math.floor((this.x) / (800 / map[0].length));
+        var currentYFrame = Math.floor((this.y) / (700 / map.length));
+        if (isNumber(map[currentYFrame][currentXFrame])) {
+            if (isNumber(map[currentYFrame][currentXFrame + 1])) {
+                if (parseInt(map[currentYFrame][currentXFrame + 1]) > parseInt(map[currentYFrame][currentXFrame]) || map[currentYFrame][currentXFrame + 1] == 'p') {
+                    this.x += this.game.clockTick * this.speed;
+                }
+
+            }
+            if (isNumber(map[currentYFrame][currentXFrame - 1])) {
+                if (parseInt(map[currentYFrame][currentXFrame - 1]) > parseInt(map[currentYFrame][currentXFrame]) || map[currentYFrame][currentXFrame - 1] == 'p') {
+                    this.x -= this.game.clockTick * this.speed;
+                }
+
+            }
+            if (isNumber(map[currentYFrame - 1][currentXFrame])) {
+                if (parseInt(map[currentYFrame - 1][currentXFrame]) > parseInt(map[currentYFrame][currentXFrame]) || map[currentYFrame - 1][currentXFrame] == 'p') {
+                    this.y -= this.game.clockTick * this.speed;
+                }
+
+
+            } if (isNumber(map[currentYFrame + 1][currentXFrame])) {
+                if (parseInt(map[currentYFrame + 1][currentXFrame]) > parseInt(map[currentYFrame][currentXFrame]) || map[currentYFrame + 1][currentXFrame] == 'p') {
+                    this.y += this.game.clockTick * this.speed;
+                }
+
+            }
+        } else {
+            var directions = findPath(currentXFrame, currentYFrame);
+            if (directions[0] < currentXFrame) {
+                this.x -= this.game.clockTick * this.speed;
+            } else if (directions[0] > currentXFrame) {
+                this.x += this.game.clockTick * this.speed;
+            }
+
+            if (directions[1] < currentYFrame) {
+                this.y -= this.game.clockTick * this.speed;
+            } else if (directions[1] > currentYFrame) {
+                this.y += this.game.clockTick * this.speed;
+            }
+        }
+        Entity.prototype.update.call(this);
+    }
+
+}
+
+SplitEnemy.prototype.draw = function () {
+    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    Entity.prototype.draw.call(this);
+}
+
+//////////////////////////////////////////////////End of Splitting enemy code
+
+
+
+
+
+
+//////////////////////////////////////////////////Start of shrinking enemy
+
+function ShrinkEnemy(game, spritesheet, level, type, frameWidth, frameHeight, sheetWidth,
+    frameDuration, frames, loop, scale, padWidth, XBuffer, YBuffer, health, damage, radius, reward, speed, isNewSpawn) {
+    //this.animation = new Animation(spritesheet, 132, 102, 1064, 0.11, 8, true, .8,1);
+    this.animation = new Animation(spritesheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale, padWidth);
+    this.speed = speed + (1 * level);
+    this.spritesheet = spritesheet;
+    this.frameWidth = frameWidth;
+    this.frameHeight = frameHeight;
+    this.sheetWidth = sheetWidth;
+    this.frameDuration = frameDuration;
+    this.frames = frames;
+    this.loop = loop;
+    this.scale = scale;
+    this.padWidth = padWidth;
+    this.ctx = game.ctx;
+    this.game = game;
+    this.baseHealth = health + (40 * level);
+    this.health = health + (40 * level);
+    this.damage = damage + (3 * level);
+    this.type = type;
+    this.radius = radius;
+    this.boundX = 132;
+    this.boundY = 102;
+    this.reward = reward;
+    this.isDead = 0;
+    this.findX;
+    this.findY;
+    this.pathIsNotFound = true;
+    this.threshold75 = true;
+    this.threshold50 = true;
+    this.threshold25 = true;
+    this.name = "enemy";
+
+    if (isNewSpawn) {
+        Entity.call(this, game, XBuffer, YBuffer);
+    } else {
+        Entity.call(this, game, spawnX + XBuffer, spawnY + YBuffer);
+    }
+}
+
+
 
 ///////////////uiEntity
 function uiEntity(game, board, x, y, boundBoxX, boundBoxY, name) {
@@ -518,6 +733,107 @@ function uiEntity(game, board, x, y, boundBoxX, boundBoxY, name) {
     ];
 
     Entity.call(this, game, x, y);
+ShrinkEnemy.prototype = new Entity();
+ShrinkEnemy.prototype.constructor = ShrinkEnemy;
+
+ShrinkEnemy.prototype.collide = function (other) {
+    var difX = this.x - other.x;
+    var difY = this.y - other.y;
+    return Math.sqrt(difX * difX + difY * difY) < this.radius + other.radius;
+};
+ShrinkEnemy.prototype.update = function () {
+    if (this.health <= 0 && this.isDead == 0) {
+        this.isDead = 1;
+        playerGold = playerGold + this.reward;
+        UpdateUI();
+        this.removeFromWorld = true;
+    }
+    if (this.isDead != 1) {
+        for (var i = 0; i < this.game.entities.length; i++) {
+            var ent = this.game.entities[i];
+            if (ent.name == "base") {
+                if (this.collide(ent)) {
+                    playerHealth = playerHealth - this.damage;
+                    this.isDead = 1;
+                    UpdateUI();
+                }
+            }
+        }
+        var currentXFrame = Math.floor((this.x) / (800 / map[0].length));
+        var currentYFrame = Math.floor((this.y) / (700 / map.length));
+
+        if (isNumber(map[currentYFrame][currentXFrame])) {
+            if (isNumber(map[currentYFrame][currentXFrame + 1])) {
+                if (parseInt(map[currentYFrame][currentXFrame + 1]) > parseInt(map[currentYFrame][currentXFrame]) || map[currentYFrame][currentXFrame + 1] == 'p') {
+                    this.x += this.game.clockTick * this.speed;
+                }
+
+            }
+            if (isNumber(map[currentYFrame][currentXFrame - 1])) {
+                if (parseInt(map[currentYFrame][currentXFrame - 1]) > parseInt(map[currentYFrame][currentXFrame]) || map[currentYFrame][currentXFrame - 1] == 'p') {
+                    this.x -= this.game.clockTick * this.speed;
+                }
+
+            }
+            if (isNumber(map[currentYFrame - 1][currentXFrame])) {
+                if (parseInt(map[currentYFrame - 1][currentXFrame]) > parseInt(map[currentYFrame][currentXFrame]) || map[currentYFrame - 1][currentXFrame] == 'p') {
+                    this.y -= this.game.clockTick * this.speed;
+                }
+
+
+            } if (isNumber(map[currentYFrame + 1][currentXFrame])) {
+                if (parseInt(map[currentYFrame + 1][currentXFrame]) > parseInt(map[currentYFrame][currentXFrame]) || map[currentYFrame + 1][currentXFrame] == 'p') {
+                    this.y += this.game.clockTick * this.speed;
+                }
+
+            }
+        } else {
+            if (this.pathIsNotFound) {
+                var directions = findPath(currentXFrame, currentYFrame);
+                this.findX = directions[0];
+                this.findY = directions[1];
+                this.pathIsNotFound = false;
+            } else {
+                if (this.findX < currentXFrame) {
+                    this.x -= this.game.clockTick * this.speed;
+                } else if (this.findX > currentXFrame) {
+                    this.x += this.game.clockTick * this.speed;
+                }
+
+                if (this.findY < currentYFrame) {
+                    this.y -= this.game.clockTick * this.speed;
+                } else if (this.findY > currentYFrame) {
+                    this.y += this.game.clockTick * this.speed;
+                }
+            }
+        }
+
+        if(this.health / this.baseHealth <= 0.75 && this.threshold75) {
+            this.animation = new Animation(this.spritesheet, this.frameWidth, this.frameHeight, this.sheetWidth, this.frameDuration, this.frames, this.loop, this.scale - 0.1, this.padWidth);
+            this.threshold75 = false;
+            this.speed += 10;
+        }
+        if(this.health / this.baseHealth <= 0.50 && this.threshold50) {
+            this.animation = new Animation(this.spritesheet, this.frameWidth, this.frameHeight, this.sheetWidth, this.frameDuration, this.frames, this.loop, this.scale - 0.2, this.padWidth);
+            this.threshold50 = false;
+            this.speed += 10;
+        }
+        if(this.health / this.baseHealth <= 0.25 && this.threshold25) {
+            this.animation = new Animation(this.spritesheet, this.frameWidth, this.frameHeight, this.sheetWidth, this.frameDuration, this.frames, this.loop, this.scale - 0.3, this.padWidth);
+            this.threshold25 = false;
+            this.speed += 10;
+        }
+        Entity.prototype.update.call(this);
+    }
+}
+
+ShrinkEnemy.prototype.draw = function () {
+    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    Entity.prototype.draw.call(this);
+}
+
+
+//////////////////////////////////////////////////End of shrinking enemy
 
 }
 
@@ -543,18 +859,21 @@ uiEntity.prototype.checkClickInGame = function() {
 }
 //////////////////////////////////////////////////GAME BOARD CODE, used for enemy path and placing towers
 function GameBoard(game) {
-    
+
     Entity.call(this, game, 0, 0);
     this.grid = false;
     this.game = game;
     this.player = 1;
     this.board = [];
+    this.towerLocations = [];
     this.size = 25;
     this.offset = -65;
     for (var i = 0; i < map.length; i++) {
         this.board.push([]);
+        this.towerLocations.push([]);
         for (var j = 0; j < map[0].length; j++) {
             this.board[i].push(0);
+            this.towerLocations[i].push([]);
         }
     }
 }
@@ -563,11 +882,11 @@ GameBoard.prototype = new Entity();
 GameBoard.prototype.constructor = GameBoard;
 
 GameBoard.prototype.update = function () {
-    if(this.game.click) {
-        var towerT = this.board[this.game.click.y][this.game.click.x];
-        var name = "tower" + this.game.click.y + this.game.click.x;
+    if (this.game.click) {
+        //var name = "tower" + this.game.click.y + this.game.click.x;
+        var name = this.towerLocations[this.game.click.y][this.game.click.x];
         var i;
-        for(i = 0; i < this.game.towersList.length; i++) {
+        for (i = 0; i < this.game.towersList.length; i++) {
             var temp = this.game.towersList[i];
             if (temp.name == name) {
                 //this.game.towersList[i].type = 3;
@@ -577,29 +896,72 @@ GameBoard.prototype.update = function () {
                 document.getElementById("Upgrade").style.visibility = "visible";
             }
         }
-        //alert(towerT);
 
     }
     if (this.game.click && isBuilding != 0) {
         isBuilding = 0;
         var name = "tower" + this.game.click.y + this.game.click.x;
-        if(towerType == 0) {
-            
+        if (towerType == 0) {
+
             var tempTower = new Tower(this.game, this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, towerType, name);
             //this.board[this.game.click.x][this.game.click.y] = tempTower;
-            this.board[this.game.click.y][this.game.click.x] = tempTower;
+            this.board[this.game.click.y][this.game.click.x] = tempTower;//the original click location
+
+            this.towerLocations[this.game.click.y][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 1][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 1][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 2][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 2][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 3][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 3][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 4][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 4][this.game.click.x + 1] = name;
+
             this.game.addTower(tempTower);
             playerGold = playerGold - arrowTowerPrice;
-        } else if(towerType == 3) {
+        } else if (towerType == 3) {
             var tempTower = new Tower(this.game, this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, towerType, name);
             //this.board[this.game.click.x][this.game.click.y] = tempTower;
-            this.board[this.game.click.y][this.game.click.x] = tempTower;
+            this.board[this.game.click.y][this.game.click.x] = tempTower;//the original click location
+            this.towerLocations[this.game.click.y][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 1][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 1][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 2][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 2][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 3][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 3][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 4][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 4][this.game.click.x + 1] = name;
             this.game.addTower(tempTower);
             playerGold = playerGold - cannonTowerPrice;
-        } else if(towerType == 6) {
+        } else if (towerType == 6) {
             var tempTower = new Tower(this.game, this.game.mouse.x * this.size, this.game.mouse.y * this.size + this.offset, towerType, name);
             //this.board[this.game.click.x][this.game.click.y] = tempTower;
-            this.board[this.game.click.y][this.game.click.x] = tempTower;
+            this.board[this.game.click.y][this.game.click.x] = tempTower;//the original click location
+            this.towerLocations[this.game.click.y][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 1][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 1][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 2][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 2][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 3][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 3][this.game.click.x + 1] = name;
+
+            this.towerLocations[this.game.click.y - 4][this.game.click.x] = name;
+            this.towerLocations[this.game.click.y - 4][this.game.click.x + 1] = name;
             this.game.addTower(tempTower);
             playerGold = playerGold - magicTowerPrice;
         }
@@ -656,7 +1018,7 @@ GameBoard.prototype.draw = function (ctx) {
     // ctx.drawImage(AM.getAsset("./img/maps/Map002.png"),this.x,this.y,800,700);
 
 
-    if(isBuilding == 1) {
+    if (isBuilding == 1) {
 
         // draw mouse shadow
         if (this.game.mouse && towerType == 0) {
@@ -698,35 +1060,35 @@ function displayTower(tower) {
 
 
 function upgrade(tower) {
-    if(tower.level >=3 || tower.level == "max") {
+    if (tower.level >= 3 || tower.level == "max") {
         return;
-    } 
-    
-    if(playerGold >= tower.upgradeCost) {
-        playerGold-=tower.upgradeCost;
+    }
+
+    if (playerGold >= tower.upgradeCost) {
+        playerGold -= tower.upgradeCost;
         tower.type++;
-        tower.damage+=10;
+        tower.damage += 10;
         tower.level++;
-        tower.upgradeCost+=(5 * tower.type);
-        tower.sellCost+=(30 * level) + (3 * towerType);
-        if(tower.level >= 3) {
+        tower.upgradeCost += (5 * tower.type);
+        tower.sellCost += (30 * level) + (3 * towerType);
+        if (tower.level >= 3) {
             tower.level = "max";
             tower.upgradeCost = "N/A"
         }
-        tower.fireRate-=0.05;
-        tower.radius+=15;
+        tower.fireRate -= 0.05;
+        tower.radius += 15;
         displayTower(tower);
         UpdateUI();
-        
+
     } else {
         return;
     }
-    
+
 }
 
 function sell(tower) {
-    playerGold+=tower.sellCost;
-    
+    playerGold += tower.sellCost;
+
     tower.removeFromWorld = true;
     document.getElementById("Sell").style.visibility = "hidden";
     document.getElementById("Upgrade").style.visibility = "hidden";
@@ -743,11 +1105,11 @@ function setSpawnPoint() {
     for (i = 0; i < map.length; i++) {
         for (j = 0; j < map[0].length; j++) {
             var temp = map[i][j];
-            if(temp == 's') {
+            if (temp == '0') {
                 spawnX = j * 800 / map[0].length;
                 spawnY = i * 700 / map.length;
             }
-            if(temp == 'p') {
+            if (temp == 'p') {
                 baseX = j * 800 / map[0].length;
                 baseY = i * 700 / map.length;
             }
@@ -767,24 +1129,24 @@ function UpdateUI() {
     var wave = document.getElementById("Wave");
     wave.innerHTML = "" + level;
     //do the same with the other tower buttons
-    if(playerGold < arrowTowerPrice) {
+    if (playerGold < arrowTowerPrice) {
         document.getElementById("ArrowTowerButton").disabled = true;
     }
-    if(playerGold >= arrowTowerPrice) {
+    if (playerGold >= arrowTowerPrice) {
         document.getElementById("ArrowTowerButton").disabled = false;
     }
 
-    if(playerGold < cannonTowerPrice) {
+    if (playerGold < cannonTowerPrice) {
         document.getElementById("CannonTowerButton").disabled = true;
     }
-    if(playerGold >= cannonTowerPrice) {
+    if (playerGold >= cannonTowerPrice) {
         document.getElementById("CannonTowerButton").disabled = false;
     }
 
-    if(playerGold < magicTowerPrice) {
+    if (playerGold < magicTowerPrice) {
         document.getElementById("MagicTowerButton").disabled = true;
     }
-    if(playerGold >= magicTowerPrice) {
+    if (playerGold >= magicTowerPrice) {
         document.getElementById("MagicTowerButton").disabled = false;
     }
 
@@ -863,7 +1225,7 @@ AM.downloadAll(function () {
     gameEngine.addEntity(gameBoard);
     gameEngine.addTower(hero);
     gameEngine.init(ctx);
-    
+
     gameEngine.start();
     setSpawnPoint();
     document.getElementById("ArrowTowerButton").addEventListener("click", createArrowTower);
@@ -874,6 +1236,6 @@ AM.downloadAll(function () {
     gameEngine.addEntity(new spawner(gameEngine, AM.getAsset("./img/base2.png")));
     document.getElementById("Sell").style.visibility = "hidden";
     document.getElementById("Upgrade").style.visibility = "hidden";
-    
+
     console.log("All Done!");
 });
