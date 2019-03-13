@@ -3,6 +3,7 @@ var spawnX = 0;
 var spawnY = 0;
 var baseX = 0;
 var baseY = 0;
+var backgroundSelection = 0;;
 var level = 1;
 var isBuilding = 0;
 var towerType;
@@ -674,64 +675,6 @@ function ShrinkEnemy(game, spritesheet, level, type, frameWidth, frameHeight, sh
     }
 }
 
-
-
-///////////////uiEntity
-function uiEntity(game, board, x, y, boundBoxX, boundBoxY, name) {
-    this.game = game;
-    this.board = board;
-    this.boundBoxX = boundBoxX; //create limits  of the bound on the uiEntity
-    this.boundBoxY = boundBoxY;
-    this.isClickedOn = false;
-    this.name = name;
-    //list of functions if the uiEntity.name is inside function list, do that function
-    
-    this.functionList = [
-        {
-            ////startButton, make gameBoard change draw
-            //game already loads with mapSelection 0, the title screen
-            startButton: function (game) {
-                backgroundSelection = 1;
-                mapSelection = 1;
-                level = 1;
-            }
-
-        },
-        {
-            ////startButton, make gameBoard change draw
-            level1Button: function (game) {
-                backgroundSelection = 2;
-            }
-
-        }, {
-            ////startButton, make gameBoard change draw
-            level2Button: function (game) {
-                backgroundSelection = 3;
-            }
-
-        },
-        {
-            ////startButton, make gameBoard change draw
-            level3Button: function (game) {
-                backgroundSelection = 4;
-            }
-
-        },
-        {
-            ////startButton, make gameBoard change draw
-            level4Button: function (game) {
-                backgroundSelection = 5;
-            }
-
-        },
-        
-
-
-
-
-    ];
-
-    Entity.call(this, game, x, y);
 ShrinkEnemy.prototype = new Entity();
 ShrinkEnemy.prototype.constructor = ShrinkEnemy;
 
@@ -834,28 +777,84 @@ ShrinkEnemy.prototype.draw = function () {
 
 //////////////////////////////////////////////////End of shrinking enemy
 
-}
-
-uiEntity.prototype = new Entity();
-uiEntity.prototype.constructor = uiEntity;
-
-uiEntity.prototype.update = function() {
-    if(this.isClickedOn) {
-        if(this.functionList.includes(this.name)) {
-            this.functionList[this.name]
-        }
-    }
 
 
-    Entity.prototype.update.call(this);
-}
+// ///////////////uiEntity
+// function uiEntity(game, board, x, y, boundBoxX, boundBoxY, name) {
+//     this.game = game;
+//     this.board = board;
+//     this.boundBoxX = boundBoxX; //create limits  of the bound on the uiEntity
+//     this.boundBoxY = boundBoxY;
+//     this.isClickedOn = false;
+//     this.name = name;
+//     //list of functions if the uiEntity.name is inside function list, do that function
+//     this.updateHelper = [
+//         {
+//             ////startButton, make gameBoard change draw
+//             //game already loads with mapSelection 0, the title screen
+//             startButton: function (game) {
+//                 backgroundSelection = 1;
+//                 mapSelection = 1;
+//                 level = 1;
+//             }
 
-uiEntity.prototype.checkClickInGame = function() {
+//         },
+//         {
+//             ////startButton, make gameBoard change draw
+//             level1Button: function (game) {
+//                 backgroundSelection = 2;
+//             }
 
-    //check for bounds on the entity from canvas 
-    //make 
+//         }, {
+//             ////startButton, make gameBoard change draw
+//             level2Button: function (game) {
+//                 backgroundSelection = 3;
+//             }
 
-}
+//         },
+//         {
+//             ////startButton, make gameBoard change draw
+//             level3Button: function (game) {
+//                 backgroundSelection = 4;
+//             }
+
+//         },
+//         {
+//             ////startButton, make gameBoard change draw
+//             level4Button: function (game) {
+//                 backgroundSelection = 5;
+//             }
+
+//         },
+
+
+//     ];
+
+//     Entity.call(this, game, x, y);
+// }
+
+// uiEntity.prototype = new Entity();
+// uiEntity.prototype.constructor = uiEntity;
+
+// uiEntity.prototype.update = function() {
+//     if(this.isClickedOn) {
+//         if(this.updateHelper.includes(this.name)) {
+//             this.updateHelper[this.name]
+//         }
+//     }
+
+
+//     Entity.prototype.update.call(this);
+// }
+
+// uiEntity.prototype.checkClickInGame = function() {
+//     //check for bounds on the entity from canvas 
+//     //make 
+
+// }
+
+// ///End uiEntity
+
 //////////////////////////////////////////////////GAME BOARD CODE, used for enemy path and placing towers
 function GameBoard(game) {
 
@@ -881,6 +880,7 @@ GameBoard.prototype = new Entity();
 GameBoard.prototype.constructor = GameBoard;
 
 GameBoard.prototype.update = function () {
+    
     if (this.game.click) {
         //var name = "tower" + this.game.click.y + this.game.click.x;
         var name = this.towerLocations[this.game.click.y][this.game.click.x];
@@ -969,8 +969,9 @@ GameBoard.prototype.update = function () {
     Entity.prototype.update.call(this);
 }
 
-GameBoard.prototype.selectBackground = function(mapSelection, ctx) {
-    switch (mapSelection) { //mapSelection corresponds to background
+GameBoard.prototype.selectBackground = function(backgroundSelection,ctx) {
+    
+    switch (backgroundSelection) { //backgroundSelection corresponds to background
         case 0: //startImage
         ctx.drawImage(AM.getAsset("./img/maps/MapStart.png"), this.x, this.y, 800, 700);
         break;
@@ -996,22 +997,22 @@ GameBoard.prototype.selectBackground = function(mapSelection, ctx) {
 GameBoard.prototype.draw = function (ctx) {
 
     //make the game board draw the background yo.
-    if(backgroundSelection == 0) {
+    if(backgroundSelection === 0) {
         this.selectBackground(0, ctx);
     }
-    if(backgroundSelection == 1) {
+    if(backgroundSelection === 1) {
         this.selectBackground(1, ctx);
     } 
-    if(backgroundSelection == 2) {
+    if(backgroundSelection === 2) {
         this.selectBackground(2, ctx);
     } 
-    if(backgroundSelection == 3) {
+    if(backgroundSelection === 3) {
         this.selectBackground(3, ctx);
     } 
-    if(backgroundSelection == 4) {
+    if(backgroundSelection === 4) {
         this.selectBackground(4, ctx);
     } 
-    if(backgroundSelection == 5) {
+    if(backgroundSelection === 5) {
         this.selectBackground(5, ctx);
     }
     // ctx.drawImage(AM.getAsset("./img/maps/Map002.png"),this.x,this.y,800,700);
@@ -1153,9 +1154,12 @@ function UpdateUI() {
 
 
 }
-
-
+AM.queueDownload("./img/maps/MapStart.png");
+AM.queueDownload("./img/maps/Map000.png");
+AM.queueDownload("./img/maps/Map001.png");
 AM.queueDownload("./img/maps/Map002.png");
+AM.queueDownload("./img/maps/Map003.png");
+AM.queueDownload("./img/maps/Map004.png");
 AM.queueDownload("./img/towers/tower_a1_48w_107h.png");
 AM.queueDownload("./img/towers/tower_a2_48w_111h.png");
 AM.queueDownload("./img/towers/tower_a3_48w_116h.png");
@@ -1222,8 +1226,10 @@ AM.downloadAll(function () {
     var ctx = canvas.getContext("2d");
     var gameEngine = new GameEngine();
     var gameBoard = new GameBoard(gameEngine);
+    gameBoard.selectBackground(5,ctx);
     var hero = new Hero(gameEngine);
     gameEngine.addEntity(gameBoard);
+    
     gameEngine.addTower(hero);
     gameEngine.init(ctx);
 
